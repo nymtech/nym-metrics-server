@@ -3,6 +3,7 @@ module github.com/nymtech/directory-server
 go 1.12
 
 require (
+	github.com/dgraph-io/badger v1.6.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/golang/protobuf v1.3.2 // indirect
