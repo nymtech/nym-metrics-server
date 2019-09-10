@@ -28,6 +28,48 @@ info:
   title: Nym Directory API
   version: "1.0"
 paths:
+  /api/metrics:
+    post:
+      consumes:
+      - application/json
+      description: You'd never want to run this in production, but for demo and debug
+        purposes it gives us the ability to generate useful visualisations of network
+        traffic.
+      operationId: createMetric
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/rest.ObjectRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.ObjectIDResponse'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+      summary: Create a metric detailing how many messages a given mixnode sent
+      tags:
+      - metrics
   /api/nodes:
     post:
       consumes:

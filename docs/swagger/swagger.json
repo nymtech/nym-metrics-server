@@ -14,6 +14,64 @@
     "host": "directory.nymtech.net",
     "basePath": "/v1",
     "paths": {
+        "/api/metrics": {
+            "post": {
+                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "Create a metric detailing how many messages a given mixnode sent",
+                "operationId": "createMetric",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.ObjectRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.ObjectIDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/nodes": {
             "post": {
                 "description": "TODO",
