@@ -3,20 +3,13 @@ package rest
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"     // swagger embed files
-	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type controller interface {
 	RegisterRoutes(*gin.Engine)
 }
-
-// @title Nym API
-// @version 1.0
-// @description Nym REST API endpoints
-
-// @license.name Apache
-// @license.url https://github.com/nymtech/directory-server/license
 
 func (s *Server) makeRouter(controllers ...controller) *gin.Engine {
 	// Set the router as the default one shipped with Gin

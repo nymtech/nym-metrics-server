@@ -1,9 +1,18 @@
 {
     "swagger": "2.0",
     "info": {
+        "description": "This is a temporarily centralized directory/PKI/metrics API to allow us to get the other Nym node types running. Its functionality will eventually be folder into other parts of Nym.",
+        "title": "Nym Directory API",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {},
-        "license": {}
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://github.com/nymtech/directory-server/license"
+        },
+        "version": "1.0"
     },
+    "host": "directory.nymtech.net",
+    "basePath": "/v1",
     "paths": {
         "/api/nodes": {
             "post": {
