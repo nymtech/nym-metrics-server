@@ -20,7 +20,7 @@ info:
   contact: {}
   description: This is a temporarily centralized directory/PKI/metrics API to allow
     us to get the other Nym node types running. Its functionality will eventually
-    be folder into other parts of Nym.
+    be folded into other parts of Nym.
   license:
     name: Apache 2.0
     url: https://github.com/nymtech/directory-server/license
