@@ -31,6 +31,19 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/nodes", controller.CreateNode)
 }
 
+// CreateNode adds a node to the PKI
+// @Summary Create a node in the PKI
+// @Description TODO
+// @ID createObject
+// @Accept  json
+// @Produce  json
+// @Tags pki
+// @Param   object      body   rest.ObjectRequest     true  "object"
+// @Success 200 {object} rest.ObjectIDResponse
+// @Failure 400 {object} rest.Error
+// @Failure 404 {object} rest.Error
+// @Failure 500 {object} rest.Error
+// @Router /api/nodes [post]
 func (controller *controller) CreateNode(c *gin.Context) {
 	fmt.Println("foomp")
 }

@@ -4,5 +4,90 @@
         "contact": {},
         "license": {}
     },
-    "paths": {}
+    "paths": {
+        "/api/nodes": {
+            "post": {
+                "description": "TODO",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pki"
+                ],
+                "summary": "Create a node in the PKI",
+                "operationId": "createObject",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.ObjectRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.ObjectIDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/rest.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "rest.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "rest.ObjectIDResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "rest.ObjectRequest": {
+            "type": "object",
+            "properties": {
+                "object": {
+                    "type": "object"
+                }
+            }
+        }
+    }
 }

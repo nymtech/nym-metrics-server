@@ -1,5 +1,61 @@
+definitions:
+  rest.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  rest.ObjectIDResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  rest.ObjectRequest:
+    properties:
+      object:
+        type: object
+    type: object
 info:
   contact: {}
   license: {}
-paths: {}
+paths:
+  /api/nodes:
+    post:
+      consumes:
+      - application/json
+      description: TODO
+      operationId: createObject
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/rest.ObjectRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.ObjectIDResponse'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+      summary: Create a node in the PKI
+      tags:
+      - pki
 swagger: "2.0"
