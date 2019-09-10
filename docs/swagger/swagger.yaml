@@ -28,14 +28,55 @@ info:
   title: Nym Directory API
   version: "1.0"
 paths:
-  /api/metrics:
+  /api/metrics/mixes:
+    get:
+      consumes:
+      - application/json
+      description: You'd never want to run this in production, but for demo and debug
+        purposes it gives us the ability to generate useful visualisations of network
+        traffic.
+      operationId: listMixMetrics
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/rest.ObjectRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.ObjectIDResponse'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.Error'
+            type: object
+      summary: Lists mixnode activity in the past 1 second
+      tags:
+      - metrics
     post:
       consumes:
       - application/json
       description: You'd never want to run this in production, but for demo and debug
         purposes it gives us the ability to generate useful visualisations of network
         traffic.
-      operationId: createMetric
+      operationId: createMixMetric
       parameters:
       - description: object
         in: body
@@ -74,7 +115,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: TODO
+      description: Nodes should post their public key info to this method when they
+        start.
       operationId: createObject
       parameters:
       - description: object
