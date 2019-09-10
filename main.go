@@ -14,7 +14,4 @@ func main() {
 	server := rest.New(cfg)
 
 	server.Run()
-
-	wait := make(chan struct{})
-	<-wait
 }
