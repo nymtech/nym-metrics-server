@@ -2,7 +2,7 @@ package metrics
 
 type service struct{}
 
-// Service defines the REST service interface for Nodes.
+// Service defines the REST service interface for metrics.
 type Service interface {
 	CreateMixMetric() error
 }

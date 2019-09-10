@@ -2,7 +2,7 @@ package pki
 
 type service struct{}
 
-// Service defines the REST service interface for Nodes.
+// Service defines the REST service interface for PKI.
 type Service interface {
 	CreateNode() error
 }

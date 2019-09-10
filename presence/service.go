@@ -2,7 +2,7 @@ package presence
 
 type service struct{}
 
-// Service defines the REST service interface for Nodes.
+// Service defines the REST service interface for presence.
 type Service interface {
 	NotifyPresence() error
 	Up() error
