@@ -18,7 +18,7 @@ type controller struct {
 
 // Controller is the Key-Value controller
 type Controller interface {
-	CreateMetric(c *gin.Context)
+	CreateMixMetric(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
 }
 
@@ -28,7 +28,7 @@ func New(config *Config) Controller {
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
-	router.POST("/api/metrics", controller.CreateMetric)
+	router.POST("/api/metrics/mixmetric", controller.CreateMixMetric)
 }
 
 // CreateMetric adds a node to the PKI
@@ -44,6 +44,6 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 404 {object} rest.Error
 // @Failure 500 {object} rest.Error
 // @Router /api/metrics [post]
-func (controller *controller) CreateMetric(c *gin.Context) {
+func (controller *controller) CreateMixMetric(c *gin.Context) {
 	fmt.Println("foomp")
 }
