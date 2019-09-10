@@ -33,7 +33,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 
 // CreateNode adds a node to the PKI
 // @Summary Create a node in the PKI
-// @Description TODO
+// @Description Nodes should post their public key info to this method when they start.
 // @ID createObject
 // @Accept  json
 // @Produce  json
