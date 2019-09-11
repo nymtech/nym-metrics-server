@@ -41,14 +41,14 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Accept  json
 // @Produce  json
 // @Tags presence
-// @Param   object      body   models.UpMsg     true  "object"
+// @Param   object      body   models.HostInfo     true  "object"
 // @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [post]
 func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
-	var json models.UpMsg
+	var json models.HostInfo
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

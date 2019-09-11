@@ -12,7 +12,7 @@ type service struct {
 
 // Service defines the REST service interface for presence.
 type Service interface {
-	NotifyMixNodePresence(up models.UpMsg) error
+	NotifyMixNodePresence(up models.HostInfo) error
 	Up() error
 }
 
@@ -20,9 +20,9 @@ func newService(cfg *Config) *service {
 	return &service{}
 }
 
-func (service *service) NotifyMixNodePresence(up models.UpMsg) error {
+func (service *service) NotifyMixNodePresence(info models.HostInfo) error {
 	presence := models.Presence{
-		PubKey:   up.PubKey,
+		HostInfo: info,
 		LastSeen: time.Now(),
 	}
 	service.mixNodes = append(service.mixNodes, presence)
