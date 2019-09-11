@@ -17,15 +17,15 @@ type ObjectIDResponse struct {
 	ID string `json:"id"`
 }
 
-// UpMsg comes from a node telling us it's alive
-type UpMsg struct {
+// HostInfo comes from a node telling us it's alive
+type HostInfo struct {
+	Host   string `json:"host" binding:"required"`
+	Layer  int    `json:"layer" binding:"required"`
 	PubKey string `json:"pubKey" binding:"required"`
 }
 
 // Presence lets the server tell clients when a node was last seen
 type Presence struct {
-	Host     string    `json:"host" binding:"required"`
+	HostInfo
 	LastSeen time.Time `json:"lastSeen" binding:"required" time_format:"unix"`
-	Layer    int       `json:"layer" binding:"required"`
-	PubKey   string    `json:"pubKey" binding:"required"`
 }
