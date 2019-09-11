@@ -17,16 +17,6 @@ definitions:
     - layer
     - pubKey
     type: object
-  models.ObjectIDResponse:
-    properties:
-      id:
-        type: string
-    type: object
-  models.ObjectRequest:
-    properties:
-      object:
-        type: object
-    type: object
   models.Presence:
     properties:
       host:
@@ -76,22 +66,9 @@ paths:
         purposes it gives us the ability to generate useful visualisations of network
         traffic.
       operationId: listMixMetrics
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.ObjectRequest'
-          type: object
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ObjectIDResponse'
-            type: object
         "400":
           description: Bad Request
           schema:
@@ -117,22 +94,9 @@ paths:
         purposes it gives us the ability to generate useful visualisations of network
         traffic.
       operationId: createMixMetric
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.ObjectRequest'
-          type: object
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ObjectIDResponse'
-            type: object
         "400":
           description: Bad Request
           schema:
@@ -158,22 +122,9 @@ paths:
       description: Nodes should post their public key info to this method when they
         start.
       operationId: createObject
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.ObjectRequest'
-          type: object
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ObjectIDResponse'
-            type: object
         "400":
           description: Bad Request
           schema:

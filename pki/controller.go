@@ -38,8 +38,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Accept  json
 // @Produce  json
 // @Tags pki
-// @Param   object      body   models.ObjectRequest     true  "object"
-// @Success 200 {object} models.ObjectIDResponse
+// Param   object      body   models.ObjectRequest     true  "object"
+// Success 200 {object} models.ObjectIDResponse
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error

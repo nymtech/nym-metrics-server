@@ -45,26 +45,7 @@
                 ],
                 "summary": "Lists mixnode activity in the past 1 second",
                 "operationId": "listMixMetrics",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.ObjectRequest"
-                        }
-                    }
-                ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.ObjectIDResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -101,26 +82,7 @@
                 ],
                 "summary": "Create a metric detailing how many messages a given mixnode sent",
                 "operationId": "createMixMetric",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.ObjectRequest"
-                        }
-                    }
-                ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.ObjectIDResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -159,26 +121,7 @@
                 ],
                 "summary": "Create a node in the PKI",
                 "operationId": "createObject",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.ObjectRequest"
-                        }
-                    }
-                ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.ObjectIDResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -327,22 +270,6 @@
                 },
                 "pubKey": {
                     "type": "string"
-                }
-            }
-        },
-        "models.ObjectIDResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ObjectRequest": {
-            "type": "object",
-            "properties": {
-                "object": {
-                    "type": "object"
                 }
             }
         },
