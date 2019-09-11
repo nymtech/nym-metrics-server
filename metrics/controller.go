@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +46,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/metrics/mixes [post]
 func (controller *controller) CreateMixMetric(c *gin.Context) {
-	fmt.Println("CreateMixMetric")
+	log.Println("CreateMixMetric not yet implemented")
 }
 
 // ListMixMetrics lists mixnode activity
@@ -63,5 +63,5 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/metrics/mixes [get]
 func (controller *controller) ListMixMetrics(c *gin.Context) {
-	fmt.Println("ListMixMetrics")
+	log.Println("ListMixMetrics not yet implemented")
 }

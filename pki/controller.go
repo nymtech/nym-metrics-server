@@ -1,7 +1,7 @@
 package pki
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,5 +45,5 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/nodes [post]
 func (controller *controller) CreateNode(c *gin.Context) {
-	fmt.Println("foomp")
+	log.Println("CreateNode not yet implemented")
 }
