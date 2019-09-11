@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "github.com/nymtech/directory-server/docs"
-
 	"github.com/nymtech/directory-server/rest"
 )
 
