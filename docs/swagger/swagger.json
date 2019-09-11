@@ -271,7 +271,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.UpMsg"
+                            "$ref": "#/definitions/models.HostInfo"
                         }
                     }
                 ],
@@ -311,6 +311,25 @@
                 }
             }
         },
+        "models.HostInfo": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "host",
+                "layer"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "integer"
+                },
+                "pubKey": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ObjectIDResponse": {
             "type": "object",
             "properties": {
@@ -330,24 +349,21 @@
         "models.Presence": {
             "type": "object",
             "required": [
+                "layer",
+                "pubKey",
                 "lastSeen",
-                "pubKey"
+                "host"
             ],
             "properties": {
+                "host": {
+                    "type": "string"
+                },
                 "lastSeen": {
                     "type": "string"
                 },
-                "pubKey": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UpMsg": {
-            "type": "object",
-            "required": [
-                "pubKey"
-            ],
-            "properties": {
+                "layer": {
+                    "type": "integer"
+                },
                 "pubKey": {
                     "type": "string"
                 }

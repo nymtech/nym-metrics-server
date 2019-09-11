@@ -4,6 +4,19 @@ definitions:
       error:
         type: string
     type: object
+  models.HostInfo:
+    properties:
+      host:
+        type: string
+      layer:
+        type: integer
+      pubKey:
+        type: string
+    required:
+    - pubKey
+    - host
+    - layer
+    type: object
   models.ObjectIDResponse:
     properties:
       id:
@@ -16,20 +29,19 @@ definitions:
     type: object
   models.Presence:
     properties:
+      host:
+        type: string
       lastSeen:
         type: string
+      layer:
+        type: integer
       pubKey:
         type: string
     required:
+    - layer
+    - pubKey
     - lastSeen
-    - pubKey
-    type: object
-  models.UpMsg:
-    properties:
-      pubKey:
-        type: string
-    required:
-    - pubKey
+    - host
     type: object
 info:
   contact: {}
@@ -228,7 +240,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.UpMsg'
+          $ref: '#/definitions/models.HostInfo'
           type: object
       produces:
       - application/json
