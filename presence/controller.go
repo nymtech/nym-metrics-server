@@ -19,6 +19,7 @@ type controller struct {
 
 // Controller is the presence controller
 type Controller interface {
+	NotifyCocoNodePresence(c *gin.Context)
 	NotifyMixNodePresence(c *gin.Context)
 	Up(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
@@ -30,6 +31,7 @@ func New(config *Config) Controller {
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
+	router.POST("/api/presence/coconodes", controller.NotifyCocoNodePresence)
 	router.POST("/api/presence/mixnodes", controller.NotifyMixNodePresence)
 	router.GET("/api/presence/mixnodes", controller.Up)
 }
@@ -55,6 +57,35 @@ func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
 	}
 
 	err := controller.service.NotifyMixNodePresence(json)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+// NotifyCocoNodePresence lets a node tell the directory server it's alive
+// @Summary Lets a node tell the directory server it's alive
+// @Description Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
+// @ID notifyMixNode
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Param   object      body   models.HostInfo     true  "object"
+// @Success 201
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/coconodes [post]
+func (controller *controller) NotifyCocoNodePresence(c *gin.Context) {
+	var json models.HostInfo
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := controller.service.NotifyCocoNodePresence(json)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Error{err.Error()})
 		return

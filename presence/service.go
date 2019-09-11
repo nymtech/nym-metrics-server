@@ -7,12 +7,14 @@ import (
 )
 
 type service struct {
-	mixNodes []models.Presence
+	mixNodes  []models.Presence
+	cocoNodes []models.Presence
 }
 
 // Service defines the REST service interface for presence.
 type Service interface {
 	NotifyMixNodePresence(up models.HostInfo) error
+	NotifyCocoNodePresence(up models.HostInfo) error
 	Up() error
 }
 
@@ -26,6 +28,15 @@ func (service *service) NotifyMixNodePresence(info models.HostInfo) error {
 		LastSeen: time.Now().UnixNano(),
 	}
 	service.mixNodes = append(service.mixNodes, presence)
+	return nil
+}
+
+func (service *service) NotifyCocoNodePresence(info models.HostInfo) error {
+	presence := models.Presence{
+		HostInfo: info,
+		LastSeen: time.Now().UnixNano(),
+	}
+	service.cocoNodes = append(service.cocoNodes, presence)
 	return nil
 }
 
