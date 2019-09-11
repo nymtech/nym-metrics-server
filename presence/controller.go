@@ -7,11 +7,6 @@ import (
 	"github.com/nymtech/directory-server/models"
 )
 
-// Config ...
-type Config struct {
-	// Db badger.
-}
-
 // controller is the presence controller
 type controller struct {
 	service *service
@@ -26,8 +21,8 @@ type Controller interface {
 }
 
 // New returns a new pki.Controller
-func New(config *Config) Controller {
-	return &controller{newService(config)}
+func New() Controller {
+	return &controller{newService()}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
@@ -50,7 +45,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [post]
 func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
-	var json models.HostInfo
+	var json models.MixHostInfo
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

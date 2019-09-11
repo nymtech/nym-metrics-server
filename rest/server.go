@@ -29,11 +29,10 @@ func New(cfg *Config) *Server {
 	var controllers []controller
 	pkiCfg := &pki.Config{}
 	metricsCfg := &metrics.Config{}
-	presenceCfg := &presence.Config{}
 
 	controllers = append(controllers, healthcheck.New())
 	controllers = append(controllers, pki.New(pkiCfg))
-	controllers = append(controllers, presence.New(presenceCfg))
+	controllers = append(controllers, presence.New())
 	controllers = append(controllers, metrics.New(metricsCfg))
 
 	s := &Server{

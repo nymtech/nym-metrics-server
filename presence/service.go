@@ -7,7 +7,7 @@ import (
 )
 
 type service struct {
-	mixNodes  []models.Presence
+	mixNodes  []models.MixNodePresence
 	cocoNodes []models.Presence
 }
 
@@ -18,14 +18,14 @@ type Service interface {
 	Up() error
 }
 
-func newService(cfg *Config) *service {
+func newService() *service {
 	return &service{}
 }
 
-func (service *service) NotifyMixNodePresence(info models.HostInfo) error {
-	presence := models.Presence{
-		HostInfo: info,
-		LastSeen: time.Now().UnixNano(),
+func (service *service) NotifyMixNodePresence(info models.MixHostInfo) error {
+	presence := models.MixNodePresence{
+		MixHostInfo: info,
+		LastSeen:    time.Now().UnixNano(),
 	}
 	service.mixNodes = append(service.mixNodes, presence)
 	return nil
@@ -40,6 +40,6 @@ func (service *service) NotifyCocoNodePresence(info models.HostInfo) error {
 	return nil
 }
 
-func (service *service) Up() ([]models.Presence, error) {
+func (service *service) Up() ([]models.MixNodePresence, error) {
 	return service.mixNodes, nil
 }
