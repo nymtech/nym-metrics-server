@@ -20,6 +20,9 @@ definitions:
         type: string
       pubKey:
         type: string
+    required:
+    - lastSeen
+    - pubKey
     type: object
   models.UpMsg:
     properties:

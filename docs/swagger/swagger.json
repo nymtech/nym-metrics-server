@@ -329,6 +329,10 @@
         },
         "models.Presence": {
             "type": "object",
+            "required": [
+                "lastSeen",
+                "pubKey"
+            ],
             "properties": {
                 "lastSeen": {
                     "type": "string"
