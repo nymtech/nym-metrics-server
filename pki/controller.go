@@ -38,11 +38,11 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Accept  json
 // @Produce  json
 // @Tags pki
-// @Param   object      body   rest.ObjectRequest     true  "object"
-// @Success 200 {object} rest.ObjectIDResponse
-// @Failure 400 {object} rest.Error
-// @Failure 404 {object} rest.Error
-// @Failure 500 {object} rest.Error
+// @Param   object      body   models.ObjectRequest     true  "object"
+// @Success 200 {object} models.ObjectIDResponse
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
 // @Router /api/nodes [post]
 func (controller *controller) CreateNode(c *gin.Context) {
 	fmt.Println("foomp")

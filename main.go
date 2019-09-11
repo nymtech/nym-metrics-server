@@ -14,8 +14,9 @@ import (
 // @license.name Apache 2.0
 // @license.url https://github.com/nymtech/directory-server/license
 
-// @host directory.nymtech.net
-// @BasePath /v1
+// TODO: these guys should be whacked into config.
+// host directory.nymtech.net
+// BasePath /v1
 func main() {
 	cfg := &rest.Config{
 		Addr: "",

@@ -2,8 +2,10 @@ package rest
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/nymtech/directory-server/healthcheck"
 	"github.com/nymtech/directory-server/metrics"
 	"github.com/nymtech/directory-server/pki"
+	"github.com/nymtech/directory-server/presence"
 )
 
 // Config defines the values passed into the REST Service
@@ -27,8 +29,11 @@ func New(cfg *Config) *Server {
 	var controllers []controller
 	pkiCfg := &pki.Config{}
 	metricsCfg := &metrics.Config{}
+	presenceCfg := &presence.Config{}
 
+	controllers = append(controllers, healthcheck.New())
 	controllers = append(controllers, pki.New(pkiCfg))
+	controllers = append(controllers, presence.New(presenceCfg))
 	controllers = append(controllers, metrics.New(metricsCfg))
 
 	s := &Server{

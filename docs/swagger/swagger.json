@@ -11,9 +11,26 @@
         },
         "version": "1.0"
     },
-    "host": "directory.nymtech.net",
-    "basePath": "/v1",
     "paths": {
+        "/api/healthcheck": {
+            "get": {
+                "description": "Returns a 200 if the directory server is available.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "healthcheck"
+                ],
+                "summary": "Lets lets the directory server tell the world it's alive",
+                "operationId": "healthCheck",
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
         "/api/metrics/mixes": {
             "get": {
                 "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
@@ -36,7 +53,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectRequest"
+                            "$ref": "#/definitions/models.ObjectRequest"
                         }
                     }
                 ],
@@ -45,28 +62,28 @@
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectIDResponse"
+                            "$ref": "#/definitions/models.ObjectIDResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     }
                 }
@@ -92,7 +109,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectRequest"
+                            "$ref": "#/definitions/models.ObjectRequest"
                         }
                     }
                 ],
@@ -101,28 +118,28 @@
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectIDResponse"
+                            "$ref": "#/definitions/models.ObjectIDResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     }
                 }
@@ -150,7 +167,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectRequest"
+                            "$ref": "#/definitions/models.ObjectRequest"
                         }
                     }
                 ],
@@ -159,36 +176,82 @@
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectIDResponse"
+                            "$ref": "#/definitions/models.ObjectIDResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     }
                 }
             }
         },
-        "/api/presence": {
+        "/api/presence/mixnodes": {
+            "get": {
+                "description": "Nym mixnodes periodically ping the directory server to register that they're alive. This method provides a list of mixnodes which have been most recently seen.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Lists which Nym mixnodes are alive",
+                "operationId": "mixNodesUp",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Presence"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "Nym coconodes and mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
+                "description": "Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
                     "application/json"
                 ],
@@ -199,7 +262,7 @@
                     "presence"
                 ],
                 "summary": "Lets a node tell the directory server it's alive",
-                "operationId": "notifyPresence",
+                "operationId": "notifyMixNode",
                 "parameters": [
                     {
                         "description": "object",
@@ -208,95 +271,31 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.ObjectRequest"
+                            "$ref": "#/definitions/models.UpMsg"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/rest.ObjectIDResponse"
-                        }
-                    },
+                    "201": {},
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/rest.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/presence/up": {
-            "get": {
-                "description": "Nym coconodes and mixnodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "presence"
-                ],
-                "summary": "Lists which Nym nodes are alive",
-                "operationId": "up",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/rest.ObjectRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/rest.ObjectIDResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/rest.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/rest.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/rest.Error"
+                            "$ref": "#/definitions/models.Error"
                         }
                     }
                 }
@@ -304,7 +303,7 @@
         }
     },
     "definitions": {
-        "rest.Error": {
+        "models.Error": {
             "type": "object",
             "properties": {
                 "error": {
@@ -312,7 +311,7 @@
                 }
             }
         },
-        "rest.ObjectIDResponse": {
+        "models.ObjectIDResponse": {
             "type": "object",
             "properties": {
                 "id": {
@@ -320,11 +319,33 @@
                 }
             }
         },
-        "rest.ObjectRequest": {
+        "models.ObjectRequest": {
             "type": "object",
             "properties": {
                 "object": {
                     "type": "object"
+                }
+            }
+        },
+        "models.Presence": {
+            "type": "object",
+            "properties": {
+                "lastSeen": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpMsg": {
+            "type": "object",
+            "required": [
+                "pubKey"
+            ],
+            "properties": {
+                "pubKey": {
+                    "type": "string"
                 }
             }
         }

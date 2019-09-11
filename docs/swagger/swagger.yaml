@@ -1,21 +1,33 @@
-basePath: /v1
 definitions:
-  rest.Error:
+  models.Error:
     properties:
       error:
         type: string
     type: object
-  rest.ObjectIDResponse:
+  models.ObjectIDResponse:
     properties:
       id:
         type: string
     type: object
-  rest.ObjectRequest:
+  models.ObjectRequest:
     properties:
       object:
         type: object
     type: object
-host: directory.nymtech.net
+  models.Presence:
+    properties:
+      lastSeen:
+        type: string
+      pubKey:
+        type: string
+    type: object
+  models.UpMsg:
+    properties:
+      pubKey:
+        type: string
+    required:
+    - pubKey
+    type: object
 info:
   contact: {}
   description: This is a temporarily centralized directory/PKI/metrics API to allow
@@ -28,6 +40,19 @@ info:
   title: Nym Directory API
   version: "1.0"
 paths:
+  /api/healthcheck:
+    get:
+      consumes:
+      - application/json
+      description: Returns a 200 if the directory server is available.
+      operationId: healthCheck
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Lets lets the directory server tell the world it's alive
+      tags:
+      - healthcheck
   /api/metrics/mixes:
     get:
       consumes:
@@ -42,7 +67,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/rest.ObjectRequest'
+          $ref: '#/definitions/models.ObjectRequest'
           type: object
       produces:
       - application/json
@@ -50,22 +75,22 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rest.ObjectIDResponse'
+            $ref: '#/definitions/models.ObjectIDResponse'
             type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
       summary: Lists mixnode activity in the past 1 second
       tags:
@@ -83,7 +108,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/rest.ObjectRequest'
+          $ref: '#/definitions/models.ObjectRequest'
           type: object
       produces:
       - application/json
@@ -91,22 +116,22 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rest.ObjectIDResponse'
+            $ref: '#/definitions/models.ObjectIDResponse'
             type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
       summary: Create a metric detailing how many messages a given mixnode sent
       tags:
@@ -124,7 +149,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/rest.ObjectRequest'
+          $ref: '#/definitions/models.ObjectRequest'
           type: object
       produces:
       - application/json
@@ -132,108 +157,96 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rest.ObjectIDResponse'
+            $ref: '#/definitions/models.ObjectIDResponse'
             type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
       summary: Create a node in the PKI
       tags:
       - pki
-  /api/presence:
-    post:
-      consumes:
-      - application/json
-      description: Nym coconodes and mixnodes can ping this method to let the directory
-        server know they're up. We can then use this info to create topologies of
-        the overall Nym network.
-      operationId: notifyPresence
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/rest.ObjectRequest'
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rest.ObjectIDResponse'
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/rest.Error'
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/rest.Error'
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/rest.Error'
-            type: object
-      summary: Lets a node tell the directory server it's alive
-      tags:
-      - presence
-  /api/presence/up:
+  /api/presence/mixnodes:
     get:
       consumes:
       - application/json
-      description: Nym coconodes and mixnodes periodically ping the directory server
-        to register that they're alive. This method provides a list of nodes which
-        have been most recently seen.
-      operationId: up
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/rest.ObjectRequest'
-          type: object
+      description: Nym mixnodes periodically ping the directory server to register
+        that they're alive. This method provides a list of mixnodes which have been
+        most recently seen.
+      operationId: mixNodesUp
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rest.ObjectIDResponse'
-            type: object
+            items:
+              $ref: '#/definitions/models.Presence'
+            type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/rest.Error'
+            $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists which Nym nodes are alive
+      summary: Lists which Nym mixnodes are alive
+      tags:
+      - presence
+    post:
+      consumes:
+      - application/json
+      description: Nym mixnodes can ping this method to let the directory server know
+        they're up. We can then use this info to create topologies of the overall
+        Nym network.
+      operationId: notifyMixNode
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpMsg'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Lets a node tell the directory server it's alive
       tags:
       - presence
 swagger: "2.0"
