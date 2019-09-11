@@ -1,8 +1,6 @@
 package presence
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -50,7 +48,6 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [post]
 func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
-	log.Println("foomp foomp foomp")
 	var json models.UpMsg
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -79,5 +76,10 @@ func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [get]
 func (controller *controller) Up(c *gin.Context) {
-	fmt.Println("up")
+	presence, err := controller.service.Up()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, presence)
 }
