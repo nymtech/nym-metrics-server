@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 // Error ...
 type Error struct {
 	Error string `json:"error"`
@@ -27,5 +25,5 @@ type HostInfo struct {
 // Presence lets the server tell clients when a node was last seen
 type Presence struct {
 	HostInfo
-	LastSeen time.Time `json:"lastSeen" binding:"required" time_format:"unix"`
+	LastSeen int64 `json:"lastSeen" binding:"required"`
 }

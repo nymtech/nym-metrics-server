@@ -13,9 +13,9 @@ definitions:
       pubKey:
         type: string
     required:
-    - pubKey
     - host
     - layer
+    - pubKey
     type: object
   models.ObjectIDResponse:
     properties:
@@ -32,16 +32,16 @@ definitions:
       host:
         type: string
       lastSeen:
-        type: string
+        type: integer
       layer:
         type: integer
       pubKey:
         type: string
     required:
+    - host
     - layer
     - pubKey
     - lastSeen
-    - host
     type: object
 info:
   contact: {}

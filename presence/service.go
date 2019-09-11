@@ -23,7 +23,7 @@ func newService(cfg *Config) *service {
 func (service *service) NotifyMixNodePresence(info models.HostInfo) error {
 	presence := models.Presence{
 		HostInfo: info,
-		LastSeen: time.Now(),
+		LastSeen: time.Now().UnixNano(),
 	}
 	service.mixNodes = append(service.mixNodes, presence)
 	return nil

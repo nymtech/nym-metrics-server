@@ -314,9 +314,9 @@
         "models.HostInfo": {
             "type": "object",
             "required": [
-                "pubKey",
                 "host",
-                "layer"
+                "layer",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -349,17 +349,17 @@
         "models.Presence": {
             "type": "object",
             "required": [
+                "host",
                 "layer",
                 "pubKey",
-                "lastSeen",
-                "host"
+                "lastSeen"
             ],
             "properties": {
                 "host": {
                     "type": "string"
                 },
                 "lastSeen": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "layer": {
                     "type": "integer"
