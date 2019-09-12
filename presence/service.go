@@ -22,24 +22,22 @@ func newService() *service {
 	return &service{}
 }
 
-func (service *service) AddMixNodePresence(info models.MixHostInfo) error {
+func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
 		LastSeen:    time.Now().UnixNano(),
 	}
 	service.mixNodes = append(service.mixNodes, presence)
-	return nil
 }
 
-func (service *service) AddCocoNodePresence(info models.HostInfo) error {
+func (service *service) AddCocoNodePresence(info models.HostInfo) {
 	presence := models.Presence{
 		HostInfo: info,
 		LastSeen: time.Now().UnixNano(),
 	}
 	service.cocoNodes = append(service.cocoNodes, presence)
-	return nil
 }
 
-func (service *service) Up() ([]models.MixNodePresence, error) {
-	return service.mixNodes, nil
+func (service *service) Topology() []models.MixNodePresence {
+	return service.mixNodes
 }

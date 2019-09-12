@@ -50,13 +50,7 @@ func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	err := controller.service.AddMixNodePresence(json)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
-		return
-	}
-
+	controller.service.AddMixNodePresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -79,13 +73,7 @@ func (controller *controller) NotifyCocoNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	err := controller.service.AddCocoNodePresence(hostInfo)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
-		return
-	}
-
+	controller.service.AddCocoNodePresence(hostInfo)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -102,10 +90,6 @@ func (controller *controller) NotifyCocoNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [get]
 func (controller *controller) Up(c *gin.Context) {
-	presence, err := controller.service.Up()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
-		return
-	}
+	presence := controller.service.Topology()
 	c.JSON(http.StatusOK, presence)
 }
