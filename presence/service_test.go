@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var _ = Describe("Service", func() {
+var _ = Describe("presence.Service", func() {
 
 	var (
 		hostInfo1 models.MixHostInfo
@@ -31,16 +31,22 @@ var _ = Describe("Service", func() {
 	})
 
 	Describe("Notifying mixnode presence", func() {
+		Context("At service construction", func() {
+			It("should have an empty mixNodes list", func() {
+				assert.Equal(GinkgoT(), 0, len(serv.mixNodes))
+			})
+		})
 		Context("When no nodes have been added yet", func() {
 			It("should add the mixnode to the mixnodes list", func() {
-				serv.NotifyMixNodePresence(hostInfo1)
-				assert.Equal(GinkgoT(), 2, 1)
+				serv.AddMixNodePresence(hostInfo1)
+				assert.Equal(GinkgoT(), 1, len(serv.mixNodes))
 			})
 		})
 		Context("When 2 nodes are added", func() {
 			It("should add the mixnode to the mixnodes list", func() {
-				serv.NotifyMixNodePresence(hostInfo1)
-				serv.NotifyMixNodePresence(hostInfo2)
+				serv.AddMixNodePresence(hostInfo1)
+				serv.AddMixNodePresence(hostInfo2)
+				assert.Equal(GinkgoT(), 2, len(serv.mixNodes))
 			})
 		})
 	})

@@ -1,4 +1,4 @@
-package main_test
+package metrics
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestDirectoryServer(t *testing.T) {
+func TestMetrics(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "DirectoryServer Suite")
+	RunSpecs(t, "Metrics Suite")
 }

@@ -2,8 +2,10 @@ package metrics
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nymtech/directory-server/models"
 )
 
 // Config ...
@@ -46,7 +48,12 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/metrics/mixes [post]
 func (controller *controller) CreateMixMetric(c *gin.Context) {
-	log.Println("CreateMixMetric not yet implemented")
+	var metric models.MixMetric
+	if err := c.ShouldBindJSON(&metric); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	controller.service.CreateMixMetric(metric)
 }
 
 // ListMixMetrics lists mixnode activity

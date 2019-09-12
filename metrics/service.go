@@ -1,5 +1,7 @@
 package metrics
 
+import "github.com/nymtech/directory-server/models"
+
 type service struct{}
 
 // Service defines the REST service interface for metrics.
@@ -11,6 +13,6 @@ func newService(cfg *Config) *service {
 	return &service{}
 }
 
-func (service *service) CreateMixMetric() error {
+func (service *service) CreateMixMetric(metric models.MixMetric) error {
 	return nil
 }

@@ -51,7 +51,7 @@ func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
 		return
 	}
 
-	err := controller.service.NotifyMixNodePresence(json)
+	err := controller.service.AddMixNodePresence(json)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
 		return
@@ -74,13 +74,13 @@ func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/coconodes [post]
 func (controller *controller) NotifyCocoNodePresence(c *gin.Context) {
-	var json models.HostInfo
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var hostInfo models.HostInfo
+	if err := c.ShouldBindJSON(&hostInfo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := controller.service.NotifyCocoNodePresence(json)
+	err := controller.service.AddCocoNodePresence(hostInfo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
 		return

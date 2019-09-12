@@ -14,7 +14,15 @@ type HostInfo struct {
 // MixHostInfo comes from a node telling us it's alive
 type MixHostInfo struct {
 	HostInfo
-	Layer int `json:"layer" binding:"required"`
+	Layer uint `json:"layer" binding:"required"`
+}
+
+// MixMetric is a report from each mixnode detailing recent traffic.
+// Useful for creating visualisations.
+type MixMetric struct {
+	PubKey   string          `json:"pubKey" binding:"required"`
+	Sent     map[string]uint `json:"sent" binding:"required"`
+	Received uint            `json:"received" binding:"required"`
 }
 
 // MixNodePresence has presence info for a mixnode (including mixnode layer)

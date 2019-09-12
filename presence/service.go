@@ -22,7 +22,7 @@ func newService() *service {
 	return &service{}
 }
 
-func (service *service) NotifyMixNodePresence(info models.MixHostInfo) error {
+func (service *service) AddMixNodePresence(info models.MixHostInfo) error {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
 		LastSeen:    time.Now().UnixNano(),
@@ -31,7 +31,7 @@ func (service *service) NotifyMixNodePresence(info models.MixHostInfo) error {
 	return nil
 }
 
-func (service *service) NotifyCocoNodePresence(info models.HostInfo) error {
+func (service *service) AddCocoNodePresence(info models.HostInfo) error {
 	presence := models.Presence{
 		HostInfo: info,
 		LastSeen: time.Now().UnixNano(),
