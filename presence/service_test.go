@@ -3,6 +3,7 @@ package presence
 import (
 	"time"
 
+	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
 	. "github.com/onsi/ginkgo"
 	_ "github.com/onsi/gomega"
@@ -39,7 +40,6 @@ var _ = Describe("presence.Service", func() {
 
 	BeforeEach(func() {
 		CreateFixtures()
-		initTime = time.Now().Unix()
 		serv = *newService()
 
 	})
@@ -50,15 +50,16 @@ var _ = Describe("presence.Service", func() {
 				assert.Empty(GinkgoT(), serv.Topology())
 			})
 		})
-		Context("When no nodes have been added yet", func() {
+		Context("Adding a first node presence", func() {
 			It("should add the mixnode to the mixnodes list", func() {
 				serv.AddMixNodePresence(mix1)
 				assert.Len(GinkgoT(), serv.Topology(), 1)
 				assert.Equal(GinkgoT(), mix1.HostInfo, serv.mixNodes[0].HostInfo)
 			})
-			It("should include a unix timestamp greater than when we started", func() {
+			It("should include a unix timestamp when the presence is received", func() {
+				timemock.Freeze(timemock.Now())
 				serv.AddMixNodePresence(mix1)
-				assert.True(GinkgoT(), serv.mixNodes[0].LastSeen >= initTime)
+				assert.Equal(GinkgoT(), serv.mixNodes[0].LastSeen, timemock.Now().Unix())
 			})
 		})
 		Context("When 2 nodes are added", func() {
@@ -68,12 +69,14 @@ var _ = Describe("presence.Service", func() {
 				assert.Len(GinkgoT(), serv.Topology(), 2)
 			})
 		})
-	})
-
-	Describe("Getting mixnet topology", func() {
 		Context("when there are old topology reports in the list (older than 5 seconds)", func() {
 			It("should return the list stripped of old presence reports", func() {
-				assert.Len(GinkgoT(), serv.Topology(), 0)
+				oldtime := time.Unix(1522549800, 0) // Sunday, April 1, 2018 2:30:00 AM
+				timemock.Travel(oldtime)
+				serv.AddMixNodePresence(mix1)
+				timemock.Travel(time.Now())
+				serv.AddMixNodePresence(mix2)
+				assert.Len(GinkgoT(), serv.Topology(), 2)
 			})
 		})
 	})

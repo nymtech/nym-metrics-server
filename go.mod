@@ -3,6 +3,7 @@ module github.com/nymtech/directory-server
 go 1.12
 
 require (
+	github.com/BorisBorshevsky/timemock v0.0.0-20180501151413-a469e345aaba
 	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/dgraph-io/badger v1.6.0
 	github.com/ethereum/go-ethereum v1.9.3 // indirect

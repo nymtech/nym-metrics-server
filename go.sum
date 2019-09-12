@@ -1,5 +1,7 @@
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9 h1:HD8gA2tkByhMAwYaFAX9w2l7vxvBQ5NMoxDrkhqhtn4=
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
+github.com/BorisBorshevsky/timemock v0.0.0-20180501151413-a469e345aaba h1:+HVNUmgTsWkO37uDvZ1Ro6oDICHHMvvuZ+Jk3ZUK96o=
+github.com/BorisBorshevsky/timemock v0.0.0-20180501151413-a469e345aaba/go.mod h1:fmy4Q4OSwtHk6zpBXYCXclHYw7xnZBu3eAw2AUKswmU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=

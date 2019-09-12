@@ -1,8 +1,7 @@
 package presence
 
 import (
-	"time"
-
+	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
 )
 
@@ -25,7 +24,7 @@ func newService() *service {
 func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
-		LastSeen:    time.Now().UnixNano(),
+		LastSeen:    timemock.Now().Unix(),
 	}
 	service.mixNodes = append(service.mixNodes, presence)
 }
@@ -33,7 +32,7 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 func (service *service) AddCocoNodePresence(info models.HostInfo) {
 	presence := models.Presence{
 		HostInfo: info,
-		LastSeen: time.Now().UnixNano(),
+		LastSeen: timemock.Now().Unix(),
 	}
 	service.cocoNodes = append(service.cocoNodes, presence)
 }
