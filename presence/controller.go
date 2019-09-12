@@ -53,7 +53,7 @@ func (controller *controller) NotifyMixNodePresence(c *gin.Context) {
 
 	err := controller.service.NotifyMixNodePresence(json)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{err.Error()})
+		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
 		return
 	}
 
@@ -82,7 +82,7 @@ func (controller *controller) NotifyCocoNodePresence(c *gin.Context) {
 
 	err := controller.service.NotifyCocoNodePresence(json)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{err.Error()})
+		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
 		return
 	}
 
@@ -104,7 +104,7 @@ func (controller *controller) NotifyCocoNodePresence(c *gin.Context) {
 func (controller *controller) Up(c *gin.Context) {
 	presence, err := controller.service.Up()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{err.Error()})
+		c.JSON(http.StatusInternalServerError, models.Error{Error: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, presence)
