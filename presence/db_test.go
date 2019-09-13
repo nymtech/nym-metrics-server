@@ -3,6 +3,7 @@ package presence
 import (
 	"time"
 
+	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +17,8 @@ var (
 var _ = Describe("Presence Db", func() {
 	var db *db
 	BeforeEach(func() {
-		DbFixtures()
 		db = newPresenceDb()
+		DbFixtures()
 	})
 	Describe("constructor", func() {
 		It("initializes a db with an empty mixnodes presence map", func() {
@@ -38,7 +39,7 @@ var _ = Describe("Presence Db", func() {
 			})
 			It("gets the presence by its public key", func() {
 				db.Add(presence1)
-				assert.Equal(GinkgoT(), presence1, db.Get(presence1.PubKey))
+				assert.Equal(GinkgoT(), presence1, db.get(presence1.PubKey))
 			})
 		})
 		Context("after adding two presences", func() {
@@ -46,15 +47,26 @@ var _ = Describe("Presence Db", func() {
 				db.Add(presence1)
 				assert.Len(GinkgoT(), db.List(), 1)
 			})
-			It("gets the presence by its public key", func() {
+			It("contains the correct presences", func() {
 				db.Add(presence1)
 				db.Add(presence2)
-				assert.Equal(GinkgoT(), presence1, db.Get(presence1.PubKey))
-				assert.Equal(GinkgoT(), presence2, db.Get(presence2.PubKey))
+				assert.Equal(GinkgoT(), presence1, db.get(presence1.PubKey))
+				assert.Equal(GinkgoT(), presence2, db.get(presence2.PubKey))
+			})
+		})
+		Describe("Presences", func() {
+			Context("more than 5 seconds old", func() {
+				It("are not returned by List()", func() {
+					oldtime := time.Unix(1522549800, 0)
+					presence1.LastSeen = oldtime.Unix()
+					db.Add(presence1)
+					db.Add(presence2)
+					assert.Len(GinkgoT(), db.List(), 1)
+					assert.Equal(GinkgoT(), presence2, db.get(presence2.PubKey))
+				})
 			})
 		})
 	})
-
 })
 
 func DbFixtures() {
@@ -65,10 +77,9 @@ func DbFixtures() {
 		},
 		Layer: 1,
 	}
-
 	presence1 = models.MixNodePresence{
 		MixHostInfo: mix1,
-		LastSeen:    time.Now().Unix(),
+		LastSeen:    timemock.Now().Unix(),
 	}
 
 	var mix2 = models.MixHostInfo{
@@ -78,9 +89,8 @@ func DbFixtures() {
 		},
 		Layer: 2,
 	}
-
 	presence2 = models.MixNodePresence{
 		MixHostInfo: mix2,
-		LastSeen:    time.Now().Unix(),
+		LastSeen:    timemock.Now().Unix(),
 	}
 }
