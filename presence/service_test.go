@@ -18,28 +18,10 @@ var (
 	initTime int64
 )
 
-func CreateFixtures() {
-	mix1 = models.MixHostInfo{
-		HostInfo: models.HostInfo{
-			Host:   "foo.com:8000",
-			PubKey: "pubkey1",
-		},
-		Layer: 1,
-	}
-
-	mix2 = models.MixHostInfo{
-		HostInfo: models.HostInfo{
-			Host:   "bar.com:8000",
-			PubKey: "pubkey2",
-		},
-		Layer: 2,
-	}
-}
-
 var _ = Describe("presence.Service", func() {
 
 	BeforeEach(func() {
-		CreateFixtures()
+		ServiceFixtures()
 		serv = *newService()
 
 	})
@@ -81,3 +63,21 @@ var _ = Describe("presence.Service", func() {
 		})
 	})
 })
+
+func ServiceFixtures() {
+	mix1 = models.MixHostInfo{
+		HostInfo: models.HostInfo{
+			Host:   "foo.com:8000",
+			PubKey: "pubkey1",
+		},
+		Layer: 1,
+	}
+
+	mix2 = models.MixHostInfo{
+		HostInfo: models.HostInfo{
+			Host:   "bar.com:8000",
+			PubKey: "pubkey2",
+		},
+		Layer: 2,
+	}
+}
