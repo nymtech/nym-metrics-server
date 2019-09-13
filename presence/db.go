@@ -9,9 +9,8 @@ import (
 
 // Db holds presence information
 type Db interface {
-	Add()
-	Get()
-	List()
+	Add(models.MixNodePresence)
+	List() map[string]models.MixNodePresence
 }
 
 type db struct {
@@ -24,21 +23,21 @@ func newPresenceDb() *db {
 	}
 }
 
-func (db db) Add(presence models.MixNodePresence) {
+func (db *db) Add(presence models.MixNodePresence) {
 	db.killOldsters()
 	db.mixNodes[presence.PubKey] = presence
 }
 
-func (db db) get(key string) models.MixNodePresence {
-	return db.mixNodes[key]
-}
-
-func (db db) List() map[string]models.MixNodePresence {
+func (db *db) List() map[string]models.MixNodePresence {
 	db.killOldsters()
 	return db.mixNodes
 }
 
-func (db db) killOldsters() {
+func (db *db) get(key string) models.MixNodePresence {
+	return db.mixNodes[key]
+}
+
+func (db *db) killOldsters() {
 	for key := range db.mixNodes {
 		presence := db.mixNodes[key]
 		if presence.LastSeen < cutoff() {

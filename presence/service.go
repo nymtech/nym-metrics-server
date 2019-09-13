@@ -6,8 +6,7 @@ import (
 )
 
 type service struct {
-	mixNodes  []models.MixNodePresence
-	cocoNodes []models.Presence
+	db Db
 }
 
 // Service defines the REST service interface for presence.
@@ -17,8 +16,8 @@ type Service interface {
 	Up() error
 }
 
-func newService() *service {
-	return &service{}
+func newService(db Db) *service {
+	return &service{db: db}
 }
 
 func (service *service) AddMixNodePresence(info models.MixHostInfo) {
@@ -26,17 +25,17 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 		MixHostInfo: info,
 		LastSeen:    timemock.Now().Unix(),
 	}
-	service.mixNodes = append(service.mixNodes, presence)
+	service.db.Add(presence)
 }
 
-func (service *service) AddCocoNodePresence(info models.HostInfo) {
-	presence := models.Presence{
-		HostInfo: info,
-		LastSeen: timemock.Now().Unix(),
-	}
-	service.cocoNodes = append(service.cocoNodes, presence)
-}
+// func (service *service) AddCocoNodePresence(info models.HostInfo) {
+// 	presence := models.Presence{
+// 		HostInfo: info,
+// 		LastSeen: timemock.Now().Unix(),
+// 	}
+// 	service.cocoNodes = append(service.cocoNodes, presence)
+// }
 
-func (service *service) Topology() []models.MixNodePresence {
-	return service.mixNodes
+func (service *service) Topology() map[string]models.MixNodePresence {
+	return service.db.List()
 }

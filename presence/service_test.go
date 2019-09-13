@@ -1,18 +1,19 @@
 package presence
 
 import (
-	"time"
-
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/directory-server/presence/mocks"
 	. "github.com/onsi/ginkgo"
 	_ "github.com/onsi/gomega"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
-	mix1 models.MixHostInfo
-	mix2 models.MixHostInfo
+	mix1   models.MixHostInfo
+	mix2   models.MixHostInfo
+	pres1  models.MixNodePresence
+	mockDb mocks.Db
 
 	serv     service
 	initTime int64
@@ -22,43 +23,30 @@ var _ = Describe("presence.Service", func() {
 
 	BeforeEach(func() {
 		ServiceFixtures()
-		serv = *newService()
-
+		mockDb = *new(mocks.Db)
+		serv = *newService(&mockDb)
 	})
 
-	Describe("Network topology", func() {
-		Context("At service construction", func() {
-			It("should be empty", func() {
-				assert.Empty(GinkgoT(), serv.Topology())
+	Describe("Adding presence info", func() {
+		Context("when receiving a mixnode info", func() {
+			It("should add a presence to the db", func() {
+				mockDb.On("Add", pres1)
+				serv.AddMixNodePresence(mix1)
+				mockDb.AssertCalled(GinkgoT(), "Add", pres1)
 			})
 		})
-		Context("Adding a first node presence", func() {
-			It("should add the mixnode to the mixnodes list", func() {
-				serv.AddMixNodePresence(mix1)
-				assert.Len(GinkgoT(), serv.Topology(), 1)
-				assert.Equal(GinkgoT(), mix1.HostInfo, serv.mixNodes[0].HostInfo)
-			})
-			It("should include a unix timestamp when the presence is received", func() {
-				timemock.Freeze(timemock.Now())
-				serv.AddMixNodePresence(mix1)
-				assert.Equal(GinkgoT(), serv.mixNodes[0].LastSeen, timemock.Now().Unix())
-			})
-		})
-		Context("When 2 nodes are added", func() {
-			It("should add the mixnodes to the mixnodes list", func() {
-				serv.AddMixNodePresence(mix1)
-				serv.AddMixNodePresence(mix2)
-				assert.Len(GinkgoT(), serv.Topology(), 2)
-			})
-		})
-		Context("when there are old topology reports in the list (older than 5 seconds)", func() {
-			It("should return the list stripped of old presence reports", func() {
-				oldtime := time.Unix(1522549800, 0) // Sunday, April 1, 2018 2:30:00 AM
-				timemock.Travel(oldtime)
-				serv.AddMixNodePresence(mix1)
-				timemock.Travel(time.Now())
-				serv.AddMixNodePresence(mix2)
-				assert.Len(GinkgoT(), serv.Topology(), 2)
+	})
+	Describe("Listing presence info", func() {
+		Context("when receiving a list request", func() {
+			It("should call to the Db", func() {
+				list := map[string]models.MixNodePresence{
+					pres1.PubKey: pres1,
+				}
+				mockDb.On("List").Return(list)
+				result := serv.Topology()
+				mockDb.AssertCalled(GinkgoT(), "List")
+				assert.Equal(GinkgoT(), list, result)
+
 			})
 		})
 	})
@@ -73,11 +61,8 @@ func ServiceFixtures() {
 		Layer: 1,
 	}
 
-	mix2 = models.MixHostInfo{
-		HostInfo: models.HostInfo{
-			Host:   "bar.com:8000",
-			PubKey: "pubkey2",
-		},
-		Layer: 2,
+	pres1 = models.MixNodePresence{
+		MixHostInfo: mix1,
+		LastSeen:    timemock.Now().Unix(),
 	}
 }

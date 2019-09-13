@@ -14,7 +14,7 @@ type controller struct {
 
 // Controller is the presence controller
 type Controller interface {
-	AddCocoNodePresence(c *gin.Context)
+	// AddCocoNodePresence(c *gin.Context)
 	AddMixNodePresence(c *gin.Context)
 	Up(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
@@ -22,11 +22,12 @@ type Controller interface {
 
 // New returns a new pki.Controller
 func New() Controller {
-	return &controller{newService()}
+	db := newPresenceDb()
+	return &controller{newService(db)}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
-	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
+	// router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
 	router.GET("/api/presence/mixnodes", controller.Up)
 }
@@ -67,15 +68,15 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /api/presence/coconodes [post]
-func (controller *controller) AddCocoNodePresence(c *gin.Context) {
-	var hostInfo models.HostInfo
-	if err := c.ShouldBindJSON(&hostInfo); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	controller.service.AddCocoNodePresence(hostInfo)
-	c.JSON(http.StatusCreated, gin.H{"ok": true})
-}
+// func (controller *controller) AddCocoNodePresence(c *gin.Context) {
+// 	var hostInfo models.HostInfo
+// 	if err := c.ShouldBindJSON(&hostInfo); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	controller.service.AddCocoNodePresence(hostInfo)
+// 	c.JSON(http.StatusCreated, gin.H{"ok": true})
+// }
 
 // Up lists which Nym nodes are currently known
 // @Summary Lists which Nym mixnodes are alive
