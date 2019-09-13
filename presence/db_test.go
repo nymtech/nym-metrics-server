@@ -48,6 +48,7 @@ var _ = Describe("Presence Db", func() {
 			})
 			It("gets the presence by its public key", func() {
 				db.Add(presence1)
+				db.Add(presence2)
 				assert.Equal(GinkgoT(), presence1, db.Get(presence1.PubKey))
 				assert.Equal(GinkgoT(), presence2, db.Get(presence2.PubKey))
 			})
