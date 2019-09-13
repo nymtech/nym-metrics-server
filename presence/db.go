@@ -14,12 +14,14 @@ type Db interface {
 }
 
 type db struct {
-	mixNodes map[string]models.MixNodePresence
+	cocoNodes map[string]models.Presence
+	mixNodes  map[string]models.MixNodePresence
 }
 
 func newPresenceDb() *db {
 	return &db{
-		mixNodes: map[string]models.MixNodePresence{},
+		cocoNodes: map[string]models.Presence{},
+		mixNodes:  map[string]models.MixNodePresence{},
 	}
 }
 
@@ -46,6 +48,10 @@ func (db *db) killOldsters() {
 			delete(db.mixNodes, key)
 		}
 	}
+}
+
+func (db *db) AddCocoNode(presence models.Presence) {
+	db.cocoNodes[presence.PubKey] = presence
 }
 
 // defines staleness

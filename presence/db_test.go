@@ -12,7 +12,7 @@ import (
 var _ = Describe("Presence Db", func() {
 	Describe("listing network topology", func() {
 		Context("when no presence has been registered by any node", func() {
-			It("should return an empty topolgy object", func() {
+			It("should return an empty topology object", func() {
 				db := newPresenceDb()
 				assert.Len(GinkgoT(), db.List(), 0)
 			})
@@ -20,34 +20,38 @@ var _ = Describe("Presence Db", func() {
 	})
 	Describe("for coconodes", func() {
 		var (
-		// presence1 models.Presence
-		// presence2 models.Presence
+			presence1 models.Presence
+		//presence2 models.Presence
 		)
-		// var db *db
+		var db *db
 		BeforeEach(func() {
-			// db = newPresenceDb()
+			db = newPresenceDb()
 
 			// Set up fixtures
-			// var mix1 = models.HostInfo{
-			// 	Host:   "foo.com:8000",
-			// 	PubKey: "pubkey1",
-			// }
-			// presence1 = models.Presence{
-			// 	HostInfo: mix1,
-			// 	LastSeen: timemock.Now().Unix(),
-			// }
+			var mix1 = models.HostInfo{
+				Host:   "foo.com:8000",
+				PubKey: "pubkey1",
+			}
+			presence1 = models.Presence{
+				HostInfo: mix1,
+				LastSeen: timemock.Now().Unix(),
+			}
 
-			// var mix2 = models.HostInfo{
-			// 	Host:   "bar.com:8000",
-			// 	PubKey: "pubkey2",
-			// }
-			// presence2 = models.Presence{
-			// 	HostInfo: mix2,
-			// 	LastSeen: timemock.Now().Unix(),
-			// }
+			//var mix2 = models.HostInfo{
+			//	Host:   "bar.com:8000",
+			//	PubKey: "pubkey2",
+			//}
+			//presence2 = models.Presence{
+			//	HostInfo: mix2,
+			//	LastSeen: timemock.Now().Unix(),
+			//}
 		})
-		Describe("adding nym node presence", func() {
-			// db.AddCocoNode(presence1)
+		Describe("adding presence", func() {
+			Context("1st presence", func() {
+				It("adds properly", func() {
+					db.AddCocoNode(presence1)
+				})
+			})
 		})
 	})
 	Describe("for mixnodes", func() {
@@ -84,13 +88,8 @@ var _ = Describe("Presence Db", func() {
 				LastSeen:    timemock.Now().Unix(),
 			}
 		})
-		Describe("listing mixnodes", func() {
-			Context("when none have been added", func() {
-				It("returns an empty map", func() {
-					assert.Len(GinkgoT(), db.List(), 0)
-				})
-			})
-			Context("after adding a mixnode presence", func() {
+		Describe("adding mixnode presence", func() {
+			Context("1st presence", func() {
 				It("returns the map correctly", func() {
 					db.AddMix(presence1)
 					assert.Len(GinkgoT(), db.List(), 1)
@@ -100,10 +99,11 @@ var _ = Describe("Presence Db", func() {
 					assert.Equal(GinkgoT(), presence1, db.get(presence1.PubKey))
 				})
 			})
-			Context("after adding two mixnode presences", func() {
+			Context("adding two mixnode presences", func() {
 				It("returns the map correctly", func() {
 					db.AddMix(presence1)
-					assert.Len(GinkgoT(), db.List(), 1)
+					db.AddMix(presence2)
+					assert.Len(GinkgoT(), db.List(), 2)
 				})
 				It("contains the correct presences", func() {
 					db.AddMix(presence1)
