@@ -37,6 +37,7 @@ func (db *db) get(key string) models.MixNodePresence {
 	return db.mixNodes[key]
 }
 
+// kill any stale presence info
 func (db *db) killOldsters() {
 	for key := range db.mixNodes {
 		presence := db.mixNodes[key]
@@ -46,6 +47,7 @@ func (db *db) killOldsters() {
 	}
 }
 
+// defines staleness
 func cutoff() int64 {
 	return timemock.Now().Add(time.Duration(-5 * time.Second)).Unix()
 }
