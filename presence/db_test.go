@@ -9,16 +9,39 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	presence1 models.MixNodePresence
-	presence2 models.MixNodePresence
-)
-
 var _ = Describe("Presence Db", func() {
+	var (
+		presence1 models.MixNodePresence
+		presence2 models.MixNodePresence
+	)
 	var db *db
 	BeforeEach(func() {
 		db = newPresenceDb()
-		DbFixtures()
+
+		// Set up fixtures
+		var mix1 = models.MixHostInfo{
+			HostInfo: models.HostInfo{
+				Host:   "foo.com:8000",
+				PubKey: "pubkey1",
+			},
+			Layer: 1,
+		}
+		presence1 = models.MixNodePresence{
+			MixHostInfo: mix1,
+			LastSeen:    timemock.Now().Unix(),
+		}
+
+		var mix2 = models.MixHostInfo{
+			HostInfo: models.HostInfo{
+				Host:   "bar.com:8000",
+				PubKey: "pubkey2",
+			},
+			Layer: 2,
+		}
+		presence2 = models.MixNodePresence{
+			MixHostInfo: mix2,
+			LastSeen:    timemock.Now().Unix(),
+		}
 	})
 	Describe("constructor", func() {
 		It("initializes a db with an empty mixnodes presence map", func() {
@@ -57,8 +80,8 @@ var _ = Describe("Presence Db", func() {
 		Describe("Presences", func() {
 			Context("more than 5 seconds old", func() {
 				It("are not returned by List()", func() {
-					oldtime := time.Unix(1522549800, 0)
-					presence1.LastSeen = oldtime.Unix()
+					oldtime := time.Now().Add(time.Duration(-5 * time.Second)).Unix()
+					presence1.LastSeen = oldtime
 					db.Add(presence1)
 					db.Add(presence2)
 					assert.Len(GinkgoT(), db.List(), 1)
@@ -68,29 +91,3 @@ var _ = Describe("Presence Db", func() {
 		})
 	})
 })
-
-func DbFixtures() {
-	var mix1 = models.MixHostInfo{
-		HostInfo: models.HostInfo{
-			Host:   "foo.com:8000",
-			PubKey: "pubkey1",
-		},
-		Layer: 1,
-	}
-	presence1 = models.MixNodePresence{
-		MixHostInfo: mix1,
-		LastSeen:    timemock.Now().Unix(),
-	}
-
-	var mix2 = models.MixHostInfo{
-		HostInfo: models.HostInfo{
-			Host:   "bar.com:8000",
-			PubKey: "pubkey2",
-		},
-		Layer: 2,
-	}
-	presence2 = models.MixNodePresence{
-		MixHostInfo: mix2,
-		LastSeen:    timemock.Now().Unix(),
-	}
-}

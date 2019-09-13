@@ -4,15 +4,18 @@ definitions:
       error:
         type: string
     type: object
-  models.HostInfo:
+  models.MixHostInfo:
     properties:
       host:
         type: string
+      layer:
+        type: integer
       pubKey:
         type: string
     required:
     - host
     - pubKey
+    - layer
     type: object
   models.Presence:
     properties:
@@ -23,9 +26,9 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
     - lastSeen
+    - host
     type: object
 info:
   contact: {}
@@ -137,44 +140,6 @@ paths:
       summary: Create a node in the PKI
       tags:
       - pki
-  /api/presence/coconodes:
-    post:
-      consumes:
-      - application/json
-      description: Nym mixnodes can ping this method to let the directory server know
-        they're up. We can then use this info to create topologies of the overall
-        Nym network.
-      operationId: notifyMixNode
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.HostInfo'
-          type: object
-      produces:
-      - application/json
-      responses:
-        "201": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-      summary: Lets a node tell the directory server it's alive
-      tags:
-      - presence
   /api/presence/mixnodes:
     get:
       consumes:
@@ -223,7 +188,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.HostInfo'
+          $ref: '#/definitions/models.MixHostInfo'
           type: object
       produces:
       - application/json

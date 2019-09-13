@@ -40,7 +40,7 @@ func (db *db) get(key string) models.MixNodePresence {
 func (db *db) killOldsters() {
 	for key := range db.mixNodes {
 		presence := db.mixNodes[key]
-		if presence.LastSeen < cutoff() {
+		if presence.LastSeen <= cutoff() {
 			delete(db.mixNodes, key)
 		}
 	}

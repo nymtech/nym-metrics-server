@@ -146,58 +146,6 @@
                 }
             }
         },
-        "/api/presence/coconodes": {
-            "post": {
-                "description": "Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "presence"
-                ],
-                "summary": "Lets a node tell the directory server it's alive",
-                "operationId": "notifyMixNode",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.HostInfo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {},
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/api/presence/mixnodes": {
             "get": {
                 "description": "Nym mixnodes periodically ping the directory server to register that they're alive. This method provides a list of mixnodes which have been most recently seen.",
@@ -266,7 +214,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.HostInfo"
+                            "$ref": "#/definitions/models.MixHostInfo"
                         }
                     }
                 ],
@@ -306,15 +254,19 @@
                 }
             }
         },
-        "models.HostInfo": {
+        "models.MixHostInfo": {
             "type": "object",
             "required": [
                 "host",
-                "pubKey"
+                "pubKey",
+                "layer"
             ],
             "properties": {
                 "host": {
                     "type": "string"
+                },
+                "layer": {
+                    "type": "integer"
                 },
                 "pubKey": {
                     "type": "string"
@@ -324,9 +276,9 @@
         "models.Presence": {
             "type": "object",
             "required": [
-                "host",
                 "pubKey",
-                "lastSeen"
+                "lastSeen",
+                "host"
             ],
             "properties": {
                 "host": {

@@ -39,7 +39,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Accept  json
 // @Produce  json
 // @Tags presence
-// @Param   object      body   models.HostInfo     true  "object"
+// @Param   object      body   models.MixHostInfo     true  "object"
 // @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
