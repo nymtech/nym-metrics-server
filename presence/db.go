@@ -38,7 +38,7 @@ func (db *db) get(key string) models.MixNodePresence {
 }
 
 // kill any stale presence info (older than 5 seconds)
-// TODO: kill magic number 5 by pulling this out into a config
+// TODO: kill magic number by pulling this out into a config
 func (db *db) killOldsters() {
 	for key := range db.mixNodes {
 		presence := db.mixNodes[key]
