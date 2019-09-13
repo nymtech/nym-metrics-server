@@ -25,7 +25,7 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 		MixHostInfo: info,
 		LastSeen:    timemock.Now().Unix(),
 	}
-	service.db.Add(presence)
+	service.db.AddMix(presence)
 }
 
 // func (service *service) AddCocoNodePresence(info models.HostInfo) {

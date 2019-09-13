@@ -39,9 +39,9 @@ var _ = Describe("presence.Service", func() {
 	Describe("Adding presence info", func() {
 		Context("when receiving a mixnode info", func() {
 			It("should add a presence to the db", func() {
-				mockDb.On("Add", presence1)
+				mockDb.On("AddMix", presence1)
 				serv.AddMixNodePresence(mix1)
-				mockDb.AssertCalled(GinkgoT(), "Add", presence1)
+				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
 			})
 		})
 	})

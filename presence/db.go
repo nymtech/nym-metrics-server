@@ -9,7 +9,7 @@ import (
 
 // Db holds presence information
 type Db interface {
-	Add(models.MixNodePresence)
+	AddMix(models.MixNodePresence)
 	List() map[string]models.MixNodePresence
 }
 
@@ -23,7 +23,7 @@ func newPresenceDb() *db {
 	}
 }
 
-func (db *db) Add(presence models.MixNodePresence) {
+func (db *db) AddMix(presence models.MixNodePresence) {
 	db.killOldsters()
 	db.mixNodes[presence.PubKey] = presence
 }

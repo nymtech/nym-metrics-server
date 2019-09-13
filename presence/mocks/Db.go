@@ -10,8 +10,8 @@ type Db struct {
 	mock.Mock
 }
 
-// Add provides a mock function with given fields: _a0
-func (_m *Db) Add(_a0 models.MixNodePresence) {
+// AddMix provides a mock function with given fields: _a0
+func (_m *Db) AddMix(_a0 models.MixNodePresence) {
 	_m.Called(_a0)
 }
 
