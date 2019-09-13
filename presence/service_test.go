@@ -9,30 +9,39 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	mix1   models.MixHostInfo
-	mix2   models.MixHostInfo
-	pres1  models.MixNodePresence
-	mockDb mocks.Db
-
-	serv     service
-	initTime int64
-)
-
 var _ = Describe("presence.Service", func() {
+	var (
+		mix1      models.MixHostInfo
+		presence1 models.MixNodePresence
+		mockDb    mocks.Db
 
+		serv service
+	)
 	BeforeEach(func() {
-		ServiceFixtures()
 		mockDb = *new(mocks.Db)
 		serv = *newService(&mockDb)
+
+		// Set up fixtures
+		mix1 = models.MixHostInfo{
+			HostInfo: models.HostInfo{
+				Host:   "foo.com:8000",
+				PubKey: "pubkey1",
+			},
+			Layer: 1,
+		}
+
+		presence1 = models.MixNodePresence{
+			MixHostInfo: mix1,
+			LastSeen:    timemock.Now().Unix(),
+		}
 	})
 
 	Describe("Adding presence info", func() {
 		Context("when receiving a mixnode info", func() {
 			It("should add a presence to the db", func() {
-				mockDb.On("Add", pres1)
+				mockDb.On("Add", presence1)
 				serv.AddMixNodePresence(mix1)
-				mockDb.AssertCalled(GinkgoT(), "Add", pres1)
+				mockDb.AssertCalled(GinkgoT(), "Add", presence1)
 			})
 		})
 	})
@@ -40,7 +49,7 @@ var _ = Describe("presence.Service", func() {
 		Context("when receiving a list request", func() {
 			It("should call to the Db", func() {
 				list := map[string]models.MixNodePresence{
-					pres1.PubKey: pres1,
+					presence1.PubKey: presence1,
 				}
 				mockDb.On("List").Return(list)
 				result := serv.Topology()
@@ -51,18 +60,3 @@ var _ = Describe("presence.Service", func() {
 		})
 	})
 })
-
-func ServiceFixtures() {
-	mix1 = models.MixHostInfo{
-		HostInfo: models.HostInfo{
-			Host:   "foo.com:8000",
-			PubKey: "pubkey1",
-		},
-		Layer: 1,
-	}
-
-	pres1 = models.MixNodePresence{
-		MixHostInfo: mix1,
-		LastSeen:    timemock.Now().Unix(),
-	}
-}
