@@ -25,7 +25,7 @@ type MixMetric struct {
 	Received uint            `json:"received" binding:"required"`
 }
 
-// MixNodePresence has presence info for a mixnode (including mixnode layer)
+// MixNodePresence holds presence info for a mixnode
 type MixNodePresence struct {
 	MixHostInfo
 	LastSeen int64 `json:"lastSeen" binding:"required"`
