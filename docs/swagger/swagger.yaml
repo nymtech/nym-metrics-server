@@ -4,6 +4,16 @@ definitions:
       error:
         type: string
     type: object
+  models.HostInfo:
+    properties:
+      host:
+        type: string
+      pubKey:
+        type: string
+    required:
+    - host
+    - pubKey
+    type: object
   models.MixHostInfo:
     properties:
       host:
@@ -13,9 +23,23 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
     - layer
+    - host
+    type: object
+  models.MixMetric:
+    properties:
+      pubKey:
+        type: string
+      received:
+        type: integer
+      sent:
+        required:
+        - sent
+        type: object
+    required:
+    - pubKey
+    - received
     type: object
   models.Presence:
     properties:
@@ -26,9 +50,9 @@ definitions:
       pubKey:
         type: string
     required:
+    - host
     - pubKey
     - lastSeen
-    - host
     type: object
 info:
   contact: {}
@@ -66,6 +90,12 @@ paths:
       produces:
       - application/json
       responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixMetric'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -112,16 +142,26 @@ paths:
       summary: Create a metric detailing how many messages a given mixnode sent
       tags:
       - metrics
-  /api/nodes:
+  /api/presence/coconodes:
     post:
       consumes:
       - application/json
-      description: Nodes should post their public key info to this method when they
-        start.
-      operationId: createObject
+      description: Nym mixnodes can ping this method to let the directory server know
+        they're up. We can then use this info to create topologies of the overall
+        Nym network.
+      operationId: notifyMixNode
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.HostInfo'
+          type: object
       produces:
       - application/json
       responses:
+        "201": {}
         "400":
           description: Bad Request
           schema:
@@ -137,9 +177,9 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Create a node in the PKI
+      summary: Lets a node tell the directory server it's alive
       tags:
-      - pki
+      - presence
   /api/presence/mixnodes:
     get:
       consumes:
