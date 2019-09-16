@@ -20,6 +20,14 @@ func newService(db Db) *service {
 	return &service{db: db}
 }
 
+func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) {
+	presence := models.MixProviderPresence{
+		MixProviderHostInfo: info,
+		LastSeen:            timemock.Now().Unix(),
+	}
+	service.db.AddMixProvider(presence)
+}
+
 func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
