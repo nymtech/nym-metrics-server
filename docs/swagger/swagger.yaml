@@ -38,8 +38,8 @@ definitions:
         - sent
         type: object
     required:
-    - pubKey
     - received
+    - pubKey
     type: object
   models.MixProviderHostInfo:
     properties:
@@ -62,8 +62,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - pubKey
     - host
+    - pubKey
     type: object
   models.Topology:
     properties:
@@ -96,7 +96,7 @@ paths:
       - application/json
       responses:
         "200": {}
-      summary: Lets lets the directory server tell the world it's alive
+      summary: lets the directory server tell the world it's alive
       tags:
       - healthcheck
   /api/metrics/mixes:

@@ -24,7 +24,7 @@
                 "tags": [
                     "healthcheck"
                 ],
-                "summary": "Lets lets the directory server tell the world it's alive",
+                "summary": "lets the directory server tell the world it's alive",
                 "operationId": "healthCheck",
                 "responses": {
                     "200": {}
@@ -365,8 +365,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "pubKey",
-                "received"
+                "received",
+                "pubKey"
             ],
             "properties": {
                 "pubKey": {
@@ -407,8 +407,8 @@
         "models.RegisteredClient": {
             "type": "object",
             "required": [
-                "pubKey",
-                "host"
+                "host",
+                "pubKey"
             ],
             "properties": {
                 "host": {
