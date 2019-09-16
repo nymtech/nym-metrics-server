@@ -16,7 +16,7 @@ type controller struct {
 type Controller interface {
 	// AddCocoNodePresence(c *gin.Context)
 	AddMixNodePresence(c *gin.Context)
-	Up(c *gin.Context)
+	Topology(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
 }
 
@@ -29,7 +29,7 @@ func New() Controller {
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
-	router.GET("/api/presence/mixnodes", controller.Up)
+	router.GET("/api/presence/mixnodes", controller.Topology)
 }
 
 // AddMixNodePresence lets a mixnode tell the directory server it's alive
@@ -90,7 +90,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [get]
-func (controller *controller) Up(c *gin.Context) {
+func (controller *controller) Topology(c *gin.Context) {
 	topology := controller.service.Topology()
 	c.JSON(http.StatusOK, topology)
 }
