@@ -64,7 +64,7 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 // @Produce  json
 // @Tags metrics
 // Param   object      body   models.ObjectRequest     true  "object"
-// Success 200 {object} models.ObjectIDResponse
+// @Success 200 {array} models.MixMetric
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
