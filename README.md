@@ -1,7 +1,12 @@
-# directory-server
+# Nym Directory Server
 
 A temporarily centralised PKI, presence and metrics server allowing us to get the other 
-Nym node types running.
+Nym node types running. Nym nodes and clients use it to find each other, and
+bootstrap the network into existence. Metrics allow us to easily build visualizations
+of the network for demonstration, education, and debugging purposes during development.
+
+Eventually some aspects of it (presence, PKI) will be 
+decentralized. Other aspects of it (e.g. metrics) will likely stay centralized. 
 
 ## Dependencies
 
