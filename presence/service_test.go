@@ -13,6 +13,8 @@ var _ = Describe("presence.Service", func() {
 	var (
 		mix1      models.MixHostInfo
 		presence1 models.MixNodePresence
+		coco1     models.HostInfo
+		presence2 models.Presence
 		mockDb    mocks.Db
 
 		serv service
@@ -34,14 +36,33 @@ var _ = Describe("presence.Service", func() {
 			MixHostInfo: mix1,
 			LastSeen:    timemock.Now().Unix(),
 		}
+
+		coco1 = models.HostInfo{
+			Host:   "bar.com:8000",
+			PubKey: "pubkey2",
+		}
+
+		presence2 = models.Presence{
+			HostInfo: coco1,
+			LastSeen: timemock.Now().Unix(),
+		}
 	})
 
 	Describe("Adding presence info", func() {
-		Context("when receiving a mixnode info", func() {
+		Context("for a mixnode", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddMix", presence1)
 				serv.AddMixNodePresence(mix1)
 				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
+			})
+		})
+	})
+	Describe("Adding presence info", func() {
+		Context("for a coconode", func() {
+			It("should add a presence to the db", func() {
+				mockDb.On("AddCoco", presence2)
+				serv.AddCocoNodePresence(coco1)
+				mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
 			})
 		})
 	})
