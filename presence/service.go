@@ -36,6 +36,6 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 // 	service.cocoNodes = append(service.cocoNodes, presence)
 // }
 
-func (service *service) Topology() map[string]models.MixNodePresence {
-	return service.db.List()
+func (service *service) List() models.Topology {
+	return service.db.Topology()
 }

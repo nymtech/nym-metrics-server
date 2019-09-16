@@ -51,11 +51,13 @@ var _ = Describe("presence.Service", func() {
 				list := map[string]models.MixNodePresence{
 					presence1.PubKey: presence1,
 				}
-				mockDb.On("List").Return(list)
-				result := serv.Topology()
-				mockDb.AssertCalled(GinkgoT(), "List")
-				assert.Equal(GinkgoT(), list, result)
-
+				topology := models.Topology{
+					MixNodes: list,
+				}
+				mockDb.On("Topology").Return(topology)
+				result := serv.List()
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), topology, result)
 			})
 		})
 	})

@@ -91,6 +91,6 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [get]
 func (controller *controller) Up(c *gin.Context) {
-	presence := controller.service.Topology()
+	presence := controller.service.List()
 	c.JSON(http.StatusOK, presence)
 }

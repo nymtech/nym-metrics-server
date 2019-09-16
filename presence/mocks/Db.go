@@ -15,17 +15,15 @@ func (_m *Db) AddMix(_a0 models.MixNodePresence) {
 	_m.Called(_a0)
 }
 
-// List provides a mock function with given fields:
-func (_m *Db) List() map[string]models.MixNodePresence {
+// Topology provides a mock function with given fields:
+func (_m *Db) Topology() models.Topology {
 	ret := _m.Called()
 
-	var r0 map[string]models.MixNodePresence
-	if rf, ok := ret.Get(0).(func() map[string]models.MixNodePresence); ok {
+	var r0 models.Topology
+	if rf, ok := ret.Get(0).(func() models.Topology); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]models.MixNodePresence)
-		}
+		r0 = ret.Get(0).(models.Topology)
 	}
 
 	return r0

@@ -23,3 +23,9 @@ type MixHostInfo struct {
 	HostInfo
 	Layer uint `json:"layer" binding:"required"`
 }
+
+// Topology shows us the current state of the overall Nym network
+type Topology struct {
+	CocoNodes map[string]Presence
+	MixNodes  map[string]MixNodePresence
+}
