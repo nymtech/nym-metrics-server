@@ -23,9 +23,9 @@ definitions:
       pubKey:
         type: string
     required:
+    - host
     - pubKey
     - layer
-    - host
     type: object
   models.MixMetric:
     properties:
@@ -41,11 +41,37 @@ definitions:
     - pubKey
     - received
     type: object
+  models.MixProviderHostInfo:
+    properties:
+      host:
+        type: string
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+    required:
+    - host
+    - pubKey
+    type: object
+  models.RegisteredClient:
+    properties:
+      host:
+        type: string
+      pubKey:
+        type: string
+    required:
+    - host
+    - pubKey
+    type: object
   models.Topology:
     properties:
       cocoNodes:
         type: object
       mixNodes:
+        type: object
+      mixProviderNodes:
         type: object
     type: object
 info:
@@ -143,7 +169,7 @@ paths:
       description: Nym mixnodes can ping this method to let the directory server know
         they're up. We can then use this info to create topologies of the overall
         Nym network.
-      operationId: notifyMixNode
+      operationId: addCocoNode
       parameters:
       - description: object
         in: body
@@ -178,17 +204,17 @@ paths:
     post:
       consumes:
       - application/json
-      description: Nym mixnodes can ping this method to let the directory server know
-        they're up. We can then use this info to create topologies of the overall
+      description: Nym mix provider can ping this method to let the directory server
+        know they're up. We can then use this info to create topologies of the overall
         Nym network.
-      operationId: notifyMixNode
+      operationId: addMixProvider
       parameters:
       - description: object
         in: body
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.MixHostInfo'
+          $ref: '#/definitions/models.MixProviderHostInfo'
           type: object
       produces:
       - application/json

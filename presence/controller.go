@@ -37,7 +37,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // AddMixNodePresence lets a mixnode tell the directory server it's alive
 // @Summary Lets a node tell the directory server it's alive
 // @Description Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
-// @ID notifyMixNode
+// @ID addMixNode
 // @Accept  json
 // @Produce  json
 // @Tags presence
@@ -60,7 +60,7 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 // AddCocoNodePresence lets a coconut node tell the directory server it's alive
 // @Summary Lets a node tell the directory server it's alive
 // @Description Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
-// @ID notifyMixNode
+// @ID addCocoNode
 // @Accept  json
 // @Produce  json
 // @Tags presence
@@ -83,7 +83,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // AddMixNodePresence lets a mix provider tell the directory server it's alive
 // @Summary Lets a node tell the directory server it's alive
 // @Description Nym mix provider can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
-// @ID notifyMixNode
+// @ID addMixProvider
 // @Accept  json
 // @Produce  json
 // @Tags presence

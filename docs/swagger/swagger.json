@@ -129,7 +129,7 @@
                     "presence"
                 ],
                 "summary": "Lets a node tell the directory server it's alive",
-                "operationId": "notifyMixNode",
+                "operationId": "addCocoNode",
                 "parameters": [
                     {
                         "description": "object",
@@ -170,7 +170,7 @@
         },
         "/api/presence/mixnodes": {
             "post": {
-                "description": "Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
+                "description": "Nym mix provider can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
                     "application/json"
                 ],
@@ -181,7 +181,7 @@
                     "presence"
                 ],
                 "summary": "Lets a node tell the directory server it's alive",
-                "operationId": "notifyMixNode",
+                "operationId": "addMixProvider",
                 "parameters": [
                     {
                         "description": "object",
@@ -190,7 +190,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.MixHostInfo"
+                            "$ref": "#/definitions/models.MixProviderHostInfo"
                         }
                     }
                 ],
@@ -294,9 +294,9 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
+                "host",
                 "pubKey",
-                "layer",
-                "host"
+                "layer"
             ],
             "properties": {
                 "host": {
@@ -331,6 +331,42 @@
                 }
             }
         },
+        "models.MixProviderHostInfo": {
+            "type": "object",
+            "required": [
+                "host",
+                "pubKey"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                }
+            }
+        },
+        "models.RegisteredClient": {
+            "type": "object",
+            "required": [
+                "host",
+                "pubKey"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Topology": {
             "type": "object",
             "properties": {
@@ -338,6 +374,9 @@
                     "type": "object"
                 },
                 "mixNodes": {
+                    "type": "object"
+                },
+                "mixProviderNodes": {
                     "type": "object"
                 }
             }
