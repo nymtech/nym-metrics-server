@@ -47,7 +47,7 @@ func New(cfg *Config) *Server {
 
 // Run the REST server.
 func (srv *Server) Run() {
-	srv.router.Run()
+	srv.router.Run(":8080")
 }
 
 // Node is a mixnode or coconode
