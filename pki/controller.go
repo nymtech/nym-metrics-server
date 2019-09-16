@@ -1,8 +1,6 @@
 package pki
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +16,7 @@ type controller struct {
 
 // Controller is the Key-Value controller
 type Controller interface {
-	CreateNode(c *gin.Context)
+	// CreateNode(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
 }
 
@@ -28,7 +26,7 @@ func New(config *Config) Controller {
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
-	router.POST("/api/nodes", controller.CreateNode)
+	// router.POST("/api/nodes", controller.CreateNode)
 }
 
 // CreateNode adds a node to the PKI
@@ -44,6 +42,6 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /api/nodes [post]
-func (controller *controller) CreateNode(c *gin.Context) {
-	log.Println("CreateNode not yet implemented")
-}
+// func (controller *controller) CreateNode(c *gin.Context) {
+// 	log.Println("CreateNode not yet implemented")
+// }
