@@ -22,6 +22,6 @@ func main() {
 		Port: 8080,
 	}
 
-	server := rest.New(cfg)
-	server.Run()
+	rest.New(cfg)
+	// server.Run()
 }

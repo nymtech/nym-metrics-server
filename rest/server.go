@@ -1,6 +1,9 @@
 package rest
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/directory-server/healthcheck"
 	"github.com/nymtech/directory-server/metrics"
@@ -25,7 +28,7 @@ type Server struct {
 }
 
 // New returns a new REST API server
-func New(cfg *Config) *Server {
+func New(cfg *Config) {
 	var controllers []controller
 	pkiCfg := &pki.Config{}
 	metricsCfg := &metrics.Config{}
@@ -42,7 +45,14 @@ func New(cfg *Config) *Server {
 	}
 	s.router = s.makeRouter(controllers...)
 
-	return s
+	srv := &http.Server{
+		Addr:           ":8080",
+		Handler:        s.router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	srv.ListenAndServe()
 }
 
 // Run the REST server.
