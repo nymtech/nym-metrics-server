@@ -55,7 +55,7 @@ var _ = Describe("presence.Service", func() {
 					MixNodes: list,
 				}
 				mockDb.On("Topology").Return(topology)
-				result := serv.List()
+				result := serv.Topology()
 				mockDb.AssertCalled(GinkgoT(), "Topology")
 				assert.Equal(GinkgoT(), topology, result)
 			})

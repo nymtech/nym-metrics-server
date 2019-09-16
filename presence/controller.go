@@ -91,6 +91,6 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [get]
 func (controller *controller) Up(c *gin.Context) {
-	presence := controller.service.List()
+	presence := controller.service.Topology()
 	c.JSON(http.StatusOK, presence)
 }

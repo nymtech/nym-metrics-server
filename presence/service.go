@@ -36,6 +36,6 @@ func (service *service) AddCocoNodePresence(info models.HostInfo) {
 	service.db.AddCoco(presence)
 }
 
-func (service *service) List() models.Topology {
+func (service *service) Topology() models.Topology {
 	return service.db.Topology()
 }
