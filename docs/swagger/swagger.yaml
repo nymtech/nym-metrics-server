@@ -11,8 +11,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
+    - host
     type: object
   models.MixHostInfo:
     properties:
@@ -23,9 +23,9 @@ definitions:
       pubKey:
         type: string
     required:
+    - layer
     - host
     - pubKey
-    - layer
     type: object
   models.MixMetric:
     properties:
@@ -38,21 +38,15 @@ definitions:
         - sent
         type: object
     required:
+    - pubKey
     - received
-    - pubKey
     type: object
-  models.Presence:
+  models.Topology:
     properties:
-      host:
-        type: string
-      lastSeen:
-        type: integer
-      pubKey:
-        type: string
-    required:
-    - lastSeen
-    - host
-    - pubKey
+      cocoNodes:
+        type: object
+      mixNodes:
+        type: object
     type: object
 info:
   contact: {}
@@ -194,9 +188,8 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Presence'
-            type: array
+            $ref: '#/definitions/models.Topology'
+            type: object
         "400":
           description: Bad Request
           schema:

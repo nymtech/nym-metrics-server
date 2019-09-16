@@ -186,10 +186,8 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Presence"
-                            }
+                            "type": "object",
+                            "$ref": "#/definitions/models.Topology"
                         }
                     },
                     "400": {
@@ -279,8 +277,8 @@
         "models.HostInfo": {
             "type": "object",
             "required": [
-                "host",
-                "pubKey"
+                "pubKey",
+                "host"
             ],
             "properties": {
                 "host": {
@@ -294,9 +292,9 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
+                "layer",
                 "host",
-                "pubKey",
-                "layer"
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -313,8 +311,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "received",
-                "pubKey"
+                "pubKey",
+                "received"
             ],
             "properties": {
                 "pubKey": {
@@ -331,22 +329,14 @@
                 }
             }
         },
-        "models.Presence": {
+        "models.Topology": {
             "type": "object",
-            "required": [
-                "lastSeen",
-                "host",
-                "pubKey"
-            ],
             "properties": {
-                "host": {
-                    "type": "string"
+                "cocoNodes": {
+                    "type": "object"
                 },
-                "lastSeen": {
-                    "type": "integer"
-                },
-                "pubKey": {
-                    "type": "string"
+                "mixNodes": {
+                    "type": "object"
                 }
             }
         }
