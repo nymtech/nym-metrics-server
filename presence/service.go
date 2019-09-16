@@ -11,9 +11,9 @@ type service struct {
 
 // Service defines the REST service interface for presence.
 type Service interface {
-	NotifyMixNodePresence(up models.HostInfo) error
-	NotifyCocoNodePresence(up models.HostInfo) error
-	Up() error
+	NotifyMixNodePresence(up models.MixHostInfo)
+	NotifyCocoNodePresence(up models.HostInfo)
+	Topology() models.Topology
 }
 
 func newService(db Db) *service {
