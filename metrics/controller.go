@@ -30,7 +30,7 @@ func New(config *Config) Controller {
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/metrics/mixes", controller.CreateMixMetric)
-	router.GET("/api/metrics/mixes", controller.CreateMixMetric)
+	router.GET("/api/metrics/mixes", controller.ListMixMetrics)
 }
 
 // CreateMixMetric adds a node to the PKI
