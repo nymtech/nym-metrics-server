@@ -9,6 +9,7 @@ import (
 
 // Db holds presence information
 type Db interface {
+	AddCoco(models.Presence)
 	AddMix(models.MixNodePresence)
 	Topology() models.Topology
 }
@@ -25,7 +26,7 @@ func newPresenceDb() *db {
 	}
 }
 
-func (db *db) AddCocoNode(presence models.Presence) {
+func (db *db) AddCoco(presence models.Presence) {
 	db.cocoNodes[presence.PubKey] = presence
 }
 
@@ -43,7 +44,7 @@ func (db *db) Topology() models.Topology {
 	return t
 }
 
-// kill any stale presence info (older than 5 seconds)
+// killOldsters kills any stale presence info
 func (db *db) killOldsters() {
 	for key := range db.mixNodes {
 		presence := db.mixNodes[key]
@@ -51,15 +52,15 @@ func (db *db) killOldsters() {
 			delete(db.mixNodes, key)
 		}
 	}
-	// for key := range db.cocoNodes {
-	// 	presence := db.cocoNodes[key]
-	// 	if presence.LastSeen <= timeWindow() {
-	// 		delete(db.cocoNodes, key)
-	// 	}
-	// }
+	for key := range db.cocoNodes {
+		presence := db.cocoNodes[key]
+		if presence.LastSeen <= timeWindow() {
+			delete(db.cocoNodes, key)
+		}
+	}
 }
 
-// defines staleness
+// timeWindow defines staleness
 // TODO: kill magic number by pulling this out into a config
 func timeWindow() int64 {
 	d := time.Duration(-5)

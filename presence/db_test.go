@@ -49,34 +49,34 @@ var _ = Describe("Presence Db", func() {
 		Describe("adding presence", func() {
 			Context("1st presence", func() {
 				It("adds properly", func() {
-					db.AddCocoNode(presence1)
+					db.AddCoco(presence1)
 				})
 			})
 		})
 		Context("adding two coconode presences", func() {
 			It("returns the map correctly", func() {
-				db.AddCocoNode(presence1)
-				db.AddCocoNode(presence2)
+				db.AddCoco(presence1)
+				db.AddCoco(presence2)
 				assert.Len(GinkgoT(), db.Topology().CocoNodes, 2)
 			})
 			It("contains the correct presences", func() {
-				db.AddCocoNode(presence1)
-				db.AddCocoNode(presence2)
+				db.AddCoco(presence1)
+				db.AddCoco(presence2)
 				assert.Equal(GinkgoT(), presence1, db.Topology().CocoNodes[presence1.PubKey])
 				assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[presence2.PubKey])
 			})
 		})
 		Describe("Presences", func() {
-			// Context("more than 5 seconds old", func() {
-			// 	It("are not returned in the topology", func() {
-			// 		oldtime := time.Now().Add(time.Duration(-5 * time.Second)).Unix()
-			// 		presence1.LastSeen = oldtime
-			// 		db.AddCocoNode(presence1)
-			// 		db.AddCocoNode(presence2)
-			// 		assert.Len(GinkgoT(), db.Topology(), 1)
-			// 		assert.Equal(GinkgoT(), presence2, db.get(presence2.PubKey))
-			// 	})
-			// })
+			Context("more than 5 seconds old", func() {
+				It("are not returned in the topology", func() {
+					oldtime := time.Now().Add(time.Duration(-5 * time.Second)).Unix()
+					presence1.LastSeen = oldtime
+					db.AddCoco(presence1)
+					db.AddCoco(presence2)
+					assert.Len(GinkgoT(), db.Topology().CocoNodes, 1)
+					assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[presence2.PubKey])
+				})
+			})
 		})
 
 	})

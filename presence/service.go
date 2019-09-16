@@ -28,13 +28,13 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	service.db.AddMix(presence)
 }
 
-// func (service *service) AddCocoNodePresence(info models.HostInfo) {
-// 	presence := models.Presence{
-// 		HostInfo: info,
-// 		LastSeen: timemock.Now().Unix(),
-// 	}
-// 	service.cocoNodes = append(service.cocoNodes, presence)
-// }
+func (service *service) AddCocoNodePresence(info models.HostInfo) {
+	presence := models.Presence{
+		HostInfo: info,
+		LastSeen: timemock.Now().Unix(),
+	}
+	service.db.AddCoco(presence)
+}
 
 func (service *service) List() models.Topology {
 	return service.db.Topology()
