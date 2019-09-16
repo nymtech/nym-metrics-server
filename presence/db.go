@@ -27,6 +27,7 @@ func newPresenceDb() *db {
 }
 
 func (db *db) AddCoco(presence models.Presence) {
+	db.killOldsters()
 	db.cocoNodes[presence.PubKey] = presence
 }
 

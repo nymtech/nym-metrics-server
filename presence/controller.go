@@ -14,7 +14,7 @@ type controller struct {
 
 // Controller is the presence controller
 type Controller interface {
-	// AddCocoNodePresence(c *gin.Context)
+	AddCocoNodePresence(c *gin.Context)
 	AddMixNodePresence(c *gin.Context)
 	Topology(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
@@ -78,10 +78,10 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
-// Up lists which Nym nodes are currently known
-// @Summary Lists which Nym mixnodes are alive
-// @Description Nym mixnodes periodically ping the directory server to register that they're alive. This method provides a list of mixnodes which have been most recently seen.
-// @ID mixNodesUp
+// Topology lists which Nym nodes are currently known
+// @Summary Lists which Nym mixnodes and coconodes are alive
+// @Description Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.
+// @ID topology
 // @Accept  json
 // @Produce  json
 // @Tags presence
@@ -89,7 +89,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/presence/mixnodes [get]
+// @Router /api/topology [get]
 func (controller *controller) Topology(c *gin.Context) {
 	topology := controller.service.Topology()
 	c.JSON(http.StatusOK, topology)
