@@ -12,7 +12,7 @@ type controller struct {
 	service *service
 }
 
-// Controller is the presence controller
+// Controller is the presence controller interface
 type Controller interface {
 	AddCocoNodePresence(c *gin.Context)
 	AddMixNodePresence(c *gin.Context)
@@ -20,12 +20,13 @@ type Controller interface {
 	RegisterRoutes(router *gin.Engine)
 }
 
-// New returns a new pki.Controller
+// New constructor
 func New() Controller {
 	db := newPresenceDb()
 	return &controller{newService(db)}
 }
 
+// RegisterRoutes registers controller routes in Gin.
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
