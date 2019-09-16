@@ -23,9 +23,9 @@ definitions:
       pubKey:
         type: string
     required:
+    - host
     - pubKey
     - layer
-    - host
     type: object
   models.MixMetric:
     properties:
@@ -38,8 +38,8 @@ definitions:
         - sent
         type: object
     required:
-    - pubKey
     - received
+    - pubKey
     type: object
   models.Presence:
     properties:
@@ -50,9 +50,9 @@ definitions:
       pubKey:
         type: string
     required:
+    - lastSeen
     - host
     - pubKey
-    - lastSeen
     type: object
 info:
   contact: {}

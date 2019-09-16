@@ -294,9 +294,9 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
+                "host",
                 "pubKey",
-                "layer",
-                "host"
+                "layer"
             ],
             "properties": {
                 "host": {
@@ -313,8 +313,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "pubKey",
-                "received"
+                "received",
+                "pubKey"
             ],
             "properties": {
                 "pubKey": {
@@ -334,9 +334,9 @@
         "models.Presence": {
             "type": "object",
             "required": [
+                "lastSeen",
                 "host",
-                "pubKey",
-                "lastSeen"
+                "pubKey"
             ],
             "properties": {
                 "host": {
