@@ -1,6 +1,7 @@
 package presence
 
 import (
+	"sync"
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
@@ -15,6 +16,7 @@ type Db interface {
 }
 
 type db struct {
+	sync.Mutex
 	cocoNodes map[string]models.Presence
 	mixNodes  map[string]models.MixNodePresence
 }
@@ -27,11 +29,15 @@ func newPresenceDb() *db {
 }
 
 func (db *db) AddCoco(presence models.Presence) {
+	db.Lock()
+	defer db.Unlock()
 	db.killOldsters()
 	db.cocoNodes[presence.PubKey] = presence
 }
 
 func (db *db) AddMix(presence models.MixNodePresence) {
+	db.Lock()
+	defer db.Unlock()
 	db.killOldsters()
 	db.mixNodes[presence.PubKey] = presence
 }
