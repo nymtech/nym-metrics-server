@@ -11,8 +11,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - pubKey
     - host
+    - pubKey
     type: object
   models.MixHostInfo:
     properties:
@@ -23,9 +23,9 @@ definitions:
       pubKey:
         type: string
     required:
+    - pubKey
     - layer
     - host
-    - pubKey
     type: object
   models.MixMetric:
     properties:
@@ -175,39 +175,6 @@ paths:
       tags:
       - presence
   /api/presence/mixnodes:
-    get:
-      consumes:
-      - application/json
-      description: Nym mixnodes periodically ping the directory server to register
-        that they're alive. This method provides a list of mixnodes which have been
-        most recently seen.
-      operationId: mixNodesUp
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Topology'
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-      summary: Lists which Nym mixnodes are alive
-      tags:
-      - presence
     post:
       consumes:
       - application/json
@@ -243,6 +210,40 @@ paths:
             $ref: '#/definitions/models.Error'
             type: object
       summary: Lets a node tell the directory server it's alive
+      tags:
+      - presence
+  /api/topology:
+    get:
+      consumes:
+      - application/json
+      description: Nym nodes periodically ping the directory server to register that
+        they're alive. This method provides a list of nodes which have been most recently
+        seen.
+      operationId: topology
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Topology'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Lists which Nym mixnodes and coconodes are alive
       tags:
       - presence
 swagger: "2.0"

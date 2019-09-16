@@ -169,50 +169,6 @@
             }
         },
         "/api/presence/mixnodes": {
-            "get": {
-                "description": "Nym mixnodes periodically ping the directory server to register that they're alive. This method provides a list of mixnodes which have been most recently seen.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "presence"
-                ],
-                "summary": "Lists which Nym mixnodes are alive",
-                "operationId": "mixNodesUp",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Topology"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
@@ -263,6 +219,52 @@
                     }
                 }
             }
+        },
+        "/api/topology": {
+            "get": {
+                "description": "Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Lists which Nym mixnodes and coconodes are alive",
+                "operationId": "topology",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Topology"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -277,8 +279,8 @@
         "models.HostInfo": {
             "type": "object",
             "required": [
-                "pubKey",
-                "host"
+                "host",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -292,9 +294,9 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
+                "pubKey",
                 "layer",
-                "host",
-                "pubKey"
+                "host"
             ],
             "properties": {
                 "host": {
