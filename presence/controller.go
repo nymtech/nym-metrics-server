@@ -30,7 +30,7 @@ func New() Controller {
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
-	router.GET("/api/presence/mixnodes", controller.Topology)
+	router.GET("/api/presence/topology", controller.Topology)
 }
 
 // AddMixNodePresence lets a mixnode tell the directory server it's alive
