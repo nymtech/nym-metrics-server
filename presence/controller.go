@@ -90,7 +90,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/topology [get]
+// @Router /api/presence/topology [get]
 func (controller *controller) Topology(c *gin.Context) {
 	topology := controller.service.Topology()
 	c.JSON(http.StatusOK, topology)

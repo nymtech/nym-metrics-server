@@ -212,7 +212,7 @@ paths:
       summary: Lets a node tell the directory server it's alive
       tags:
       - presence
-  /api/topology:
+  /api/presence/topology:
     get:
       consumes:
       - application/json
