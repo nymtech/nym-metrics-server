@@ -122,7 +122,7 @@ var _ = Describe("Presence Db", func() {
 				})
 				It("gets the presence by its public key", func() {
 					db.AddMix(presence1)
-					assert.Equal(GinkgoT(), presence1, db.get(presence1.PubKey))
+					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[presence1.PubKey])
 				})
 			})
 			Context("adding two mixnode presences", func() {
@@ -134,8 +134,8 @@ var _ = Describe("Presence Db", func() {
 				It("contains the correct presences", func() {
 					db.AddMix(presence1)
 					db.AddMix(presence2)
-					assert.Equal(GinkgoT(), presence1, db.get(presence1.PubKey))
-					assert.Equal(GinkgoT(), presence2, db.get(presence2.PubKey))
+					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[presence1.PubKey])
+					assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[presence2.PubKey])
 				})
 			})
 			Describe("Presences", func() {
@@ -146,7 +146,7 @@ var _ = Describe("Presence Db", func() {
 						db.AddMix(presence1)
 						db.AddMix(presence2)
 						assert.Len(GinkgoT(), db.Topology().MixNodes, 1)
-						assert.Equal(GinkgoT(), presence2, db.get(presence2.PubKey))
+						assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[presence2.PubKey])
 					})
 				})
 			})

@@ -43,10 +43,6 @@ func (db *db) Topology() models.Topology {
 	return t
 }
 
-func (db *db) get(key string) models.MixNodePresence {
-	return db.mixNodes[key]
-}
-
 // kill any stale presence info (older than 5 seconds)
 func (db *db) killOldsters() {
 	for key := range db.mixNodes {
