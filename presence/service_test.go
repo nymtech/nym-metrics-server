@@ -56,8 +56,6 @@ var _ = Describe("presence.Service", func() {
 				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
 			})
 		})
-	})
-	Describe("Adding presence info", func() {
 		Context("for a coconode", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddCoco", presence2)
