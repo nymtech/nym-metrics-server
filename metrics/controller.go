@@ -1,7 +1,6 @@
 package metrics
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -54,6 +53,7 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 		return
 	}
 	controller.service.CreateMixMetric(metric)
+	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
 // ListMixMetrics lists mixnode activity
@@ -70,5 +70,5 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/metrics/mixes [get]
 func (controller *controller) ListMixMetrics(c *gin.Context) {
-	log.Println("ListMixMetrics not yet implemented")
+	c.JSON(http.StatusOK, gin.H{"wait": "ListMixMetrics not yet implemented"})
 }
