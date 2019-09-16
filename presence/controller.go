@@ -92,7 +92,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/presence/mixnodes [post]
+// @Router /api/presence/providers [post]
 func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 	var json models.MixProviderHostInfo
 	if err := c.ShouldBindJSON(&json); err != nil {
