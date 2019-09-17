@@ -11,8 +11,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
+    - host
     type: object
   models.MixHostInfo:
     properties:
@@ -38,7 +38,6 @@ definitions:
         - sent
         type: object
     required:
-    - received
     - pubKey
     type: object
   models.MixProviderHostInfo:

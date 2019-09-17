@@ -344,8 +344,8 @@
         "models.HostInfo": {
             "type": "object",
             "required": [
-                "host",
-                "pubKey"
+                "pubKey",
+                "host"
             ],
             "properties": {
                 "host": {
@@ -378,7 +378,6 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "received",
                 "pubKey"
             ],
             "properties": {

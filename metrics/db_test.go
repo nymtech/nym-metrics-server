@@ -11,17 +11,19 @@ var _ = Describe("Metrics Db", func() {
 	var metric1 models.MixMetric
 	var metric2 models.MixMetric
 
+	var received uint = 99
+
 	// set up fixtures
 	metric1 = models.MixMetric{
 		PubKey:   "key1",
-		Received: 99,
-		Sent:     map[string]uint{"mixnode3": 99, "mixnode4": 101},
+		Received: &received,
+		Sent:     map[string]uint{"mixnode3": 99, "mixnode4": 100},
 	}
 
 	metric2 = models.MixMetric{
 		PubKey:   "key2",
-		Received: 99,
-		Sent:     map[string]uint{"mixnode3": 102, "mixnode4": 103},
+		Received: &received,
+		Sent:     map[string]uint{"mixnode3": 101, "mixnode4": 102},
 	}
 
 	Describe("retrieving mixnet metrics", func() {

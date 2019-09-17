@@ -5,5 +5,5 @@ package models
 type MixMetric struct {
 	PubKey   string          `json:"pubKey" binding:"required"`
 	Sent     map[string]uint `json:"sent" binding:"required"`
-	Received uint            `json:"received" binding:"required"`
+	Received *uint           `json:"received" binding:"exists"`
 }

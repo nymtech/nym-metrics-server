@@ -13,17 +13,18 @@ var _ = Describe("metrics.Service", func() {
 	var metric2 models.MixMetric
 
 	var serv service
+	var received uint = 99
 
 	// set up fixtures
 	metric1 = models.MixMetric{
 		PubKey:   "key1",
-		Received: 99,
+		Received: &received,
 		Sent:     map[string]uint{"mixnode3": 99, "mixnode4": 101},
 	}
 
 	metric2 = models.MixMetric{
 		PubKey:   "key2",
-		Received: 99,
+		Received: &received,
 		Sent:     map[string]uint{"mixnode3": 102, "mixnode4": 103},
 	}
 
