@@ -24,7 +24,7 @@ type Controller interface {
 }
 
 // New returns a new metrics.Controller
-func New(config *Config) Controller {
+func New() Controller {
 	db := newMetricsDb()
 	return &controller{newService(db)}
 }
