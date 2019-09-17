@@ -34,8 +34,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.GET("/api/presence/topology", controller.Topology)
 }
 
-// AddMixNodePresence lets a mixnode tell the directory server it's alive
-// @Summary Lets a node tell the directory server it's alive
+// AddMixNodePresence ...
+// @Summary Lets mixnode a node tell the directory server it's alive
 // @Description Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
 // @ID addMixNode
 // @Accept  json
@@ -57,9 +57,9 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
-// AddCocoNodePresence lets a coconut node tell the directory server it's alive
-// @Summary Lets a node tell the directory server it's alive
-// @Description Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
+// AddCocoNodePresence ...
+// @Summary Lets a coconut node tell the directory server it's alive
+// @Description Nym Coconut nodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
 // @ID addCocoNode
 // @Accept  json
 // @Produce  json
@@ -80,9 +80,9 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
-// AddMixNodePresence lets a mix provider tell the directory server it's alive
-// @Summary Lets a node tell the directory server it's alive
-// @Description Nym mix provider can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
+// AddMixNodePresence ...
+// @Summary Lets a mixnode tell the directory server it's alive
+// @Description Nym mix providers can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
 // @ID addMixProvider
 // @Accept  json
 // @Produce  json
@@ -103,8 +103,8 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
-// Topology lists which Nym nodes are currently known
-// @Summary Lists which Nym mixnodes and coconodes are alive
+// Topology ...
+// @Summary Lists which Nym mixnodes, providers, and coconodes are alive
 // @Description Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.
 // @ID topology
 // @Accept  json

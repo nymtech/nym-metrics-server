@@ -38,8 +38,8 @@ definitions:
         - sent
         type: object
     required:
-    - received
     - pubKey
+    - received
     type: object
   models.MixProviderHostInfo:
     properties:
@@ -166,8 +166,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Nym mixnodes can ping this method to let the directory server know
-        they're up. We can then use this info to create topologies of the overall
+      description: Nym Coconut nodes can ping this method to let the directory server
+        know they're up. We can then use this info to create topologies of the overall
         Nym network.
       operationId: addCocoNode
       parameters:
@@ -197,7 +197,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lets a node tell the directory server it's alive
+      summary: Lets a coconut node tell the directory server it's alive
       tags:
       - presence
   /api/presence/mixnodes:
@@ -235,14 +235,14 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lets a node tell the directory server it's alive
+      summary: Lets mixnode a node tell the directory server it's alive
       tags:
       - presence
   /api/presence/providers:
     post:
       consumes:
       - application/json
-      description: Nym mix provider can ping this method to let the directory server
+      description: Nym mix providers can ping this method to let the directory server
         know they're up. We can then use this info to create topologies of the overall
         Nym network.
       operationId: addMixProvider
@@ -273,7 +273,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lets a node tell the directory server it's alive
+      summary: Lets a mixnode tell the directory server it's alive
       tags:
       - presence
   /api/presence/topology:
@@ -307,7 +307,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists which Nym mixnodes and coconodes are alive
+      summary: Lists which Nym mixnodes, providers, and coconodes are alive
       tags:
       - presence
 swagger: "2.0"

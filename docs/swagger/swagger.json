@@ -118,7 +118,7 @@
         },
         "/api/presence/coconodes": {
             "post": {
-                "description": "Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
+                "description": "Nym Coconut nodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
                     "application/json"
                 ],
@@ -128,7 +128,7 @@
                 "tags": [
                     "presence"
                 ],
-                "summary": "Lets a node tell the directory server it's alive",
+                "summary": "Lets a coconut node tell the directory server it's alive",
                 "operationId": "addCocoNode",
                 "parameters": [
                     {
@@ -180,7 +180,7 @@
                 "tags": [
                     "presence"
                 ],
-                "summary": "Lets a node tell the directory server it's alive",
+                "summary": "Lets mixnode a node tell the directory server it's alive",
                 "operationId": "addMixNode",
                 "parameters": [
                     {
@@ -222,7 +222,7 @@
         },
         "/api/presence/providers": {
             "post": {
-                "description": "Nym mix provider can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
+                "description": "Nym mix providers can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
                     "application/json"
                 ],
@@ -232,7 +232,7 @@
                 "tags": [
                     "presence"
                 ],
-                "summary": "Lets a node tell the directory server it's alive",
+                "summary": "Lets a mixnode tell the directory server it's alive",
                 "operationId": "addMixProvider",
                 "parameters": [
                     {
@@ -284,7 +284,7 @@
                 "tags": [
                     "presence"
                 ],
-                "summary": "Lists which Nym mixnodes and coconodes are alive",
+                "summary": "Lists which Nym mixnodes, providers, and coconodes are alive",
                 "operationId": "topology",
                 "responses": {
                     "200": {
@@ -365,8 +365,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "received",
-                "pubKey"
+                "pubKey",
+                "received"
             ],
             "properties": {
                 "pubKey": {
