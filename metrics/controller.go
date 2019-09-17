@@ -12,20 +12,21 @@ type Config struct {
 	// Db badger.
 }
 
-// controller is the PKI controller
+// controller is the metrics controller
 type controller struct {
 	service *service
 }
 
-// Controller is the Key-Value controller
+// Controller ...
 type Controller interface {
 	CreateMixMetric(c *gin.Context)
 	RegisterRoutes(router *gin.Engine)
 }
 
-// New returns a new pki.Controller
-func New(config *Config) Controller {
-	return &controller{newService(config)}
+// New returns a new metrics.Controller
+func New() Controller {
+	db := newMetricsDb()
+	return &controller{newService(db)}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
@@ -33,8 +34,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.GET("/api/metrics/mixes", controller.ListMixMetrics)
 }
 
-// CreateMixMetric adds a node to the PKI
-// @Summary Create a metric detailing how many messages a given mixnode sent
+// CreateMixMetric ...
+// @Summary Create a metric detailing how many messages a given mixnode sent and received
 // @Description You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
 // @ID createMixMetric
 // @Accept  json
@@ -70,5 +71,6 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/metrics/mixes [get]
 func (controller *controller) ListMixMetrics(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"wait": "ListMixMetrics not yet implemented"})
+	metrics := controller.service.List()
+	c.JSON(http.StatusOK, metrics)
 }
