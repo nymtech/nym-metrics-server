@@ -16,9 +16,8 @@ func newService(db Db) *service {
 	return &service{db: db}
 }
 
-func (service *service) CreateMixMetric(metric models.MixMetric) error {
+func (service *service) CreateMixMetric(metric models.MixMetric) {
 	service.db.Add(metric)
-	return nil
 }
 
 func (service *service) List() []models.MixMetric {
