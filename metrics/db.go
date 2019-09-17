@@ -1,8 +1,13 @@
 package metrics
 
-import "github.com/nymtech/directory-server/models"
+import (
+	"sync"
+
+	"github.com/nymtech/directory-server/models"
+)
 
 type db struct {
+	sync.Mutex
 	mixMetrics []models.MixMetric
 }
 
@@ -19,9 +24,13 @@ func newMetricsDb() *db {
 }
 
 func (db *db) Add(metric models.MixMetric) {
+	db.Lock()
+	defer db.Unlock()
 	db.mixMetrics = append(db.mixMetrics, metric)
 }
 
 func (db *db) List() []models.MixMetric {
+	db.Lock()
+	defer db.Unlock()
 	return db.mixMetrics
 }
