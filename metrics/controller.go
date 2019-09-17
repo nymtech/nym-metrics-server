@@ -71,5 +71,6 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/metrics/mixes [get]
 func (controller *controller) ListMixMetrics(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"wait": "ListMixMetrics not yet implemented"})
+	metrics := controller.service.List()
+	c.JSON(http.StatusOK, metrics)
 }
