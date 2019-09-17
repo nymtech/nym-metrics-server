@@ -24,7 +24,7 @@
                 "tags": [
                     "healthcheck"
                 ],
-                "summary": "lets the directory server tell the world it's alive",
+                "summary": "Lets the directory server tell the world it's alive",
                 "operationId": "healthCheck",
                 "responses": {
                     "200": {}
@@ -89,9 +89,22 @@
                 "tags": [
                     "metrics"
                 ],
-                "summary": "Create a metric detailing how many messages a given mixnode sent",
+                "summary": "Create a metric detailing how many messages a given mixnode sent and received",
                 "operationId": "createMixMetric",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.MixMetric"
+                        }
+                    }
+                ],
                 "responses": {
+                    "201": {},
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -365,8 +378,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "pubKey",
-                "received"
+                "received",
+                "pubKey"
             ],
             "properties": {
                 "pubKey": {

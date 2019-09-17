@@ -38,8 +38,8 @@ definitions:
         - sent
         type: object
     required:
-    - pubKey
     - received
+    - pubKey
     type: object
   models.MixProviderHostInfo:
     properties:
@@ -96,7 +96,7 @@ paths:
       - application/json
       responses:
         "200": {}
-      summary: lets the directory server tell the world it's alive
+      summary: Lets the directory server tell the world it's alive
       tags:
       - healthcheck
   /api/metrics/mixes:
@@ -141,9 +141,18 @@ paths:
         purposes it gives us the ability to generate useful visualisations of network
         traffic.
       operationId: createMixMetric
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixMetric'
+          type: object
       produces:
       - application/json
       responses:
+        "201": {}
         "400":
           description: Bad Request
           schema:
@@ -159,7 +168,8 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Create a metric detailing how many messages a given mixnode sent
+      summary: Create a metric detailing how many messages a given mixnode sent and
+        received
       tags:
       - metrics
   /api/presence/coconodes:

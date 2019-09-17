@@ -41,8 +41,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Accept  json
 // @Produce  json
 // @Tags metrics
-// Param   object      body   models.ObjectRequest     true  "object"
-// Success 200 {object} models.ObjectIDResponse
+// @Param   object      body   models.MixMetric     true  "object"
+// @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
