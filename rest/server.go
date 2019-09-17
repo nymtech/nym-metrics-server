@@ -28,12 +28,12 @@ type Server struct {
 func New(cfg *Config) *Server {
 	var controllers []controller
 	pkiCfg := &pki.Config{}
-	metricsCfg := &metrics.Config{}
+	// metricsCfg := &metrics.Config{}
 
 	controllers = append(controllers, healthcheck.New())
 	controllers = append(controllers, pki.New(pkiCfg))
 	controllers = append(controllers, presence.New())
-	controllers = append(controllers, metrics.New(metricsCfg))
+	controllers = append(controllers, metrics.New())
 
 	s := &Server{
 		controllers: controllers,
