@@ -6,6 +6,12 @@ type db struct {
 	mixMetrics []models.MixMetric
 }
 
+// Db holds presence information
+type Db interface {
+	Add(models.MixMetric)
+	List() []models.MixMetric
+}
+
 func newMetricsDb() *db {
 	return &db{
 		mixMetrics: []models.MixMetric{},

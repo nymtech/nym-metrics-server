@@ -25,7 +25,8 @@ type Controller interface {
 
 // New returns a new pki.Controller
 func New(config *Config) Controller {
-	return &controller{newService(config)}
+	db := newMetricsDb()
+	return &controller{newService(db)}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
