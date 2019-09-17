@@ -24,8 +24,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.GET("/api/healthcheck", controller.HealthCheck)
 }
 
-// HealthCheck lets the directory server tell the world it's alive
-// @Summary lets the directory server tell the world it's alive
+// HealthCheck ...
+// @Summary Lets the directory server tell the world it's alive
 // @Description Returns a 200 if the directory server is available.
 // @ID healthCheck
 // @Accept  json
