@@ -14,9 +14,16 @@ decentralized. Other aspects of it (e.g. metrics) will likely stay centralized.
 
 ## Building
 
-Nothing too special here, `go run main.go` should see you through. 
-
 `go test ./...` will run the test suite.
+
+`go run main.go` builds the binary (as expected).
+
+`swag init` rebuilds the Swagger docs if you've changed anything there. Otherwise
+it should not be needed.
+
+If you update any of the HTML assets,
+`go-assets-builder server/websocket/home.html -o server/websocket/html.go` will
+put it in the correct place to be built into the binary. 
 
 ## Usage
 
