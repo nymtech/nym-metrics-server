@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/BorisBorshevsky/timemock v0.0.0-20180501151413-a469e345aaba
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/dgraph-io/badger v1.6.0
 	github.com/ethereum/go-ethereum v1.9.3 // indirect
