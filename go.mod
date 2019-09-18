@@ -36,7 +36,7 @@ require (
 	golang.org/x/crypto v0.0.0-20190909091759-094676da4a83 // indirect
 	golang.org/x/net v0.0.0-20190909003024-a7b16738d86b // indirect
 	golang.org/x/sys v0.0.0-20190910064555-bbd175535a8b // indirect
-	golang.org/x/tools v0.0.0-20190910044552-dd2b5c81c578 // indirect
+	golang.org/x/tools/gopls v0.1.6 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gotest.tools v2.2.0+incompatible
 )
