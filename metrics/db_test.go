@@ -16,7 +16,7 @@ var _ = Describe("Metrics Db", func() {
 	var p2 models.PersistedMixMetric
 
 	var received uint = 99
-	var now = time.Now().Unix()
+	var now = time.Now().UnixNano()
 
 	// set up fixtures
 	metric1 = models.MixMetric{

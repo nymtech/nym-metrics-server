@@ -34,7 +34,7 @@ var _ = Describe("presence.Service", func() {
 
 		presence1 = models.MixNodePresence{
 			MixHostInfo: mix1,
-			LastSeen:    timemock.Now().Unix(),
+			LastSeen:    timemock.Now().UnixNano(),
 		}
 
 		coco1 = models.HostInfo{
@@ -44,7 +44,7 @@ var _ = Describe("presence.Service", func() {
 
 		presence2 = models.Presence{
 			HostInfo: coco1,
-			LastSeen: timemock.Now().Unix(),
+			LastSeen: timemock.Now().UnixNano(),
 		}
 	})
 

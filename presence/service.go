@@ -23,7 +23,7 @@ func newService(db Db) *service {
 func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) {
 	presence := models.MixProviderPresence{
 		MixProviderHostInfo: info,
-		LastSeen:            timemock.Now().Unix(),
+		LastSeen:            timemock.Now().UnixNano(),
 	}
 	service.db.AddMixProvider(presence)
 }
@@ -31,7 +31,7 @@ func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) 
 func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
-		LastSeen:    timemock.Now().Unix(),
+		LastSeen:    timemock.Now().UnixNano(),
 	}
 	service.db.AddMix(presence)
 }
@@ -39,7 +39,7 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 func (service *service) AddCocoNodePresence(info models.HostInfo) {
 	presence := models.Presence{
 		HostInfo: info,
-		LastSeen: timemock.Now().Unix(),
+		LastSeen: timemock.Now().UnixNano(),
 	}
 	service.db.AddCoco(presence)
 }

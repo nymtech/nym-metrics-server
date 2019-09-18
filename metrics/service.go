@@ -22,7 +22,7 @@ func newService(db Db) *service {
 func (service *service) CreateMixMetric(metric models.MixMetric) {
 	persist := models.PersistedMixMetric{
 		MixMetric: metric,
-		Timestamp: timemock.Now().Unix(),
+		Timestamp: timemock.Now().UnixNano(),
 	}
 	service.db.Add(persist)
 }

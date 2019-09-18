@@ -18,7 +18,7 @@ var _ = Describe("metrics.Service", func() {
 
 	var serv service
 	var received uint = 99
-	var now int64 = time.Now().Unix()
+	var now int64 = time.Now().UnixNano()
 
 	// set up fixtures
 	m1 = models.MixMetric{
