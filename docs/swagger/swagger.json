@@ -359,9 +359,9 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
-                "host",
                 "pubKey",
-                "layer"
+                "layer",
+                "host"
             ],
             "properties": {
                 "host": {
@@ -419,8 +419,8 @@
         "models.RegisteredClient": {
             "type": "object",
             "required": [
-                "pubKey",
-                "host"
+                "host",
+                "pubKey"
             ],
             "properties": {
                 "host": {

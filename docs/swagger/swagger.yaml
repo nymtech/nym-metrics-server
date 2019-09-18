@@ -23,9 +23,9 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
     - layer
+    - host
     type: object
   models.MixMetric:
     properties:
@@ -61,8 +61,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - pubKey
     - host
+    - pubKey
     type: object
   models.Topology:
     properties:

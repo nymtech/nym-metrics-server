@@ -13,6 +13,7 @@ require (
 	github.com/go-openapi/spec v0.19.3 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
+	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/json-iterator/go v1.1.7 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/mailru/easyjson v0.7.0 // indirect
