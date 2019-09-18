@@ -20,6 +20,12 @@ func New() *gin.Engine {
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
+	// Add cors middleware
+	router.Use(cors.Default())
+
+	// Serve Swagger frontend static files using gin-swagger middleware
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// Add HTML templates to the router
 	t, err := html.LoadTemplate()
 	if err != nil {
@@ -30,17 +36,6 @@ func New() *gin.Engine {
 		c.HTML(http.StatusOK, "/server/html/index.html", nil)
 	})
 
-	// Add cors middleware
-	router.Use(cors.Default())
-
-	// Serve Swagger frontend static files using gin-swagger middleware
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	// Register all HTTP controller routes
-	healthcheck.New().RegisterRoutes(router)
-	metrics.New().RegisterRoutes(router)
-	presence.New().RegisterRoutes(router)
-
 	// Set up websocket handlers
 	hub := websocket.NewHub()
 	go hub.Run()
@@ -48,6 +43,15 @@ func New() *gin.Engine {
 	router.GET("/ws", func(c *gin.Context) {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
+
+	cfg := metrics.Config{
+		Hub: hub,
+	}
+
+	// Register all HTTP controller routes
+	healthcheck.New().RegisterRoutes(router)
+	metrics.New(cfg).RegisterRoutes(router)
+	presence.New().RegisterRoutes(router)
 
 	return router
 }
