@@ -9,6 +9,7 @@ import (
 	"github.com/nymtech/directory-server/healthcheck"
 	"github.com/nymtech/directory-server/metrics"
 	"github.com/nymtech/directory-server/presence"
+	"github.com/nymtech/directory-server/server/html"
 	"github.com/nymtech/directory-server/server/websocket"
 
 	"github.com/gin-contrib/cors"
@@ -57,6 +58,7 @@ func New() *gin.Engine {
 func loadTemplate() (*template.Template, error) {
 	t := template.New("")
 	for name, file := range html.Assets.Files {
+
 		h, err := ioutil.ReadAll(file)
 		if err != nil {
 			return nil, err
