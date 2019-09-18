@@ -56,7 +56,7 @@ func New() *gin.Engine {
 // loadTemplate loads templates embedded by go-assets-builder
 func loadTemplate() (*template.Template, error) {
 	t := template.New("")
-	for name, file := range websocket.Assets.Files {
+	for name, file := range html.Assets.Files {
 		h, err := ioutil.ReadAll(file)
 		if err != nil {
 			return nil, err

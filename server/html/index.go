@@ -1,4 +1,4 @@
-package websocket
+package html
 
 import (
 	"time"
@@ -10,12 +10,7 @@ var _Assets87ef411210acb6cc2ef5dc23af8ae586f1a46c19 = "<!DOCTYPE html>\n<html la
 
 // Assets returns go-assets FileSystem
 var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"server"}, "/server": []string{"html"}, "/server/html": []string{"index.html"}}, map[string]*assets.File{
-	"/": &assets.File{
-		Path:     "/",
-		FileMode: 0x800001fd,
-		Mtime:    time.Unix(1568816330, 1568816330141411729),
-		Data:     nil,
-	}, "/server": &assets.File{
+	"/server": &assets.File{
 		Path:     "/server",
 		FileMode: 0x800001fd,
 		Mtime:    time.Unix(1568817142, 1568817142672388903),
@@ -30,4 +25,9 @@ var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"server"}, "
 		FileMode: 0x1b4,
 		Mtime:    time.Unix(1568817160, 1568817160248000000),
 		Data:     []byte(_Assets87ef411210acb6cc2ef5dc23af8ae586f1a46c19),
+	}, "/": &assets.File{
+		Path:     "/",
+		FileMode: 0x800001fd,
+		Mtime:    time.Unix(1568816330, 1568816330141411729),
+		Data:     nil,
 	}}, "")
