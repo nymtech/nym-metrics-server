@@ -24,8 +24,8 @@ func New() *gin.Engine {
 
 	// Register all the controller routes
 	healthcheck.New().RegisterRoutes(router)
-	presence.New().RegisterRoutes(router)
 	metrics.New().RegisterRoutes(router)
+	presence.New().RegisterRoutes(router)
 
 	return router
 }
