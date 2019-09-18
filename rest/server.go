@@ -49,10 +49,3 @@ func New(cfg *Config) *Server {
 func (srv *Server) Run() {
 	srv.router.Run(":8080")
 }
-
-// Node is a mixnode or coconode
-type Node struct {
-	PubSigningKey   string
-	PubTransportKey string
-	Up              bool
-}
