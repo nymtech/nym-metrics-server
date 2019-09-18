@@ -22,7 +22,7 @@ func New() *gin.Engine {
 	// Serve Swagger frontend static files using gin-swagger middleware
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Register all the controller routes
+	// Register all controller routes
 	healthcheck.New().RegisterRoutes(router)
 	metrics.New().RegisterRoutes(router)
 	presence.New().RegisterRoutes(router)
