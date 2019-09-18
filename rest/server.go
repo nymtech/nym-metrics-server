@@ -11,11 +11,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// Server gives us a place to store values for our REST API
-type Server struct {
-	router *gin.Engine
-}
-
 // New returns a new REST API server
 func New() *gin.Engine {
 	// Set the router as the default one shipped with Gin

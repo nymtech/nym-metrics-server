@@ -13,6 +13,6 @@ import (
 // @license.name Apache 2.0
 // @license.url https://github.com/nymtech/directory-server/license
 func main() {
-	r := rest.New()
-	r.Run(":8080")
+	router := rest.New()
+	router.Run(":8080")
 }
