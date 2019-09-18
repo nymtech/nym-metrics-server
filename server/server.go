@@ -1,8 +1,6 @@
 package server
 
 import (
-	"html/template"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,11 +20,15 @@ func New() *gin.Engine {
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
-	t, err := loadTemplate()
+	// Add HTML templates to the router
+	t, err := html.LoadTemplate()
 	if err != nil {
 		panic(err)
 	}
 	router.SetHTMLTemplate(t)
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "/server/html/index.html", nil)
+	})
 
 	// Add cors middleware
 	router.Use(cors.Default())
@@ -47,26 +49,5 @@ func New() *gin.Engine {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "/server/html/index.html", nil)
-	})
-
 	return router
-}
-
-// loadTemplate loads templates embedded by go-assets-builder
-func loadTemplate() (*template.Template, error) {
-	t := template.New("")
-	for name, file := range html.Assets.Files {
-
-		h, err := ioutil.ReadAll(file)
-		if err != nil {
-			return nil, err
-		}
-		t, err = t.New(name).Parse(string(h))
-		if err != nil {
-			return nil, err
-		}
-	}
-	return t, nil
 }

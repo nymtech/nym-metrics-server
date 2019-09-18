@@ -20,6 +20,7 @@ type Hub struct {
 	unregister chan *Client
 }
 
+// NewHub constructor
 func NewHub() *Hub {
 	return &Hub{
 		broadcast:  make(chan []byte),
@@ -29,6 +30,7 @@ func NewHub() *Hub {
 	}
 }
 
+// Run starts distributing messages to connected clients
 func (h *Hub) Run() {
 	for {
 		select {
