@@ -7,11 +7,6 @@ import (
 	"github.com/nymtech/directory-server/models"
 )
 
-// Config ...
-type Config struct {
-	// Db badger.
-}
-
 // controller is the metrics controller
 type controller struct {
 	service *service
