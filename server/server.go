@@ -47,7 +47,7 @@ func New() *gin.Engine {
 	})
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "/server/websocket/home.html", nil)
+		c.HTML(http.StatusOK, "/server/html/index.html", nil)
 	})
 
 	return router
