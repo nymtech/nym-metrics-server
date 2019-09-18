@@ -4,48 +4,34 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/directory-server/healthcheck"
 	"github.com/nymtech/directory-server/metrics"
-	"github.com/nymtech/directory-server/pki"
 	"github.com/nymtech/directory-server/presence"
-)
 
-// Config defines the values passed into the REST Service
-type Config struct {
-	Addr    string
-	Metrics metrics.Service
-	Port    int
-	PKI     pki.Service
-}
+	"github.com/gin-contrib/cors"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+)
 
 // Server gives us a place to store values for our REST API
 type Server struct {
-	controllers []controller
-	port        int
-	router      *gin.Engine
-	pki         pki.Service
+	router *gin.Engine
 }
 
 // New returns a new REST API server
-func New(cfg *Config) *Server {
-	var controllers []controller
-	pkiCfg := &pki.Config{}
-	// metricsCfg := &metrics.Config{}
+func New() *gin.Engine {
+	// Set the router as the default one shipped with Gin
+	router := gin.Default()
 
-	controllers = append(controllers, healthcheck.New())
-	controllers = append(controllers, pki.New(pkiCfg))
-	controllers = append(controllers, presence.New())
-	controllers = append(controllers, metrics.New())
+	// Add cors middleware
+	router.Use(cors.Default())
 
-	s := &Server{
-		controllers: controllers,
-		port:        cfg.Port,
-		pki:         cfg.PKI,
-	}
-	s.router = s.makeRouter(controllers...)
+	// Serve Swagger frontend static files using gin-swagger middleware
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	return s
-}
+	// Register all the controller routes
+	healthcheck.New().RegisterRoutes(router)
+	// pki.New().RegisterRoutes(router)
+	presence.New().RegisterRoutes(router)
+	metrics.New().RegisterRoutes(router)
 
-// Run the REST server.
-func (srv *Server) Run() {
-	srv.router.Run(":8080")
+	return router
 }
