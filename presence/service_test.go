@@ -1,6 +1,8 @@
 package presence
 
 import (
+	"time"
+
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
 	"github.com/nymtech/directory-server/presence/mocks"
@@ -22,6 +24,8 @@ var _ = Describe("presence.Service", func() {
 	BeforeEach(func() {
 		mockDb = *new(mocks.Db)
 		serv = *newService(&mockDb)
+		var now = time.Now()
+		timemock.Freeze(now)
 
 		// Set up fixtures
 		mix1 = models.MixHostInfo{

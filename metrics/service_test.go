@@ -3,6 +3,7 @@ package metrics
 import (
 	"time"
 
+	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/metrics/mocks"
 	"github.com/nymtech/directory-server/models"
 	. "github.com/onsi/ginkgo"
@@ -18,7 +19,9 @@ var _ = Describe("metrics.Service", func() {
 
 	var serv service
 	var received uint = 99
-	var now int64 = time.Now().UnixNano()
+	var now = time.Now()
+	timemock.Freeze(now)
+	var frozenNow = timemock.Now().UnixNano()
 
 	// set up fixtures
 	m1 = models.MixMetric{
@@ -29,7 +32,7 @@ var _ = Describe("metrics.Service", func() {
 
 	p1 = models.PersistedMixMetric{
 		MixMetric: m1,
-		Timestamp: now,
+		Timestamp: frozenNow,
 	}
 
 	m2 = models.MixMetric{
@@ -40,7 +43,7 @@ var _ = Describe("metrics.Service", func() {
 
 	p2 = models.PersistedMixMetric{
 		MixMetric: m2,
-		Timestamp: now,
+		Timestamp: frozenNow,
 	}
 
 	Describe("Adding a mixmetric", func() {
