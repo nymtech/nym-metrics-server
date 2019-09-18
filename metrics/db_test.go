@@ -52,7 +52,8 @@ var _ = Describe("Metrics Db", func() {
 			It("should contain 1 metric", func() {
 				db = newMetricsDb()
 				db.Add(p1)
-				assert.Len(GinkgoT(), db.List(), 1)
+				assert.Len(GinkgoT(), db.List(), 0)          // see note on db.clear()
+				assert.Len(GinkgoT(), db.incomingMetrics, 1) // see note on db.clear()
 			})
 		})
 		Context("adding 2", func() {
@@ -60,7 +61,8 @@ var _ = Describe("Metrics Db", func() {
 				db = newMetricsDb()
 				db.Add(p1)
 				db.Add(p2)
-				assert.Len(GinkgoT(), db.List(), 2)
+				assert.Len(GinkgoT(), db.List(), 0)          // see note on db.clear()
+				assert.Len(GinkgoT(), db.incomingMetrics, 2) // see note on db.clear()
 			})
 		})
 	})

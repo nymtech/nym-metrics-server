@@ -58,7 +58,7 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 }
 
 // ListMixMetrics lists mixnode activity
-// @Summary Lists mixnode activity in the past 1 second
+// @Summary Lists mixnode activity in the past 3 seconds
 // @Description You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
 // @ID listMixMetrics
 // @Accept  json

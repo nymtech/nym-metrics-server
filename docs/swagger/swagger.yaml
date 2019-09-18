@@ -11,7 +11,6 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
     type: object
   models.MixHostInfo:
@@ -25,7 +24,6 @@ definitions:
     required:
     - pubKey
     - layer
-    - host
     type: object
   models.MixMetric:
     properties:
@@ -51,7 +49,6 @@ definitions:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
     required:
-    - host
     - pubKey
     type: object
   models.RegisteredClient:
@@ -127,7 +124,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists mixnode activity in the past 1 second
+      summary: Lists mixnode activity in the past 3 seconds
       tags:
       - metrics
     post:
