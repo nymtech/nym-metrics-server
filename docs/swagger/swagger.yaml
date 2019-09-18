@@ -96,9 +96,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: You'd never want to run this in production, but for demo and debug
-        purposes it gives us the ability to generate useful visualisations of network
-        traffic.
+      description: For demo and debug purposes it gives us the ability to generate
+        useful visualisations of network traffic.
       operationId: listMixMetrics
       produces:
       - application/json
@@ -130,9 +129,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: You'd never want to run this in production, but for demo and debug
-        purposes it gives us the ability to generate useful visualisations of network
-        traffic.
+      description: For demo and debug purposes it gives us the ability to generate
+        useful visualisations of network traffic.
       operationId: createMixMetric
       parameters:
       - description: object

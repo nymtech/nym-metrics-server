@@ -33,7 +33,7 @@
         },
         "/api/metrics/mixes": {
             "get": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -79,7 +79,7 @@
                 }
             },
             "post": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
