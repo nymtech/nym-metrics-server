@@ -11,8 +11,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - pubKey
     - host
+    - pubKey
     type: object
   models.MixHostInfo:
     properties:
@@ -61,8 +61,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
+    - host
     type: object
   models.Topology:
     properties:

@@ -344,8 +344,8 @@
         "models.HostInfo": {
             "type": "object",
             "required": [
-                "pubKey",
-                "host"
+                "host",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -419,8 +419,8 @@
         "models.RegisteredClient": {
             "type": "object",
             "required": [
-                "host",
-                "pubKey"
+                "pubKey",
+                "host"
             ],
             "properties": {
                 "host": {
