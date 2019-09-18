@@ -53,3 +53,9 @@ func (h *Hub) Run() {
 		}
 	}
 }
+
+// Notify allows us to send information to all connected clients on the
+// broadcast channel.
+func (hub *Hub) Notify(msg string) {
+	hub.broadcast <- []byte(msg)
+}
