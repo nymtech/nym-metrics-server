@@ -87,5 +87,5 @@ func (db *db) killOldsters() {
 // TODO: kill magic number by pulling this out into a config
 func timeWindow() int64 {
 	d := time.Duration(-5)
-	return timemock.Now().Add(time.Duration(d * time.Second)).Unix()
+	return timemock.Now().Add(time.Duration(d * time.Second)).UnixNano()
 }

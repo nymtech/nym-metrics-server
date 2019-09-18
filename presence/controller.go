@@ -1,9 +1,11 @@
 package presence
 
 import (
+	"net"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nymtech/directory-server/constants"
 	"github.com/nymtech/directory-server/models"
 )
 
@@ -53,6 +55,7 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	controller.service.AddMixNodePresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
@@ -99,6 +102,7 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	controller.service.AddMixProviderPresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }

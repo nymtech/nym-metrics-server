@@ -11,20 +11,20 @@ type Db struct {
 }
 
 // Add provides a mock function with given fields: _a0
-func (_m *Db) Add(_a0 models.MixMetric) {
+func (_m *Db) Add(_a0 models.PersistedMixMetric) {
 	_m.Called(_a0)
 }
 
 // List provides a mock function with given fields:
-func (_m *Db) List() []models.MixMetric {
+func (_m *Db) List() []models.PersistedMixMetric {
 	ret := _m.Called()
 
-	var r0 []models.MixMetric
-	if rf, ok := ret.Get(0).(func() []models.MixMetric); ok {
+	var r0 []models.PersistedMixMetric
+	if rf, ok := ret.Get(0).(func() []models.PersistedMixMetric); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]models.MixMetric)
+			r0 = ret.Get(0).([]models.PersistedMixMetric)
 		}
 	}
 

@@ -1,3 +1,4 @@
+basePath: '{{.BasePath}}'
 definitions:
   models.Error:
     properties:
@@ -22,8 +23,8 @@ definitions:
       pubKey:
         type: string
     required:
-    - pubKey
     - layer
+    - pubKey
     type: object
   models.MixMetric:
     properties:
@@ -67,6 +68,7 @@ definitions:
       mixProviderNodes:
         type: object
     type: object
+host: '{{.Host}}'
 info:
   contact: {}
   description: This is a temporarily centralized directory/PKI/metrics API to allow
@@ -83,22 +85,22 @@ paths:
     get:
       consumes:
       - application/json
-      description: Returns a 200 if the directory server is available. Good route
-        to use for automated monitoring.
+      description: Returns a 200 if the directory server is available.
       operationId: healthCheck
       produces:
       - application/json
       responses:
         "200": {}
-      summary: Lets the directory server tell the world it's alive.
+      summary: Lets the directory server tell the world it's alive
       tags:
       - healthcheck
   /api/metrics/mixes:
     get:
       consumes:
       - application/json
-      description: For demo and debug purposes it gives us the ability to generate
-        useful visualisations of network traffic.
+      description: You'd never want to run this in production, but for demo and debug
+        purposes it gives us the ability to generate useful visualisations of network
+        traffic.
       operationId: listMixMetrics
       produces:
       - application/json
@@ -124,14 +126,15 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists mixnode activity in the past 3 seconds
+      summary: Lists mixnode activity in the past 1 second
       tags:
       - metrics
     post:
       consumes:
       - application/json
-      description: For demo and debug purposes it gives us the ability to generate
-        useful visualisations of network traffic.
+      description: You'd never want to run this in production, but for demo and debug
+        purposes it gives us the ability to generate useful visualisations of network
+        traffic.
       operationId: createMixMetric
       parameters:
       - description: object

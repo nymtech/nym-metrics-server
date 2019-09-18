@@ -2,7 +2,7 @@ package models
 
 // HostInfo comes from a node telling us it's alive
 type HostInfo struct {
-	Host   string `json:"host" binding:"required"`
+	Host   string `json:"host"`
 	PubKey string `json:"pubKey" binding:"required"`
 }
 
@@ -26,7 +26,6 @@ type Presence struct {
 
 // RegisteredClient holds information about client registered at a provider
 type RegisteredClient struct {
-	Host   string `json:"host" binding:"required"`
 	PubKey string `json:"pubKey" binding:"required"`
 }
 

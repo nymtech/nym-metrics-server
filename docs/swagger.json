@@ -11,10 +11,12 @@
         },
         "version": "1.0"
     },
+    "host": "{{.Host}}",
+    "basePath": "{{.BasePath}}",
     "paths": {
         "/api/healthcheck": {
             "get": {
-                "description": "Returns a 200 if the directory server is available. Good route to use for automated monitoring.",
+                "description": "Returns a 200 if the directory server is available.",
                 "consumes": [
                     "application/json"
                 ],
@@ -24,7 +26,7 @@
                 "tags": [
                     "healthcheck"
                 ],
-                "summary": "Lets the directory server tell the world it's alive.",
+                "summary": "Lets the directory server tell the world it's alive",
                 "operationId": "healthCheck",
                 "responses": {
                     "200": {}
@@ -33,7 +35,7 @@
         },
         "/api/metrics/mixes": {
             "get": {
-                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -43,7 +45,7 @@
                 "tags": [
                     "metrics"
                 ],
-                "summary": "Lists mixnode activity in the past 3 seconds",
+                "summary": "Lists mixnode activity in the past 1 second",
                 "operationId": "listMixMetrics",
                 "responses": {
                     "200": {
@@ -79,7 +81,7 @@
                 }
             },
             "post": {
-                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -358,8 +360,8 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
-                "pubKey",
-                "layer"
+                "layer",
+                "pubKey"
             ],
             "properties": {
                 "host": {
