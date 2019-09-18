@@ -1,9 +1,9 @@
 package server
 
 import (
+	"html/template"
 	"io/ioutil"
-	"strings"
-	"text/template"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/directory-server/healthcheck"
@@ -46,16 +46,17 @@ func New() *gin.Engine {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
 
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "/server/websocket/home.html", nil)
+	})
+
 	return router
 }
 
 // loadTemplate loads templates embedded by go-assets-builder
 func loadTemplate() (*template.Template, error) {
 	t := template.New("")
-	for name, file := range Assets.Files {
-		if file.IsDir() || !strings.HasSuffix(name, ".tmpl") {
-			continue
-		}
+	for name, file := range websocket.Assets.Files {
 		h, err := ioutil.ReadAll(file)
 		if err != nil {
 			return nil, err
