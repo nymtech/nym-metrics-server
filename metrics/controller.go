@@ -36,7 +36,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 
 // CreateMixMetric ...
 // @Summary Create a metric detailing how many messages a given mixnode sent and received
-// @Description You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
+// @Description For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
 // @ID createMixMetric
 // @Accept  json
 // @Produce  json
@@ -59,7 +59,7 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 
 // ListMixMetrics lists mixnode activity
 // @Summary Lists mixnode activity in the past 3 seconds
-// @Description You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
+// @Description For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
 // @ID listMixMetrics
 // @Accept  json
 // @Produce  json
