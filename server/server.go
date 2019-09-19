@@ -39,7 +39,6 @@ func New() *gin.Engine {
 	// Set up websocket handlers
 	hub := websocket.NewHub()
 	go hub.Run()
-
 	router.GET("/ws", func(c *gin.Context) {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
