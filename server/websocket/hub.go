@@ -6,7 +6,7 @@ package websocket
 
 // Broadcaster notifies attached clients
 type Broadcaster interface {
-	Notify(msg string)
+	Notify(msg []byte)
 }
 
 // Hub maintains the set of active clients and broadcasts messages to the
@@ -61,6 +61,6 @@ func (h *Hub) Run() {
 
 // Notify allows us to send information to all connected clients on the
 // broadcast channel.
-func (h *Hub) Notify(msg string) {
-	h.broadcast <- []byte(msg)
+func (h *Hub) Notify(msg []byte) {
+	h.broadcast <- msg
 }

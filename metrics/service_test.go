@@ -56,12 +56,12 @@ var _ = Describe("metrics.Service", func() {
 			serv = *newService(&mockDb, &mockHub)
 			mockDb.On("Add", p1)
 			j, _ := json.Marshal(p1)
-			mockHub.On("Notify", string(j))
+			mockHub.On("Notify", j)
 
 			serv.CreateMixMetric(m1)
 
 			mockDb.AssertCalled(GinkgoT(), "Add", p1)
-			mockHub.AssertCalled(GinkgoT(), "Notify", string(j))
+			mockHub.AssertCalled(GinkgoT(), "Notify", j)
 		})
 	})
 	Describe("Listing mixmetrics", func() {

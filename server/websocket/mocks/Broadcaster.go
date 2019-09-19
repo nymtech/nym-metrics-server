@@ -10,6 +10,6 @@ type Broadcaster struct {
 }
 
 // Notify provides a mock function with given fields: msg
-func (_m *Broadcaster) Notify(msg string) {
+func (_m *Broadcaster) Notify(msg []byte) {
 	_m.Called(msg)
 }
