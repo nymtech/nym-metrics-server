@@ -1,6 +1,9 @@
 package metrics
 
-import "github.com/nymtech/directory-server/models"
+import (
+	"github.com/BorisBorshevsky/timemock"
+	"github.com/nymtech/directory-server/models"
+)
 
 type service struct {
 	db Db
@@ -17,9 +20,13 @@ func newService(db Db) *service {
 }
 
 func (service *service) CreateMixMetric(metric models.MixMetric) {
-	service.db.Add(metric)
+	persist := models.PersistedMixMetric{
+		MixMetric: metric,
+		Timestamp: timemock.Now().UnixNano(),
+	}
+	service.db.Add(persist)
 }
 
-func (service *service) List() []models.MixMetric {
+func (service *service) List() []models.PersistedMixMetric {
 	return service.db.List()
 }

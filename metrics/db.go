@@ -9,21 +9,23 @@ import (
 
 type db struct {
 	sync.Mutex
-	mixMetrics []models.MixMetric
-	ticker     *time.Ticker
+	incomingMetrics []models.PersistedMixMetric
+	mixMetrics      []models.PersistedMixMetric
+	ticker          *time.Ticker
 }
 
 // Db holds metrics information
 type Db interface {
-	Add(models.MixMetric)
-	List() []models.MixMetric
+	Add(models.PersistedMixMetric)
+	List() []models.PersistedMixMetric
 }
 
 func newMetricsDb() *db {
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(3 * time.Second)
 
 	d := db{
-		mixMetrics: []models.MixMetric{},
+		incomingMetrics: []models.PersistedMixMetric{},
+		mixMetrics:      []models.PersistedMixMetric{},
 	}
 	d.ticker = ticker
 	go dbCleaner(ticker, &d)
@@ -31,15 +33,15 @@ func newMetricsDb() *db {
 	return &d
 }
 
-// Add adds a models.MixMetric to the database
-func (db *db) Add(metric models.MixMetric) {
+// Add adds a models.PersistedMixMetric to the database
+func (db *db) Add(metric models.PersistedMixMetric) {
 	db.Lock()
 	defer db.Unlock()
-	db.mixMetrics = append(db.mixMetrics, metric)
+	db.incomingMetrics = append(db.incomingMetrics, metric)
 }
 
-// List returns all models.MixMetric in the database
-func (db *db) List() []models.MixMetric {
+// List returns all models.PersistedMixMetric in the database
+func (db *db) List() []models.PersistedMixMetric {
 	db.Lock()
 	defer db.Unlock()
 	return db.mixMetrics
@@ -55,9 +57,23 @@ func dbCleaner(ticker *time.Ticker, database *db) {
 	}
 }
 
-// clear kills any stale presence info
+// clear kills any stale metrics info
+//
+// This may look a little weird, but there's a logic to it.
+//
+// If we have only one array holding metrics, incoming metrics get stacked up
+// for a while, and then all destroyed at once, so  the list we can provider
+// starts empty, swells, then becomes empty again. This doesn't offer clients
+// a consistent view of what happened.
+//
+// Instead we Add() to an `incomingMixMetrics` slice, and read from the
+// `mixMetrics` slice. When we clear the db, we can transfer everythign from
+// `incoming` to `mixMetrics` and have a full list, clearing incoming.
+// This way we can offer a consistent view of what happened
+// over any individual bit of time.
 func (db *db) clear() {
 	db.Lock()
 	defer db.Unlock()
-	db.mixMetrics = db.mixMetrics[:0]
+	db.mixMetrics = db.incomingMetrics
+	db.incomingMetrics = db.incomingMetrics[:0]
 }

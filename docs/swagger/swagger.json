@@ -33,7 +33,7 @@
         },
         "/api/metrics/mixes": {
             "get": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -43,7 +43,7 @@
                 "tags": [
                     "metrics"
                 ],
-                "summary": "Lists mixnode activity in the past 1 second",
+                "summary": "Lists mixnode activity in the past 3 seconds",
                 "operationId": "listMixMetrics",
                 "responses": {
                     "200": {
@@ -79,7 +79,7 @@
                 }
             },
             "post": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -344,7 +344,6 @@
         "models.HostInfo": {
             "type": "object",
             "required": [
-                "host",
                 "pubKey"
             ],
             "properties": {
@@ -360,8 +359,7 @@
             "type": "object",
             "required": [
                 "pubKey",
-                "layer",
-                "host"
+                "layer"
             ],
             "properties": {
                 "host": {
@@ -398,7 +396,6 @@
         "models.MixProviderHostInfo": {
             "type": "object",
             "required": [
-                "host",
                 "pubKey"
             ],
             "properties": {

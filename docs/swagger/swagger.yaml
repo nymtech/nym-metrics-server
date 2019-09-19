@@ -11,7 +11,6 @@ definitions:
       pubKey:
         type: string
     required:
-    - host
     - pubKey
     type: object
   models.MixHostInfo:
@@ -25,7 +24,6 @@ definitions:
     required:
     - pubKey
     - layer
-    - host
     type: object
   models.MixMetric:
     properties:
@@ -51,7 +49,6 @@ definitions:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
     required:
-    - host
     - pubKey
     type: object
   models.RegisteredClient:
@@ -99,9 +96,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: You'd never want to run this in production, but for demo and debug
-        purposes it gives us the ability to generate useful visualisations of network
-        traffic.
+      description: For demo and debug purposes it gives us the ability to generate
+        useful visualisations of network traffic.
       operationId: listMixMetrics
       produces:
       - application/json
@@ -127,15 +123,14 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists mixnode activity in the past 1 second
+      summary: Lists mixnode activity in the past 3 seconds
       tags:
       - metrics
     post:
       consumes:
       - application/json
-      description: You'd never want to run this in production, but for demo and debug
-        purposes it gives us the ability to generate useful visualisations of network
-        traffic.
+      description: For demo and debug purposes it gives us the ability to generate
+        useful visualisations of network traffic.
       operationId: createMixMetric
       parameters:
       - description: object

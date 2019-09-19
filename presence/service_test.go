@@ -1,6 +1,8 @@
 package presence
 
 import (
+	"time"
+
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
 	"github.com/nymtech/directory-server/presence/mocks"
@@ -22,6 +24,8 @@ var _ = Describe("presence.Service", func() {
 	BeforeEach(func() {
 		mockDb = *new(mocks.Db)
 		serv = *newService(&mockDb)
+		var now = time.Now()
+		timemock.Freeze(now)
 
 		// Set up fixtures
 		mix1 = models.MixHostInfo{
@@ -34,7 +38,7 @@ var _ = Describe("presence.Service", func() {
 
 		presence1 = models.MixNodePresence{
 			MixHostInfo: mix1,
-			LastSeen:    timemock.Now().Unix(),
+			LastSeen:    timemock.Now().UnixNano(),
 		}
 
 		coco1 = models.HostInfo{
@@ -44,7 +48,7 @@ var _ = Describe("presence.Service", func() {
 
 		presence2 = models.Presence{
 			HostInfo: coco1,
-			LastSeen: timemock.Now().Unix(),
+			LastSeen: timemock.Now().UnixNano(),
 		}
 	})
 

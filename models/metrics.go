@@ -7,3 +7,11 @@ type MixMetric struct {
 	Sent     map[string]uint `json:"sent" binding:"required"`
 	Received *uint           `json:"received" binding:"exists"`
 }
+
+// PersistedMixMetric is a saved MixMetric with a timestamp recording when it
+// was seen by the directory server. It can be used to build visualizations of
+// mixnet traffic.
+type PersistedMixMetric struct {
+	MixMetric
+	Timestamp int64 `json:"timestamp" binding:"required"`
+}
