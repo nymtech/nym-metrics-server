@@ -27,7 +27,7 @@ type Controller interface {
 // New returns a new metrics.Controller
 func New(cfg Config) Controller {
 	db := newMetricsDb()
-	return &controller{newService(db, *cfg.Hub)}
+	return &controller{newService(db, cfg.Hub)}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {

@@ -4,6 +4,11 @@ package websocket
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Broadcaster notifies attached clients
+type Broadcaster interface {
+	Notify(msg string)
+}
+
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
@@ -56,6 +61,6 @@ func (h *Hub) Run() {
 
 // Notify allows us to send information to all connected clients on the
 // broadcast channel.
-func (hub *Hub) Notify(msg string) {
-	hub.broadcast <- []byte(msg)
+func (h *Hub) Notify(msg string) {
+	h.broadcast <- []byte(msg)
 }

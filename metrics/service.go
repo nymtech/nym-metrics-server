@@ -1,6 +1,9 @@
 package metrics
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/directory-server/models"
 	"github.com/nymtech/directory-server/server/websocket"
@@ -8,7 +11,7 @@ import (
 
 type service struct {
 	db  Db
-	hub websocket.Hub
+	hub websocket.Broadcaster
 }
 
 // Service defines the REST service interface for metrics.
@@ -17,7 +20,7 @@ type Service interface {
 	List() []models.MixMetric
 }
 
-func newService(db Db, hub websocket.Hub) *service {
+func newService(db Db, hub websocket.Broadcaster) *service {
 	return &service{
 		db:  db,
 		hub: hub,
@@ -30,7 +33,13 @@ func (service *service) CreateMixMetric(metric models.MixMetric) {
 		Timestamp: timemock.Now().UnixNano(),
 	}
 	service.db.Add(persist)
-	service.hub.Notify(persist.PubKey)
+
+	b, err := json.Marshal(persist)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	service.hub.Notify(string(b))
 }
 
 func (service *service) List() []models.PersistedMixMetric {
