@@ -25,8 +25,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 }
 
 // HealthCheck ...
-// @Summary Lets the directory server tell the world it's alive
-// @Description Returns a 200 if the directory server is available.
+// @Summary Lets the directory server tell the world it's alive.
+// @Description Returns a 200 if the directory server is available. Good route to use for automated monitoring.
 // @ID healthCheck
 // @Accept  json
 // @Produce  json

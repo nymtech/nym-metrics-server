@@ -5,11 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/directory-server/server/websocket"
 )
 
-// Config ...
+// Config for this controller
 type Config struct {
-	// Db badger.
+	Hub *websocket.Hub
 }
 
 // controller is the metrics controller
@@ -24,9 +25,9 @@ type Controller interface {
 }
 
 // New returns a new metrics.Controller
-func New() Controller {
+func New(cfg Config) Controller {
 	db := newMetricsDb()
-	return &controller{newService(db)}
+	return &controller{newService(db, cfg.Hub)}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {

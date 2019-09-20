@@ -83,13 +83,14 @@ paths:
     get:
       consumes:
       - application/json
-      description: Returns a 200 if the directory server is available.
+      description: Returns a 200 if the directory server is available. Good route
+        to use for automated monitoring.
       operationId: healthCheck
       produces:
       - application/json
       responses:
         "200": {}
-      summary: Lets the directory server tell the world it's alive
+      summary: Lets the directory server tell the world it's alive.
       tags:
       - healthcheck
   /api/metrics/mixes:
