@@ -26,6 +26,7 @@ type Presence struct {
 
 // RegisteredClient holds information about client registered at a provider
 type RegisteredClient struct {
+	ID     string `json:"id" binding:"required"`
 	PubKey string `json:"pubKey" binding:"required"`
 }
 
