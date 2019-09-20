@@ -40,6 +40,7 @@ func (service *service) CreateMixMetric(metric models.MixMetric) {
 		return
 	}
 	service.hub.Notify(b)
+
 }
 
 func (service *service) List() []models.PersistedMixMetric {
