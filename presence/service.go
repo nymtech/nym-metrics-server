@@ -36,10 +36,10 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	service.db.AddMix(presence)
 }
 
-func (service *service) AddCocoNodePresence(info models.HostInfo) {
-	presence := models.Presence{
-		HostInfo: info,
-		LastSeen: timemock.Now().UnixNano(),
+func (service *service) AddCocoNodePresence(info models.CocoHostInfo) {
+	presence := models.CocoPresence{
+		CocoHostInfo: info,
+		LastSeen:     timemock.Now().UnixNano(),
 	}
 	service.db.AddCoco(presence)
 }

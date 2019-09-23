@@ -1,18 +1,21 @@
 basePath: '{{.BasePath}}'
 definitions:
-  models.Error:
-    properties:
-      error:
-        type: string
-    type: object
-  models.HostInfo:
+  models.CocoHostInfo:
     properties:
       host:
         type: string
       pubKey:
         type: string
+      type:
+        type: string
     required:
     - pubKey
+    - type
+    type: object
+  models.Error:
+    properties:
+      error:
+        type: string
     type: object
   models.MixHostInfo:
     properties:
@@ -180,7 +183,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.HostInfo'
+          $ref: '#/definitions/models.CocoHostInfo'
           type: object
       produces:
       - application/json

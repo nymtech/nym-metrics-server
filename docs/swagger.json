@@ -153,7 +153,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.HostInfo"
+                            "$ref": "#/definitions/models.CocoHostInfo"
                         }
                     }
                 ],
@@ -335,24 +335,28 @@
         }
     },
     "definitions": {
-        "models.Error": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.HostInfo": {
+        "models.CocoHostInfo": {
             "type": "object",
             "required": [
-                "pubKey"
+                "pubKey",
+                "type"
             ],
             "properties": {
                 "host": {
                     "type": "string"
                 },
                 "pubKey": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string"
                 }
             }

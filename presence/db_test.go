@@ -22,30 +22,36 @@ var _ = Describe("Presence Db", func() {
 	})
 	Describe("for coconodes", func() {
 		var (
-			presence1 models.Presence
-			presence2 models.Presence
+			presence1 models.CocoPresence
+			presence2 models.CocoPresence
 		)
 		var db *db
 		BeforeEach(func() {
 			db = newPresenceDb()
 
 			// Set up fixtures
-			var mix1 = models.HostInfo{
-				Host:   "foo.com:8000",
-				PubKey: "pubkey1",
+			var coco1 = models.CocoHostInfo{
+				HostInfo: models.HostInfo{
+					Host:   "foo.com:8000",
+					PubKey: "pubkey1",
+				},
+				Type: "foo",
 			}
-			presence1 = models.Presence{
-				HostInfo: mix1,
-				LastSeen: timemock.Now().UnixNano(),
+			presence1 = models.CocoPresence{
+				CocoHostInfo: coco1,
+				LastSeen:     timemock.Now().UnixNano(),
 			}
 
-			var mix2 = models.HostInfo{
-				Host:   "bar.com:8000",
-				PubKey: "pubkey2",
+			var coco2 = models.CocoHostInfo{
+				HostInfo: models.HostInfo{
+					Host:   "foo.com:8000",
+					PubKey: "pubkey2",
+				},
+				Type: "foo",
 			}
-			presence2 = models.Presence{
-				HostInfo: mix2,
-				LastSeen: timemock.Now().UnixNano(),
+			presence2 = models.CocoPresence{
+				CocoHostInfo: coco2,
+				LastSeen:     timemock.Now().UnixNano(),
 			}
 		})
 		Describe("adding presence", func() {
