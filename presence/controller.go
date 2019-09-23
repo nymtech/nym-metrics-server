@@ -55,7 +55,12 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	ip, _, err := net.SplitHostPort(json.Host)
+	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
+		// keep host info we received
+	} else {
+		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	}
 	controller.service.AddMixNodePresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
@@ -78,6 +83,12 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 	if err := c.ShouldBindJSON(&hostInfo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+	ip, _, err := net.SplitHostPort(hostInfo.Host)
+	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
+		// keep host info we received
+	} else {
+		hostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
 	controller.service.AddCocoNodePresence(hostInfo)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
@@ -102,7 +113,12 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	ip, _, err := net.SplitHostPort(json.Host)
+	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
+		// keep host info we received
+	} else {
+		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	}
 	controller.service.AddMixProviderPresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
