@@ -1,7 +1,6 @@
 package presence
 
 import (
-	"fmt"
 	"net"
 	"net/http"
 
@@ -56,7 +55,6 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("presence from", json.Host)
 	ip, _, err := net.SplitHostPort(json.Host)
 	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
 		// keep host info we received
