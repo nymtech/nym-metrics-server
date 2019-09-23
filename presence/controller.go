@@ -119,7 +119,6 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 	} else {
 		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
-	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	controller.service.AddMixProviderPresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
