@@ -15,8 +15,8 @@ var _ = Describe("presence.Service", func() {
 	var (
 		mix1      models.MixHostInfo
 		presence1 models.MixNodePresence
-		coco1     models.HostInfo
-		presence2 models.Presence
+		coco1     models.CocoHostInfo
+		presence2 models.CocoPresence
 		mockDb    mocks.Db
 
 		serv service
@@ -41,14 +41,17 @@ var _ = Describe("presence.Service", func() {
 			LastSeen:    timemock.Now().UnixNano(),
 		}
 
-		coco1 = models.HostInfo{
-			Host:   "bar.com:8000",
-			PubKey: "pubkey2",
+		coco1 = models.CocoHostInfo{
+			HostInfo: models.HostInfo{
+				Host:   "bar.com:8000",
+				PubKey: "pubkey2",
+			},
+			Type: "foo",
 		}
 
-		presence2 = models.Presence{
-			HostInfo: coco1,
-			LastSeen: timemock.Now().UnixNano(),
+		presence2 = models.CocoPresence{
+			CocoHostInfo: coco1,
+			LastSeen:     timemock.Now().UnixNano(),
 		}
 	})
 

@@ -18,6 +18,12 @@ type MixNodePresence struct {
 	LastSeen int64 `json:"lastSeen" binding:"required"`
 }
 
+// CocoPresence holds presence info for a coconut node.
+type CocoPresence struct {
+	CocoHostInfo
+	LastSeen int64 `json:"lastSeen" binding:"required"`
+}
+
 // Presence lets the server tell clients when a node was last seen
 type Presence struct {
 	HostInfo
@@ -27,6 +33,12 @@ type Presence struct {
 // RegisteredClient holds information about client registered at a provider
 type RegisteredClient struct {
 	PubKey string `json:"pubKey" binding:"required"`
+}
+
+// CocoHostInfo comes from a coconut node telling us it's alive
+type CocoHostInfo struct {
+	HostInfo
+	Type string `json:"type" binding:"required"`
 }
 
 // MixProviderHostInfo comes from a node telling us it's alive
@@ -43,7 +55,7 @@ type MixHostInfo struct {
 
 // Topology shows us the current state of the overall Nym network
 type Topology struct {
-	CocoNodes        map[string]Presence
+	CocoNodes        map[string]CocoPresence
 	MixNodes         map[string]MixNodePresence
 	MixProviderNodes map[string]MixProviderPresence
 }

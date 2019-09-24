@@ -10,7 +10,7 @@ import (
 
 // Db holds presence information
 type Db interface {
-	AddCoco(models.Presence)
+	AddCoco(models.CocoPresence)
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)
 	Topology() models.Topology
@@ -20,20 +20,20 @@ type db struct {
 	// TODO: it's slightly inefficient to have a single mutex for all database, because right now
 	// if a mix node was being added, we wouldn't be able to touch cocoNodes
 	sync.Mutex
-	cocoNodes        map[string]models.Presence
+	cocoNodes        map[string]models.CocoPresence
 	mixNodes         map[string]models.MixNodePresence
 	mixProviderNodes map[string]models.MixProviderPresence
 }
 
 func newPresenceDb() *db {
 	return &db{
-		cocoNodes:        map[string]models.Presence{},
+		cocoNodes:        map[string]models.CocoPresence{},
 		mixNodes:         map[string]models.MixNodePresence{},
 		mixProviderNodes: map[string]models.MixProviderPresence{},
 	}
 }
 
-func (db *db) AddCoco(presence models.Presence) {
+func (db *db) AddCoco(presence models.CocoPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
