@@ -1,17 +1,35 @@
 definitions:
-  models.Error:
-    properties:
-      error:
-        type: string
-    type: object
-  models.HostInfo:
+  models.CocoHostInfo:
     properties:
       host:
         type: string
       pubKey:
         type: string
+      type:
+        type: string
     required:
     - pubKey
+    - type
+    type: object
+  models.CocoPresence:
+    properties:
+      host:
+        type: string
+      lastSeen:
+        type: integer
+      pubKey:
+        type: string
+      type:
+        type: string
+    required:
+    - pubKey
+    - type
+    - lastSeen
+    type: object
+  models.Error:
+    properties:
+      error:
+        type: string
     type: object
   models.MixHostInfo:
     properties:
@@ -38,6 +56,21 @@ definitions:
     required:
     - pubKey
     type: object
+  models.MixNodePresence:
+    properties:
+      host:
+        type: string
+      lastSeen:
+        type: integer
+      layer:
+        type: integer
+      pubKey:
+        type: string
+    required:
+    - lastSeen
+    - pubKey
+    - layer
+    type: object
   models.MixProviderHostInfo:
     properties:
       host:
@@ -51,6 +84,22 @@ definitions:
     required:
     - pubKey
     type: object
+  models.MixProviderPresence:
+    properties:
+      host:
+        type: string
+      lastSeen:
+        type: integer
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+    required:
+    - lastSeen
+    - pubKey
+    type: object
   models.RegisteredClient:
     properties:
       pubKey:
@@ -61,11 +110,17 @@ definitions:
   models.Topology:
     properties:
       cocoNodes:
-        type: object
+        items:
+          $ref: '#/definitions/models.CocoPresence'
+        type: array
       mixNodes:
-        type: object
+        items:
+          $ref: '#/definitions/models.MixNodePresence'
+        type: array
       mixProviderNodes:
-        type: object
+        items:
+          $ref: '#/definitions/models.MixProviderPresence'
+        type: array
     type: object
 info:
   contact: {}
@@ -178,7 +233,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.HostInfo'
+          $ref: '#/definitions/models.CocoHostInfo'
           type: object
       produces:
       - application/json

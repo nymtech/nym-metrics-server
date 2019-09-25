@@ -74,8 +74,8 @@ var _ = Describe("presence.Service", func() {
 	Describe("Listing presence info", func() {
 		Context("when receiving a list request", func() {
 			It("should call to the Db", func() {
-				list := map[string]models.MixNodePresence{
-					presence1.PubKey: presence1,
+				list := []models.MixNodePresence{
+					presence1,
 				}
 				topology := models.Topology{
 					MixNodes: list,

@@ -55,7 +55,7 @@ type RegisteredClient struct {
 
 // Topology shows us the current state of the overall Nym network
 type Topology struct {
-	CocoNodes        map[string]CocoPresence
-	MixNodes         map[string]MixNodePresence
-	MixProviderNodes map[string]MixProviderPresence
+	CocoNodes        []CocoPresence
+	MixNodes         []MixNodePresence
+	MixProviderNodes []MixProviderPresence
 }
