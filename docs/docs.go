@@ -22,7 +22,7 @@ var doc = `{
         "contact": {},
         "license": {
             "name": "Apache 2.0",
-            "url": "https://github.com/nymtech/directory-server/license"
+            "url": "https://github.com/nymtech/nym-directory/license"
         },
         "version": "1.0"
     },

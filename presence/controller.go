@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nymtech/directory-server/constants"
-	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/nym-directory/constants"
+	"github.com/nymtech/nym-directory/models"
 )
 
 // controller is the presence controller

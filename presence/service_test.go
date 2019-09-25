@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
-	"github.com/nymtech/directory-server/models"
-	"github.com/nymtech/directory-server/presence/mocks"
+	"github.com/nymtech/nym-directory/models"
+	"github.com/nymtech/nym-directory/presence/mocks"
 	. "github.com/onsi/ginkgo"
 	_ "github.com/onsi/gomega"
 	"github.com/stretchr/testify/assert"

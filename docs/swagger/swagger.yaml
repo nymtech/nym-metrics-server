@@ -74,7 +74,7 @@ info:
     be folded into other parts of Nym.
   license:
     name: Apache 2.0
-    url: https://github.com/nymtech/directory-server/license
+    url: https://github.com/nymtech/nym-directory/license
   termsOfService: http://swagger.io/terms/
   title: Nym Directory API
   version: "1.0"

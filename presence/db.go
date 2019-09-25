@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
-	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/nym-directory/models"
 )
 
 // Db holds presence information

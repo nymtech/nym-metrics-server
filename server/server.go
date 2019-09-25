@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nymtech/directory-server/healthcheck"
-	"github.com/nymtech/directory-server/metrics"
-	"github.com/nymtech/directory-server/presence"
-	"github.com/nymtech/directory-server/server/html"
-	"github.com/nymtech/directory-server/server/websocket"
+	"github.com/nymtech/nym-directory/healthcheck"
+	"github.com/nymtech/nym-directory/metrics"
+	"github.com/nymtech/nym-directory/presence"
+	"github.com/nymtech/nym-directory/server/html"
+	"github.com/nymtech/nym-directory/server/websocket"
 
 	"github.com/gin-contrib/cors"
 	swaggerFiles "github.com/swaggo/files"

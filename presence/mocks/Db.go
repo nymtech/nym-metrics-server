@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	models "github.com/nymtech/directory-server/models"
+	models "github.com/nymtech/nym-directory/models"
 	mock "github.com/stretchr/testify/mock"
 )
 

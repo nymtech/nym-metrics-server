@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/nym-directory/models"
 )
 
 type db struct {

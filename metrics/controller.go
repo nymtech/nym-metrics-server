@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nymtech/directory-server/models"
-	"github.com/nymtech/directory-server/server/websocket"
+	"github.com/nymtech/nym-directory/models"
+	"github.com/nymtech/nym-directory/server/websocket"
 )
 
 // Config for this controller

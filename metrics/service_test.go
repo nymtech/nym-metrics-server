@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
-	"github.com/nymtech/directory-server/metrics/mocks"
-	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/nym-directory/metrics/mocks"
+	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"gotest.tools/assert"
 
-	wsMocks "github.com/nymtech/directory-server/server/websocket/mocks"
+	wsMocks "github.com/nymtech/nym-directory/server/websocket/mocks"
 )
 
 var _ = Describe("metrics.Service", func() {
