@@ -2,3 +2,4 @@
 /.idea
 /scripts/deploy.sh
 /main
+/nym-directory
