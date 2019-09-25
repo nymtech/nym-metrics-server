@@ -97,8 +97,8 @@ definitions:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
     required:
-    - lastSeen
     - pubKey
+    - lastSeen
     type: object
   models.RegisteredClient:
     properties:

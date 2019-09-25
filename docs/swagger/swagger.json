@@ -464,8 +464,8 @@
         "models.MixProviderPresence": {
             "type": "object",
             "required": [
-                "lastSeen",
-                "pubKey"
+                "pubKey",
+                "lastSeen"
             ],
             "properties": {
                 "host": {
