@@ -14,9 +14,12 @@ var _ = Describe("Presence Db", func() {
 		Context("when no presence has been registered by any node", func() {
 			It("should return an empty topology object", func() {
 				db := newPresenceDb()
-				assert.Len(GinkgoT(), db.Topology().MixNodes, 0)
 				assert.Len(GinkgoT(), db.Topology().CocoNodes, 0)
+				assert.Len(GinkgoT(), db.Topology().MixNodes, 0)
 				assert.Len(GinkgoT(), db.Topology().MixProviderNodes, 0)
+				assert.NotNil(GinkgoT(), db.Topology().CocoNodes)
+				assert.NotNil(GinkgoT(), db.Topology().MixNodes)
+				assert.NotNil(GinkgoT(), db.Topology().MixProviderNodes)
 			})
 		})
 	})
@@ -70,8 +73,8 @@ var _ = Describe("Presence Db", func() {
 			It("contains the correct presences", func() {
 				db.AddCoco(presence1)
 				db.AddCoco(presence2)
-				assert.Equal(GinkgoT(), presence1, db.Topology().CocoNodes[0])
-				assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[1])
+				assert.Contains(GinkgoT(), db.Topology().CocoNodes, presence1)
+				assert.Contains(GinkgoT(), db.Topology().CocoNodes, presence2)
 			})
 		})
 		Describe("Presences", func() {
@@ -142,8 +145,8 @@ var _ = Describe("Presence Db", func() {
 				It("contains the correct presences", func() {
 					db.AddMix(presence1)
 					db.AddMix(presence2)
-					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[0])
-					assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[1])
+					assert.Contains(GinkgoT(), db.Topology().MixNodes, presence1)
+					assert.Contains(GinkgoT(), db.Topology().MixNodes, presence2)
 				})
 			})
 			Describe("Presences", func() {
@@ -215,8 +218,8 @@ var _ = Describe("Presence Db", func() {
 				It("contains the correct presences", func() {
 					db.AddMixProvider(presence1)
 					db.AddMixProvider(presence2)
-					assert.Equal(GinkgoT(), presence1, db.Topology().MixProviderNodes[0])
-					assert.Equal(GinkgoT(), presence2, db.Topology().MixProviderNodes[1])
+					assert.Contains(GinkgoT(), db.Topology().MixProviderNodes, presence1)
+					assert.Contains(GinkgoT(), db.Topology().MixProviderNodes, presence2)
 				})
 			})
 			Describe("Presences", func() {

@@ -66,9 +66,9 @@ func (db *db) AddMixProvider(presence models.MixProviderPresence) {
 func (db *db) Topology() models.Topology {
 	db.killOldsters()
 
-	var cocoNodes []models.CocoPresence
-	var mixNodes []models.MixNodePresence
-	var mixProviderNodes []models.MixProviderPresence
+	cocoNodes := []models.CocoPresence{}
+	mixNodes := []models.MixNodePresence{}
+	mixProviderNodes := []models.MixProviderPresence{}
 
 	for _, value := range db.cocoNodes {
 		cocoNodes = append(cocoNodes, value)
