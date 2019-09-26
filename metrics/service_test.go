@@ -1,55 +1,85 @@
 package metrics
 
 import (
-	"github.com/nymtech/directory-server/metrics/mocks"
-	"github.com/nymtech/directory-server/models"
+	"encoding/json"
+	"time"
+
+	"github.com/BorisBorshevsky/timemock"
+	"github.com/nymtech/nym-directory/metrics/mocks"
+	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"gotest.tools/assert"
+
+	wsMocks "github.com/nymtech/nym-directory/server/websocket/mocks"
 )
 
 var _ = Describe("metrics.Service", func() {
 	var mockDb mocks.Db
-	var metric1 models.MixMetric
-	var metric2 models.MixMetric
+	var m1 models.MixMetric
+	var m2 models.MixMetric
+	var p1 models.PersistedMixMetric
+	var p2 models.PersistedMixMetric
 
 	var serv service
 	var received uint = 99
+	var now = time.Now()
+	timemock.Freeze(now)
+	var frozenNow = timemock.Now().UnixNano()
 
 	// set up fixtures
-	metric1 = models.MixMetric{
+	m1 = models.MixMetric{
 		PubKey:   "key1",
 		Received: &received,
 		Sent:     map[string]uint{"mixnode3": 99, "mixnode4": 101},
 	}
 
-	metric2 = models.MixMetric{
+	p1 = models.PersistedMixMetric{
+		MixMetric: m1,
+		Timestamp: frozenNow,
+	}
+
+	m2 = models.MixMetric{
 		PubKey:   "key2",
 		Received: &received,
 		Sent:     map[string]uint{"mixnode3": 102, "mixnode4": 103},
 	}
 
-	Describe("Adding a mixmetric", func() {
-		It("should add to the db", func() {
-			mockDb = *new(mocks.Db)
-			serv = *newService(&mockDb)
-			mockDb.On("Add", metric1)
+	p2 = models.PersistedMixMetric{
+		MixMetric: m2,
+		Timestamp: frozenNow,
+	}
 
-			serv.CreateMixMetric(metric1)
-			mockDb.AssertCalled(GinkgoT(), "Add", metric1)
+	Describe("Adding a mixmetric", func() {
+		It("should add a PersistedMixMetric to the db and notify the Hub", func() {
+			mockDb = *new(mocks.Db)
+			mockHub := *new(wsMocks.Broadcaster)
+			serv = *newService(&mockDb, &mockHub)
+			mockDb.On("Add", p1)
+			j, _ := json.Marshal(p1)
+			mockHub.On("Notify", j)
+
+			serv.CreateMixMetric(m1)
+
+			mockDb.AssertCalled(GinkgoT(), "Add", p1)
+			mockHub.AssertCalled(GinkgoT(), "Notify", j)
 		})
 	})
 	Describe("Listing mixmetrics", func() {
 		Context("when receiving a list request", func() {
 			It("should call to the Db", func() {
 				mockDb = *new(mocks.Db)
-				list := []models.MixMetric{metric1, metric2}
+				mockHub := *new(wsMocks.Broadcaster)
 
-				serv = *newService(&mockDb)
+				list := []models.PersistedMixMetric{p1, p2}
+
+				serv = *newService(&mockDb, &mockHub)
 				mockDb.On("List").Return(list)
+
 				result := serv.List()
+
 				mockDb.AssertCalled(GinkgoT(), "List")
-				assert.Equal(GinkgoT(), list[0].PubKey, result[0].PubKey)
-				assert.Equal(GinkgoT(), list[1].PubKey, result[1].PubKey)
+				assert.Equal(GinkgoT(), list[0].MixMetric.PubKey, result[0].MixMetric.PubKey)
+				assert.Equal(GinkgoT(), list[1].MixMetric.PubKey, result[1].MixMetric.PubKey)
 			})
 		})
 	})

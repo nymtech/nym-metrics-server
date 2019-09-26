@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
-	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,30 +22,36 @@ var _ = Describe("Presence Db", func() {
 	})
 	Describe("for coconodes", func() {
 		var (
-			presence1 models.Presence
-			presence2 models.Presence
+			presence1 models.CocoPresence
+			presence2 models.CocoPresence
 		)
 		var db *db
 		BeforeEach(func() {
 			db = newPresenceDb()
 
 			// Set up fixtures
-			var mix1 = models.HostInfo{
-				Host:   "foo.com:8000",
-				PubKey: "pubkey1",
+			var coco1 = models.CocoHostInfo{
+				HostInfo: models.HostInfo{
+					Host:   "foo.com:8000",
+					PubKey: "pubkey1",
+				},
+				Type: "foo",
 			}
-			presence1 = models.Presence{
-				HostInfo: mix1,
-				LastSeen: timemock.Now().Unix(),
+			presence1 = models.CocoPresence{
+				CocoHostInfo: coco1,
+				LastSeen:     timemock.Now().UnixNano(),
 			}
 
-			var mix2 = models.HostInfo{
-				Host:   "bar.com:8000",
-				PubKey: "pubkey2",
+			var coco2 = models.CocoHostInfo{
+				HostInfo: models.HostInfo{
+					Host:   "foo.com:8000",
+					PubKey: "pubkey2",
+				},
+				Type: "foo",
 			}
-			presence2 = models.Presence{
-				HostInfo: mix2,
-				LastSeen: timemock.Now().Unix(),
+			presence2 = models.CocoPresence{
+				CocoHostInfo: coco2,
+				LastSeen:     timemock.Now().UnixNano(),
 			}
 		})
 		Describe("adding presence", func() {
@@ -64,19 +70,19 @@ var _ = Describe("Presence Db", func() {
 			It("contains the correct presences", func() {
 				db.AddCoco(presence1)
 				db.AddCoco(presence2)
-				assert.Equal(GinkgoT(), presence1, db.Topology().CocoNodes[presence1.PubKey])
-				assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[presence2.PubKey])
+				assert.Equal(GinkgoT(), presence1, db.Topology().CocoNodes[0])
+				assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[1])
 			})
 		})
 		Describe("Presences", func() {
 			Context("more than 5 seconds old", func() {
 				It("are not returned in the topology", func() {
-					oldtime := time.Now().Add(time.Duration(-5 * time.Second)).Unix()
+					oldtime := timemock.Now().Add(time.Duration(-5 * time.Second)).UnixNano()
 					presence1.LastSeen = oldtime
 					db.AddCoco(presence1)
 					db.AddCoco(presence2)
 					assert.Len(GinkgoT(), db.Topology().CocoNodes, 1)
-					assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[presence2.PubKey])
+					assert.Equal(GinkgoT(), presence2, db.Topology().CocoNodes[0])
 				})
 			})
 		})
@@ -101,7 +107,7 @@ var _ = Describe("Presence Db", func() {
 			}
 			presence1 = models.MixNodePresence{
 				MixHostInfo: mix1,
-				LastSeen:    timemock.Now().Unix(),
+				LastSeen:    timemock.Now().UnixNano(),
 			}
 
 			var mix2 = models.MixHostInfo{
@@ -113,7 +119,7 @@ var _ = Describe("Presence Db", func() {
 			}
 			presence2 = models.MixNodePresence{
 				MixHostInfo: mix2,
-				LastSeen:    timemock.Now().Unix(),
+				LastSeen:    timemock.Now().UnixNano(),
 			}
 		})
 		Describe("adding mixnode presence", func() {
@@ -124,7 +130,7 @@ var _ = Describe("Presence Db", func() {
 				})
 				It("gets the presence by its public key", func() {
 					db.AddMix(presence1)
-					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[presence1.PubKey])
+					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[0])
 				})
 			})
 			Context("adding two mixnode presences", func() {
@@ -136,19 +142,19 @@ var _ = Describe("Presence Db", func() {
 				It("contains the correct presences", func() {
 					db.AddMix(presence1)
 					db.AddMix(presence2)
-					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[presence1.PubKey])
-					assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[presence2.PubKey])
+					assert.Equal(GinkgoT(), presence1, db.Topology().MixNodes[0])
+					assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[1])
 				})
 			})
 			Describe("Presences", func() {
 				Context("more than 5 seconds old", func() {
 					It("are not returned in the topology", func() {
-						oldtime := time.Now().Add(time.Duration(-5 * time.Second)).Unix()
+						oldtime := timemock.Now().Add(time.Duration(-5 * time.Second)).UnixNano()
 						presence1.LastSeen = oldtime
 						db.AddMix(presence1)
 						db.AddMix(presence2)
 						assert.Len(GinkgoT(), db.Topology().MixNodes, 1)
-						assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[presence2.PubKey])
+						assert.Equal(GinkgoT(), presence2, db.Topology().MixNodes[0])
 					})
 				})
 			})
@@ -174,7 +180,7 @@ var _ = Describe("Presence Db", func() {
 			}
 			presence1 = models.MixProviderPresence{
 				MixProviderHostInfo: mix1,
-				LastSeen:            timemock.Now().Unix(),
+				LastSeen:            timemock.Now().UnixNano(),
 			}
 
 			var mix2 = models.MixProviderHostInfo{
@@ -186,7 +192,7 @@ var _ = Describe("Presence Db", func() {
 			}
 			presence2 = models.MixProviderPresence{
 				MixProviderHostInfo: mix2,
-				LastSeen:            timemock.Now().Unix(),
+				LastSeen:            timemock.Now().UnixNano(),
 			}
 		})
 		Describe("adding mixnode presence", func() {
@@ -197,7 +203,7 @@ var _ = Describe("Presence Db", func() {
 				})
 				It("gets the presence by its public key", func() {
 					db.AddMixProvider(presence1)
-					assert.Equal(GinkgoT(), presence1, db.Topology().MixProviderNodes[presence1.PubKey])
+					assert.Equal(GinkgoT(), presence1, db.Topology().MixProviderNodes[0])
 				})
 			})
 			Context("adding two mixnode presences", func() {
@@ -209,19 +215,19 @@ var _ = Describe("Presence Db", func() {
 				It("contains the correct presences", func() {
 					db.AddMixProvider(presence1)
 					db.AddMixProvider(presence2)
-					assert.Equal(GinkgoT(), presence1, db.Topology().MixProviderNodes[presence1.PubKey])
-					assert.Equal(GinkgoT(), presence2, db.Topology().MixProviderNodes[presence2.PubKey])
+					assert.Equal(GinkgoT(), presence1, db.Topology().MixProviderNodes[0])
+					assert.Equal(GinkgoT(), presence2, db.Topology().MixProviderNodes[1])
 				})
 			})
 			Describe("Presences", func() {
 				Context("more than 5 seconds old", func() {
 					It("are not returned in the topology", func() {
-						oldtime := time.Now().Add(time.Duration(-5 * time.Second)).Unix()
+						oldtime := timemock.Now().Add(time.Duration(-5 * time.Second)).UnixNano()
 						presence1.LastSeen = oldtime
 						db.AddMixProvider(presence1)
 						db.AddMixProvider(presence2)
 						assert.Len(GinkgoT(), db.Topology().MixProviderNodes, 1)
-						assert.Equal(GinkgoT(), presence2, db.Topology().MixProviderNodes[presence2.PubKey])
+						assert.Equal(GinkgoT(), presence2, db.Topology().MixProviderNodes[0])
 					})
 				})
 			})

@@ -1,9 +1,27 @@
 package models
 
+// CocoHostInfo comes from a coconut node telling us it's alive
+type CocoHostInfo struct {
+	HostInfo
+	Type string `json:"type" binding:"required"`
+}
+
+// CocoPresence holds presence info for a coconut node.
+type CocoPresence struct {
+	CocoHostInfo
+	LastSeen int64 `json:"lastSeen" binding:"required"`
+}
+
 // HostInfo comes from a node telling us it's alive
 type HostInfo struct {
 	Host   string `json:"host"`
 	PubKey string `json:"pubKey" binding:"required"`
+}
+
+// MixProviderHostInfo comes from a node telling us it's alive
+type MixProviderHostInfo struct {
+	HostInfo
+	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
 }
 
 // MixProviderPresence holds presence info for a mix provider node
@@ -18,6 +36,12 @@ type MixNodePresence struct {
 	LastSeen int64 `json:"lastSeen" binding:"required"`
 }
 
+// MixHostInfo comes from a node telling us it's alive
+type MixHostInfo struct {
+	HostInfo
+	Layer uint `json:"layer" binding:"required"`
+}
+
 // Presence lets the server tell clients when a node was last seen
 type Presence struct {
 	HostInfo
@@ -29,21 +53,9 @@ type RegisteredClient struct {
 	PubKey string `json:"pubKey" binding:"required"`
 }
 
-// MixProviderHostInfo comes from a node telling us it's alive
-type MixProviderHostInfo struct {
-	HostInfo
-	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
-}
-
-// MixHostInfo comes from a node telling us it's alive
-type MixHostInfo struct {
-	HostInfo
-	Layer uint `json:"layer" binding:"required"`
-}
-
 // Topology shows us the current state of the overall Nym network
 type Topology struct {
-	CocoNodes        map[string]Presence
-	MixNodes         map[string]MixNodePresence
-	MixProviderNodes map[string]MixProviderPresence
+	CocoNodes        []CocoPresence
+	MixNodes         []MixNodePresence
+	MixProviderNodes []MixProviderPresence
 }

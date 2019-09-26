@@ -1,18 +1,35 @@
 definitions:
-  models.Error:
-    properties:
-      error:
-        type: string
-    type: object
-  models.HostInfo:
+  models.CocoHostInfo:
     properties:
       host:
         type: string
       pubKey:
         type: string
+      type:
+        type: string
     required:
-    - host
     - pubKey
+    - type
+    type: object
+  models.CocoPresence:
+    properties:
+      host:
+        type: string
+      lastSeen:
+        type: integer
+      pubKey:
+        type: string
+      type:
+        type: string
+    required:
+    - pubKey
+    - type
+    - lastSeen
+    type: object
+  models.Error:
+    properties:
+      error:
+        type: string
     type: object
   models.MixHostInfo:
     properties:
@@ -25,7 +42,6 @@ definitions:
     required:
     - pubKey
     - layer
-    - host
     type: object
   models.MixMetric:
     properties:
@@ -40,6 +56,21 @@ definitions:
     required:
     - pubKey
     type: object
+  models.MixNodePresence:
+    properties:
+      host:
+        type: string
+      lastSeen:
+        type: integer
+      layer:
+        type: integer
+      pubKey:
+        type: string
+    required:
+    - pubKey
+    - layer
+    - lastSeen
+    type: object
   models.MixProviderHostInfo:
     properties:
       host:
@@ -51,8 +82,23 @@ definitions:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
     required:
-    - host
     - pubKey
+    type: object
+  models.MixProviderPresence:
+    properties:
+      host:
+        type: string
+      lastSeen:
+        type: integer
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+    required:
+    - pubKey
+    - lastSeen
     type: object
   models.RegisteredClient:
     properties:
@@ -64,11 +110,17 @@ definitions:
   models.Topology:
     properties:
       cocoNodes:
-        type: object
+        items:
+          $ref: '#/definitions/models.CocoPresence'
+        type: array
       mixNodes:
-        type: object
+        items:
+          $ref: '#/definitions/models.MixNodePresence'
+        type: array
       mixProviderNodes:
-        type: object
+        items:
+          $ref: '#/definitions/models.MixProviderPresence'
+        type: array
     type: object
 info:
   contact: {}
@@ -77,31 +129,31 @@ info:
     be folded into other parts of Nym.
   license:
     name: Apache 2.0
-    url: https://github.com/nymtech/directory-server/license
+    url: https://github.com/nymtech/nym-directory/license
   termsOfService: http://swagger.io/terms/
   title: Nym Directory API
-  version: "1.0"
+  version: 0.0.3
 paths:
   /api/healthcheck:
     get:
       consumes:
       - application/json
-      description: Returns a 200 if the directory server is available.
+      description: Returns a 200 if the directory server is available. Good route
+        to use for automated monitoring.
       operationId: healthCheck
       produces:
       - application/json
       responses:
         "200": {}
-      summary: Lets the directory server tell the world it's alive
+      summary: Lets the directory server tell the world it's alive.
       tags:
       - healthcheck
   /api/metrics/mixes:
     get:
       consumes:
       - application/json
-      description: You'd never want to run this in production, but for demo and debug
-        purposes it gives us the ability to generate useful visualisations of network
-        traffic.
+      description: For demo and debug purposes it gives us the ability to generate
+        useful visualisations of network traffic.
       operationId: listMixMetrics
       produces:
       - application/json
@@ -127,15 +179,14 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists mixnode activity in the past 1 second
+      summary: Lists mixnode activity in the past 3 seconds
       tags:
       - metrics
     post:
       consumes:
       - application/json
-      description: You'd never want to run this in production, but for demo and debug
-        purposes it gives us the ability to generate useful visualisations of network
-        traffic.
+      description: For demo and debug purposes it gives us the ability to generate
+        useful visualisations of network traffic.
       operationId: createMixMetric
       parameters:
       - description: object
@@ -182,7 +233,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.HostInfo'
+          $ref: '#/definitions/models.CocoHostInfo'
           type: object
       produces:
       - application/json

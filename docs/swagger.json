@@ -7,7 +7,7 @@
         "contact": {},
         "license": {
             "name": "Apache 2.0",
-            "url": "https://github.com/nymtech/directory-server/license"
+            "url": "https://github.com/nymtech/nym-directory/license"
         },
         "version": "1.0"
     },
@@ -16,7 +16,7 @@
     "paths": {
         "/api/healthcheck": {
             "get": {
-                "description": "Returns a 200 if the directory server is available.",
+                "description": "Returns a 200 if the directory server is available. Good route to use for automated monitoring.",
                 "consumes": [
                     "application/json"
                 ],
@@ -26,7 +26,7 @@
                 "tags": [
                     "healthcheck"
                 ],
-                "summary": "Lets the directory server tell the world it's alive",
+                "summary": "Lets the directory server tell the world it's alive.",
                 "operationId": "healthCheck",
                 "responses": {
                     "200": {}
@@ -35,7 +35,7 @@
         },
         "/api/metrics/mixes": {
             "get": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -45,7 +45,7 @@
                 "tags": [
                     "metrics"
                 ],
-                "summary": "Lists mixnode activity in the past 1 second",
+                "summary": "Lists mixnode activity in the past 3 seconds",
                 "operationId": "listMixMetrics",
                 "responses": {
                     "200": {
@@ -81,7 +81,7 @@
                 }
             },
             "post": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -153,7 +153,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.HostInfo"
+                            "$ref": "#/definitions/models.CocoHostInfo"
                         }
                     }
                 ],
@@ -335,24 +335,28 @@
         }
     },
     "definitions": {
-        "models.Error": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.HostInfo": {
+        "models.CocoHostInfo": {
             "type": "object",
             "required": [
-                "pubKey"
+                "pubKey",
+                "type"
             ],
             "properties": {
                 "host": {
                     "type": "string"
                 },
                 "pubKey": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string"
                 }
             }

@@ -7,14 +7,14 @@
         "contact": {},
         "license": {
             "name": "Apache 2.0",
-            "url": "https://github.com/nymtech/directory-server/license"
+            "url": "https://github.com/nymtech/nym-directory/license"
         },
-        "version": "1.0"
+        "version": "0.0.3"
     },
     "paths": {
         "/api/healthcheck": {
             "get": {
-                "description": "Returns a 200 if the directory server is available.",
+                "description": "Returns a 200 if the directory server is available. Good route to use for automated monitoring.",
                 "consumes": [
                     "application/json"
                 ],
@@ -24,7 +24,7 @@
                 "tags": [
                     "healthcheck"
                 ],
-                "summary": "Lets the directory server tell the world it's alive",
+                "summary": "Lets the directory server tell the world it's alive.",
                 "operationId": "healthCheck",
                 "responses": {
                     "200": {}
@@ -33,7 +33,7 @@
         },
         "/api/metrics/mixes": {
             "get": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -43,7 +43,7 @@
                 "tags": [
                     "metrics"
                 ],
-                "summary": "Lists mixnode activity in the past 1 second",
+                "summary": "Lists mixnode activity in the past 3 seconds",
                 "operationId": "listMixMetrics",
                 "responses": {
                     "200": {
@@ -79,7 +79,7 @@
                 }
             },
             "post": {
-                "description": "You'd never want to run this in production, but for demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
+                "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
                 "consumes": [
                     "application/json"
                 ],
@@ -151,7 +151,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.HostInfo"
+                            "$ref": "#/definitions/models.CocoHostInfo"
                         }
                     }
                 ],
@@ -333,6 +333,46 @@
         }
     },
     "definitions": {
+        "models.CocoHostInfo": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "type"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CocoPresence": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "type",
+                "lastSeen"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Error": {
             "type": "object",
             "properties": {
@@ -341,27 +381,11 @@
                 }
             }
         },
-        "models.HostInfo": {
-            "type": "object",
-            "required": [
-                "host",
-                "pubKey"
-            ],
-            "properties": {
-                "host": {
-                    "type": "string"
-                },
-                "pubKey": {
-                    "type": "string"
-                }
-            }
-        },
         "models.MixHostInfo": {
             "type": "object",
             "required": [
                 "pubKey",
-                "layer",
-                "host"
+                "layer"
             ],
             "properties": {
                 "host": {
@@ -395,15 +419,60 @@
                 }
             }
         },
+        "models.MixNodePresence": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "layer",
+                "lastSeen"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "integer"
+                },
+                "pubKey": {
+                    "type": "string"
+                }
+            }
+        },
         "models.MixProviderHostInfo": {
             "type": "object",
             "required": [
-                "host",
                 "pubKey"
             ],
             "properties": {
                 "host": {
                     "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                }
+            }
+        },
+        "models.MixProviderPresence": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "lastSeen"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
                 },
                 "pubKey": {
                     "type": "string"
@@ -431,13 +500,22 @@
             "type": "object",
             "properties": {
                 "cocoNodes": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CocoPresence"
+                    }
                 },
                 "mixNodes": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MixNodePresence"
+                    }
                 },
                 "mixProviderNodes": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MixProviderPresence"
+                    }
                 }
             }
         }

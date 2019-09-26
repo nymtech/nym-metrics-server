@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nymtech/directory-server/constants"
-	"github.com/nymtech/directory-server/models"
+	"github.com/nymtech/nym-directory/constants"
+	"github.com/nymtech/nym-directory/models"
 )
 
 // controller is the presence controller
@@ -55,7 +55,12 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	ip, _, err := net.SplitHostPort(json.Host)
+	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
+		// keep host info we received
+	} else {
+		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	}
 	controller.service.AddMixNodePresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
@@ -67,17 +72,23 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Tags presence
-// @Param   object      body   models.HostInfo     true  "object"
+// @Param   object      body   models.CocoHostInfo     true  "object"
 // @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /api/presence/coconodes [post]
 func (controller *controller) AddCocoNodePresence(c *gin.Context) {
-	var hostInfo models.HostInfo
+	var hostInfo models.CocoHostInfo
 	if err := c.ShouldBindJSON(&hostInfo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+	ip, _, err := net.SplitHostPort(hostInfo.Host)
+	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
+		// keep host info we received
+	} else {
+		hostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
 	controller.service.AddCocoNodePresence(hostInfo)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
@@ -102,7 +113,12 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	ip, _, err := net.SplitHostPort(json.Host)
+	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
+		// keep host info we received
+	} else {
+		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+	}
 	controller.service.AddMixProviderPresence(json)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
