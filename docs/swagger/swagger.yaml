@@ -132,7 +132,7 @@ info:
     url: https://github.com/nymtech/nym-directory/license
   termsOfService: http://swagger.io/terms/
   title: Nym Directory API
-  version: "1.0"
+  version: 0.0.3
 paths:
   /api/healthcheck:
     get:
