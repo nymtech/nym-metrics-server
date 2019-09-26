@@ -67,9 +67,10 @@ definitions:
       pubKey:
         type: string
     required:
+    - lastSeen
     - pubKey
     - layer
-    - lastSeen
+
     type: object
   models.MixProviderHostInfo:
     properties:

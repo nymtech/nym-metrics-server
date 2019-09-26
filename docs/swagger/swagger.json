@@ -422,9 +422,9 @@
         "models.MixNodePresence": {
             "type": "object",
             "required": [
+                "lastSeen",
                 "pubKey",
-                "layer",
-                "lastSeen"
+                "layer"
             ],
             "properties": {
                 "host": {
