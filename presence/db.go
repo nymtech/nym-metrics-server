@@ -54,12 +54,38 @@ func (db *db) AddMixProvider(presence models.MixProviderPresence) {
 	db.mixProviderNodes = append(db.mixProviderNodes, presence)
 }
 
+// Topology returns the full network Topology
+//
+// This implementation is a little bit involved, and you might wonder why we
+// don't simply make the db fields into slices (instead of maps) and get rid of
+// all this map-to-slice conversion code. The answer is that the maps nicely
+// overwrite the keyed value for a host even if multiple updates for a single
+// host are received within the timeWindow. So we get a nice bag of presences,
+// without duplicates, and don't have to worry much about timing. The tradeoff
+// is some extra code here:
 func (db *db) Topology() models.Topology {
 	db.killOldsters()
+
+	var cocoNodes []models.CocoPresence
+	var mixNodes []models.MixNodePresence
+	var mixProviderNodes []models.MixProviderPresence
+
+	for _, value := range db.cocoNodes {
+		cocoNodes = append(cocoNodes, value)
+	}
+
+	for _, value := range db.mixNodes {
+		mixNodes = append(mixNodes, value)
+	}
+
+	for _, value := range db.mixProviderNodes {
+		mixProviderNodes = append(mixProviderNodes, value)
+	}
+
 	t := models.Topology{
-		CocoNodes:        db.cocoNodes,
-		MixNodes:         db.mixNodes,
-		MixProviderNodes: db.mixProviderNodes,
+		CocoNodes:        cocoNodes,
+		MixNodes:         mixNodes,
+		MixProviderNodes: mixProviderNodes,
 	}
 	return t
 }
