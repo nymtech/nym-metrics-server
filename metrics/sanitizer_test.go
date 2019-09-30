@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
@@ -9,15 +10,17 @@ import (
 var _ = Describe("Sanitizer", func() {
 	Describe("sanitizing inputs", func() {
 		Context("when XSS is present", func() {
-			FIt("sanitizes input", func() {
-				sanitizer := sanitizer{}
+			It("sanitizes input", func() {
+				policy := bluemonday.UGCPolicy()
+				sanitizer := NewSanitizer(policy)
 				result := sanitizer.Sanitize(bad())
 				assert.Equal(GinkgoT(), good(), result)
 			})
 		})
 		Context("when XSS is not present", func() {
 			It("doesn't change input", func() {
-				sanitizer := sanitizer{}
+				policy := bluemonday.UGCPolicy()
+				sanitizer := NewSanitizer(policy)
 				result := sanitizer.Sanitize(good())
 				assert.Equal(GinkgoT(), good(), result)
 			})
