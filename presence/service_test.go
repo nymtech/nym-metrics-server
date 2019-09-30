@@ -17,12 +17,12 @@ var _ = Describe("presence.Service", func() {
 		presence1 models.MixNodePresence
 		coco1     models.CocoHostInfo
 		presence2 models.CocoPresence
-		mockDb    mocks.Db
+		mockDb    mocks.IDb
 
 		serv service
 	)
 	BeforeEach(func() {
-		mockDb = *new(mocks.Db)
+		mockDb = *new(mocks.IDb)
 		serv = *newService(&mockDb)
 		var now = time.Now()
 		timemock.Freeze(now)
