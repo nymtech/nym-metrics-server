@@ -29,6 +29,25 @@ var _ = Describe("Sanitizer", func() {
 			})
 		})
 	})
+	Context("for MixHostInfo", func() {
+		Context("when XSS is present", func() {
+			FIt("sanitizes input", func() {
+				policy := bluemonday.UGCPolicy()
+				sanitizer := NewMixnodeSanitizer(policy)
+
+				result := sanitizer.Sanitize(xssMixHost())
+				assert.Equal(GinkgoT(), goodHost(), result)
+			})
+		})
+		Context("when XSS is not present", func() {
+			It("doesn't change input", func() {
+				policy := bluemonday.UGCPolicy()
+				sanitizer := NewMixnodeSanitizer(policy)
+				result := sanitizer.Sanitize(goodHost())
+				assert.Equal(GinkgoT(), goodHost(), result)
+			})
+		})
+	})
 })
 
 func goodCocoHost() models.CocoHostInfo {
@@ -40,6 +59,26 @@ func goodCocoHost() models.CocoHostInfo {
 		Type: "type",
 	}
 	return good
+}
+
+func goodHost() models.MixHostInfo {
+	good := models.MixHostInfo{
+		HostInfo: models.HostInfo{
+			Host:   "host",
+			PubKey: "pubkey",
+		},
+	}
+	return good
+}
+
+func xssMixHost() models.MixHostInfo {
+	xss := models.MixHostInfo{
+		HostInfo: models.HostInfo{
+			Host:   "host<script>alert('gotcha')",
+			PubKey: "pubkey<script>alert('gotcha')",
+		},
+	}
+	return xss
 }
 
 func xssCocoHost() models.CocoHostInfo {
