@@ -11,8 +11,8 @@ import (
 
 // Config for this controller
 type Config struct {
-	// Sanitizer Sanitizer
-	// Service   IService
+	Sanitizer Sanitizer
+	Service   IService
 }
 
 // controller is the presence controller
