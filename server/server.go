@@ -44,14 +44,14 @@ func New() *gin.Engine {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
 
-	sanitizer := bluemonday.UGCPolicy()
+	sanitizer := metrics.NewSanitizer(bluemonday.UGCPolicy())
 
 	metricsDb := metrics.NewMetricsDb()
-	metricsService := *metrics.NewService(*metricsDb, *hub)
+	metricsService := *metrics.NewService(metricsDb, hub)
 
 	metricsConfig := metrics.Config{
-		Service:   metricsService,
-		Sanitizer: *sanitizer,
+		Service:   &metricsService,
+		Sanitizer: sanitizer,
 	}
 
 	// Register all HTTP controller routes
