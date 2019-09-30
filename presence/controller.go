@@ -11,14 +11,14 @@ import (
 
 // Config for this controller
 type Config struct {
-	Sanitizer Sanitizer
+	Sanitizer MixHostSanitizer
 	Service   IService
 }
 
 // controller is the presence controller
 type controller struct {
 	service   IService
-	sanitizer Sanitizer
+	sanitizer MixHostSanitizer
 }
 
 // Controller is the presence controller interface
@@ -97,6 +97,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 	} else {
 		hostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
+	// sanitized := controller.sanitizer.Sanitize(hostInfo)
 	controller.service.AddCocoNodePresence(hostInfo)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
