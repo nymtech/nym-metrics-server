@@ -27,7 +27,6 @@ func (s sanitizer) Sanitize(input models.MixMetric) models.MixMetric {
 	sanitized := newMetric()
 
 	sanitized.PubKey = s.policy.Sanitize(input.PubKey)
-
 	for key, value := range input.Sent {
 		k := bluemonday.UGCPolicy().Sanitize(key)
 		sanitized.Sent[k] = value
