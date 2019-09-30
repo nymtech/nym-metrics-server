@@ -29,8 +29,8 @@ var _ = Describe("Presence Controller", func() {
 				fmt.Printf("RESPONSE: %v", response)
 
 				assert.Equal(GinkgoT(), 201, resp.Code)
-				// mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", xssMetric())
-				// mockService.AssertCalled(GinkgoT(), "CreateMixMetric", goodMetric())
+				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixHost())
+				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodHost())
 			})
 		})
 	})
