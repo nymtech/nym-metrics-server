@@ -2,26 +2,33 @@ package presence
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nymtech/nym-directory/presence/fixtures"
 	"github.com/nymtech/nym-directory/presence/mocks"
 	. "github.com/onsi/ginkgo"
+	"github.com/stretchr/testify/assert"
 )
 
 var _ = Describe("Presence Controller", func() {
 	Describe("creating a mix node presence", func() {
 		Context("containing xss", func() {
 			It("should strip the xss attack", func() {
-				// router, mockService, mockSanitizer := SetupRouter()
-				// mockSanitizer.On("Sanitize", xssMetric()).Return(goodMetric())
-				// mockService.On("CreateMixMetric", goodMetric())
-				// json, _ := json.Marshal(xssMetric())
+				router, mockService, mockSanitizer := SetupRouter()
+				mockSanitizer.On("Sanitize", fixtures.XssMixHost()).Return(fixtures.GoodHost())
+				mockService.On("AddMixNodePresence", fixtures.GoodHost())
+				j, _ := json.Marshal(fixtures.XssMixHost())
 
-				// resp := performRequest(router, "POST", "/api/metrics/mixes", json)
+				resp := performRequest(router, "POST", "/api/presence/mixnodes", j)
+				var response map[string]string
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+				fmt.Printf("RESPONSE: %v", response)
 
-				// assert.Equal(GinkgoT(), 201, resp.Code)
+				assert.Equal(GinkgoT(), 201, resp.Code)
 				// mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", xssMetric())
 				// mockService.AssertCalled(GinkgoT(), "CreateMixMetric", goodMetric())
 			})

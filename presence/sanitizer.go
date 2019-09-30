@@ -7,7 +7,7 @@ import (
 
 // Sanitizer cleans untrusted input fields
 type Sanitizer interface {
-	Sanitize(interface{})
+	Sanitize(models.MixHostInfo) models.MixHostInfo
 }
 
 // NewCoconodeSanitizer constructor...

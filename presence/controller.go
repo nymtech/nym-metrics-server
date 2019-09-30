@@ -67,7 +67,8 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 	} else {
 		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
-	controller.service.AddMixNodePresence(json)
+	sanitized := controller.sanitizer.Sanitize(json)
+	controller.service.AddMixNodePresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 

@@ -16,9 +16,10 @@ func GoodCocoHost() models.CocoHostInfo {
 func GoodHost() models.MixHostInfo {
 	good := models.MixHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host",
+			Host:   ":1789",
 			PubKey: "pubkey",
 		},
+		Layer: 1,
 	}
 	return good
 }
@@ -51,9 +52,10 @@ func XssCocoHost() models.CocoHostInfo {
 func XssMixHost() models.MixHostInfo {
 	xss := models.MixHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host<script>alert('gotcha')</script>",
+			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
 		},
+		Layer: 1,
 	}
 	return xss
 }
