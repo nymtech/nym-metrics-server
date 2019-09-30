@@ -5,9 +5,19 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
-// Sanitizer cleans untrusted input fields
-type Sanitizer interface {
+// MixHostSanitizer cleans untrusted input fields
+type MixHostSanitizer interface {
 	Sanitize(models.MixHostInfo) models.MixHostInfo
+}
+
+// CocoHostSanitizer cleans untrusted input fields
+type CocoHostSanitizer interface {
+	Sanitize(models.CocoHostInfo) models.CocoHostInfo
+}
+
+// MixProviderHostSanitizer cleans untrusted input fields
+type MixProviderHostSanitizer interface {
+	Sanitize(models.MixProviderHostInfo) models.MixProviderHostInfo
 }
 
 // NewCoconodeSanitizer constructor...
