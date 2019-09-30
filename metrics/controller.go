@@ -4,20 +4,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/models"
 )
 
 // Config for this controller
 type Config struct {
-	Sanitizer bluemonday.Policy
+	Sanitizer Sanitizer
 	Service   IService
 }
 
 // controller is the metrics controller
 type controller struct {
 	service   IService
-	sanitizer bluemonday.Policy
+	sanitizer Sanitizer
 }
 
 // Controller ...
@@ -55,7 +54,8 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	controller.service.CreateMixMetric(metric)
+	sanitized := controller.sanitizer.Sanitize(metric)
+	controller.service.CreateMixMetric(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
