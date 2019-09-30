@@ -1,11 +1,25 @@
 package models
 
+import (
+	"fmt"
+	"html"
+)
+
 // MixMetric is a report from each mixnode detailing recent traffic.
 // Useful for creating visualisations.
 type MixMetric struct {
 	PubKey   string          `json:"pubKey" binding:"required"`
 	Sent     map[string]uint `json:"sent" binding:"required"`
 	Received *uint           `json:"received" binding:"exists"`
+}
+
+// Sanitize strips XSS attacks
+func (metric *MixMetric) Sanitize() {
+	fmt.Println("Sanitizing")
+	metric.PubKey = html.EscapeString(metric.PubKey)
+	for key := range metric.Sent {
+		key = html.EscapeString(key)
+	}
 }
 
 // PersistedMixMetric is a saved MixMetric with a timestamp recording when it

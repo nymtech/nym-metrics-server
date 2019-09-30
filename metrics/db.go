@@ -7,23 +7,25 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
-type db struct {
+// IDb holds metrics information
+type IDb interface {
+	Add(models.PersistedMixMetric)
+	List() []models.PersistedMixMetric
+}
+
+// Db holds data for metrics
+type Db struct {
 	sync.Mutex
 	incomingMetrics []models.PersistedMixMetric
 	mixMetrics      []models.PersistedMixMetric
 	ticker          *time.Ticker
 }
 
-// Db holds metrics information
-type Db interface {
-	Add(models.PersistedMixMetric)
-	List() []models.PersistedMixMetric
-}
-
-func newMetricsDb() *db {
+// NewMetricsDb constructor
+func NewMetricsDb() *Db {
 	ticker := time.NewTicker(3 * time.Second)
 
-	d := db{
+	d := Db{
 		incomingMetrics: []models.PersistedMixMetric{},
 		mixMetrics:      []models.PersistedMixMetric{},
 	}
@@ -34,21 +36,21 @@ func newMetricsDb() *db {
 }
 
 // Add adds a models.PersistedMixMetric to the database
-func (db *db) Add(metric models.PersistedMixMetric) {
+func (db *Db) Add(metric models.PersistedMixMetric) {
 	db.Lock()
 	defer db.Unlock()
 	db.incomingMetrics = append(db.incomingMetrics, metric)
 }
 
 // List returns all models.PersistedMixMetric in the database
-func (db *db) List() []models.PersistedMixMetric {
+func (db *Db) List() []models.PersistedMixMetric {
 	db.Lock()
 	defer db.Unlock()
 	return db.mixMetrics
 }
 
 // dbCleaner periodically clears the database
-func dbCleaner(ticker *time.Ticker, database *db) {
+func dbCleaner(ticker *time.Ticker, database *Db) {
 	for {
 		select {
 		case <-ticker.C:
@@ -71,7 +73,7 @@ func dbCleaner(ticker *time.Ticker, database *db) {
 // `incoming` to `mixMetrics` and have a full list, clearing incoming.
 // This way we can offer a consistent view of what happened
 // over any individual bit of time.
-func (db *db) clear() {
+func (db *Db) clear() {
 	db.Lock()
 	defer db.Unlock()
 	db.mixMetrics = db.incomingMetrics

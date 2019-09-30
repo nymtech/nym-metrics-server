@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/healthcheck"
 	"github.com/nymtech/nym-directory/metrics"
 	"github.com/nymtech/nym-directory/presence"
@@ -43,13 +44,19 @@ func New() *gin.Engine {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
 
-	cfg := metrics.Config{
-		Hub: hub,
+	sanitizer := bluemonday.UGCPolicy()
+
+	metricsDb := metrics.NewMetricsDb()
+	metricsService := *metrics.NewService(*metricsDb, *hub)
+
+	metricsConfig := metrics.Config{
+		Service:   metricsService,
+		Sanitizer: *sanitizer,
 	}
 
 	// Register all HTTP controller routes
 	healthcheck.New().RegisterRoutes(router)
-	metrics.New(cfg).RegisterRoutes(router)
+	metrics.New(metricsConfig).RegisterRoutes(router)
 	presence.New().RegisterRoutes(router)
 
 	return router

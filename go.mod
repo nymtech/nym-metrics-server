@@ -23,6 +23,7 @@ require (
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/mattn/go-isatty v0.0.9 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.2
 	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.7.0
 	github.com/rs/cors v1.7.0
