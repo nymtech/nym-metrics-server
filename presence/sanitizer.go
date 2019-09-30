@@ -49,7 +49,24 @@ func (s *MixnodeSanitizer) Sanitize(input models.MixHostInfo) models.MixHostInfo
 	return input
 }
 
+// NewMixproviderSanitizer constructor...
+func NewMixproviderSanitizer(p *bluemonday.Policy) MixproviderSanitizer {
+	return MixproviderSanitizer{
+		policy: p,
+	}
+}
+
 // MixproviderSanitizer kills untrusted input in MixProviderHostInfo structs
 type MixproviderSanitizer struct {
 	policy *bluemonday.Policy
+}
+
+// Sanitize MixProviderHostInfo input
+func (s *MixproviderSanitizer) Sanitize(input models.MixProviderHostInfo) models.MixProviderHostInfo {
+	input.PubKey = s.policy.Sanitize(input.PubKey)
+	input.Host = s.policy.Sanitize(input.Host)
+	for i, client := range input.RegisteredClients {
+		input.RegisteredClients[i].PubKey = s.policy.Sanitize(client.PubKey)
+	}
+	return input
 }

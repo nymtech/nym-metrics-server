@@ -31,7 +31,7 @@ var _ = Describe("Sanitizer", func() {
 	})
 	Context("for MixHostInfo", func() {
 		Context("when XSS is present", func() {
-			FIt("sanitizes input", func() {
+			It("sanitizes input", func() {
 				policy := bluemonday.UGCPolicy()
 				sanitizer := NewMixnodeSanitizer(policy)
 
@@ -45,6 +45,25 @@ var _ = Describe("Sanitizer", func() {
 				sanitizer := NewMixnodeSanitizer(policy)
 				result := sanitizer.Sanitize(goodHost())
 				assert.Equal(GinkgoT(), goodHost(), result)
+			})
+		})
+	})
+	Context("for MixProviderHostInfo", func() {
+		Context("when XSS is present", func() {
+			It("sanitizes input", func() {
+				policy := bluemonday.UGCPolicy()
+				sanitizer := NewMixproviderSanitizer(policy)
+
+				result := sanitizer.Sanitize(xssMixProviderHost())
+				assert.Equal(GinkgoT(), goodMixProviderHost(), result)
+			})
+		})
+		Context("when XSS is not present", func() {
+			It("doesn't change input", func() {
+				policy := bluemonday.UGCPolicy()
+				sanitizer := NewMixproviderSanitizer(policy)
+				result := sanitizer.Sanitize(goodMixProviderHost())
+				assert.Equal(GinkgoT(), goodMixProviderHost(), result)
 			})
 		})
 	})
@@ -71,14 +90,18 @@ func goodHost() models.MixHostInfo {
 	return good
 }
 
-func xssMixHost() models.MixHostInfo {
-	xss := models.MixHostInfo{
+func goodMixProviderHost() models.MixProviderHostInfo {
+	client1 := models.RegisteredClient{PubKey: "client1"}
+	client2 := models.RegisteredClient{PubKey: "client2"}
+	clients := []models.RegisteredClient{client1, client2}
+	good := models.MixProviderHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host<script>alert('gotcha')",
-			PubKey: "pubkey<script>alert('gotcha')",
+			Host:   "host",
+			PubKey: "pubkey",
 		},
+		RegisteredClients: clients,
 	}
-	return xss
+	return good
 }
 
 func xssCocoHost() models.CocoHostInfo {
@@ -88,6 +111,30 @@ func xssCocoHost() models.CocoHostInfo {
 			PubKey: "pubkey<script>alert('gotcha')",
 		},
 		Type: "type<script>alert('gotcha')",
+	}
+	return xss
+}
+
+func xssMixHost() models.MixHostInfo {
+	xss := models.MixHostInfo{
+		HostInfo: models.HostInfo{
+			Host:   "host<script>alert('gotcha')</script>",
+			PubKey: "pubkey<script>alert('gotcha')</script>",
+		},
+	}
+	return xss
+}
+
+func xssMixProviderHost() models.MixProviderHostInfo {
+	client1 := models.RegisteredClient{PubKey: "client1<script>alert('gotcha')</script>"}
+	client2 := models.RegisteredClient{PubKey: "client2<script>alert('gotcha')</script>"}
+	clients := []models.RegisteredClient{client1, client2}
+	xss := models.MixProviderHostInfo{
+		HostInfo: models.HostInfo{
+			Host:   "host<script>alert('gotcha')</script>",
+			PubKey: "pubkey<script>alert('gotcha')</script>",
+		},
+		RegisteredClients: clients,
 	}
 	return xss
 }
