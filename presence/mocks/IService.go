@@ -10,14 +10,19 @@ type IService struct {
 	mock.Mock
 }
 
-// NotifyCocoNodePresence provides a mock function with given fields: up
-func (_m *IService) NotifyCocoNodePresence(up models.HostInfo) {
-	_m.Called(up)
+// AddCocoNodePresence provides a mock function with given fields: info
+func (_m *IService) AddCocoNodePresence(info models.CocoHostInfo) {
+	_m.Called(info)
 }
 
-// NotifyMixNodePresence provides a mock function with given fields: up
-func (_m *IService) NotifyMixNodePresence(up models.MixHostInfo) {
-	_m.Called(up)
+// AddMixNodePresence provides a mock function with given fields: info
+func (_m *IService) AddMixNodePresence(info models.MixHostInfo) {
+	_m.Called(info)
+}
+
+// AddMixProviderPresence provides a mock function with given fields: info
+func (_m *IService) AddMixProviderPresence(info models.MixProviderHostInfo) {
+	_m.Called(info)
 }
 
 // Topology provides a mock function with given fields:

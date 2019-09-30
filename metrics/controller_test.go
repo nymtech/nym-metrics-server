@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nymtech/nym-directory/metrics/fixtures"
 	"github.com/nymtech/nym-directory/metrics/mocks"
 	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
@@ -48,14 +49,14 @@ var _ = Describe("MetricsController", func() {
 				router, mockService, mockSanitizer := SetupRouter()
 				_ = mockSanitizer // nothing to sanitize here
 
-				mockService.On("List").Return(mixMetricsList())
+				mockService.On("List").Return(fixtures.MixMetricsList())
 
 				resp := performRequest(router, "GET", "/api/metrics/mixes", nil)
 				var response []models.PersistedMixMetric
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 
 				assert.Equal(GinkgoT(), 200, resp.Code)
-				assert.Equal(GinkgoT(), mixMetricsList(), response)
+				assert.Equal(GinkgoT(), fixtures.MixMetricsList(), response)
 				mockService.AssertExpectations(GinkgoT())
 			})
 		})
@@ -84,27 +85,4 @@ func performRequest(r http.Handler, method, path string, body []byte) *httptest.
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	return w
-}
-
-// fixtures
-
-func mixMetricsList() []models.PersistedMixMetric {
-	r1 := uint(1)
-	m1 := models.PersistedMixMetric{
-		MixMetric: models.MixMetric{
-			PubKey:   "pubkey1",
-			Received: &r1,
-		},
-	}
-
-	r2 := uint(2)
-	m2 := models.PersistedMixMetric{
-		MixMetric: models.MixMetric{
-			PubKey:   "pubkey2",
-			Received: &r2,
-		},
-	}
-
-	metrics := []models.PersistedMixMetric{m1, m2}
-	return metrics
 }

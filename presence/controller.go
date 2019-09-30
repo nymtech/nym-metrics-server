@@ -17,7 +17,8 @@ type Config struct {
 
 // controller is the presence controller
 type controller struct {
-	service *service
+	service   IService
+	sanitizer Sanitizer
 }
 
 // Controller is the presence controller interface
@@ -30,9 +31,7 @@ type Controller interface {
 
 // New constructor
 func New(cfg Config) Controller {
-	// return &controller{cfg.Service, cfg.Sanitizer}
-	db := newPresenceDb()
-	return &controller{newService(db)}
+	return &controller{cfg.Service, cfg.Sanitizer}
 }
 
 // RegisterRoutes registers controller routes in Gin.
