@@ -9,6 +9,12 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
+// Config for this controller
+type Config struct {
+	// Sanitizer Sanitizer
+	// Service   IService
+}
+
 // controller is the presence controller
 type controller struct {
 	service *service
@@ -23,7 +29,8 @@ type Controller interface {
 }
 
 // New constructor
-func New() Controller {
+func New(cfg Config) Controller {
+	// return &controller{cfg.Service, cfg.Sanitizer}
 	db := newPresenceDb()
 	return &controller{newService(db)}
 }

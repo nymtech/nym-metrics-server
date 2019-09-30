@@ -6,17 +6,17 @@ import (
 )
 
 type service struct {
-	db Db
+	db IDb
 }
 
-// Service defines the REST service interface for presence.
-type Service interface {
+// IService defines the REST service interface for presence.
+type IService interface {
 	NotifyMixNodePresence(up models.MixHostInfo)
 	NotifyCocoNodePresence(up models.HostInfo)
 	Topology() models.Topology
 }
 
-func newService(db Db) *service {
+func newService(db IDb) *service {
 	return &service{db: db}
 }
 
