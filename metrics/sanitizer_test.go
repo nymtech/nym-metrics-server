@@ -10,7 +10,7 @@ import (
 var _ = Describe("Sanitizer", func() {
 	Describe("sanitizing inputs", func() {
 		Context("when XSS is present", func() {
-			It("sanitizes input", func() {
+			FIt("sanitizes input", func() {
 				policy := bluemonday.UGCPolicy()
 				sanitizer := NewSanitizer(policy)
 				result := sanitizer.Sanitize(xssMetric())
@@ -18,7 +18,7 @@ var _ = Describe("Sanitizer", func() {
 			})
 		})
 		Context("when XSS is not present", func() {
-			It("doesn't change input", func() {
+			FIt("doesn't change input", func() {
 				policy := bluemonday.UGCPolicy()
 				sanitizer := NewSanitizer(policy)
 				result := sanitizer.Sanitize(goodMetric())
@@ -31,7 +31,7 @@ var _ = Describe("Sanitizer", func() {
 func xssMetric() models.MixMetric {
 	sent := make(map[string]uint)
 	sent["foo<script>alert('gotcha')</script>"] = 1
-	received := uint(1)
+	received := uint(3)
 	m := models.MixMetric{
 		PubKey:   "bar<script>alert('gotcha')</script>",
 		Sent:     sent,
@@ -43,7 +43,7 @@ func xssMetric() models.MixMetric {
 func goodMetric() models.MixMetric {
 	sent := make(map[string]uint)
 	sent["foo"] = 1
-	received := uint(1)
+	received := uint(3)
 	m := models.MixMetric{
 		PubKey:   "bar",
 		Sent:     sent,

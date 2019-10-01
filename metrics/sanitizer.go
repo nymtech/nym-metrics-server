@@ -31,6 +31,7 @@ func (s sanitizer) Sanitize(input models.MixMetric) models.MixMetric {
 		k := bluemonday.UGCPolicy().Sanitize(key)
 		sanitized.Sent[k] = value
 	}
+	sanitized.Received = input.Received
 	return sanitized
 }
 
