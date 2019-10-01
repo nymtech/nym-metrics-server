@@ -46,26 +46,11 @@ func New() *gin.Engine {
 
 	policy := bluemonday.UGCPolicy()
 
-	// Metrics wiring
-	sanitizer := metrics.NewSanitizer(policy)
-	metricsDb := metrics.NewMetricsDb()
-	metricsService := *metrics.NewService(metricsDb, hub)
+	// Metrics: wire up dependency injection
+	metricsCfg := injectMetrics(hub, policy)
 
-	metricsCfg := metrics.Config{
-		Service:   &metricsService,
-		Sanitizer: sanitizer,
-	}
-
-	// Presence wiring
-	cocoSan := presence.NewCoconodeSanitizer(policy)
-	mixSan := presence.NewMixnodeSanitizer(policy)
-	providerSan := presence.NewMixproviderSanitizer(policy)
-
-	presenceCfg := presence.Config{
-		CocoHostSanitizer:        &cocoSan,
-		MixHostSanitizer:         &mixSan,
-		MixProviderHostSanitizer: &providerSan,
-	}
+	// Presence: wire up dependency injection
+	presenceCfg := injectPresence(hub, policy)
 
 	// Register all HTTP controller routes
 	healthcheck.New().RegisterRoutes(router)
@@ -73,4 +58,27 @@ func New() *gin.Engine {
 	presence.New(presenceCfg).RegisterRoutes(router)
 
 	return router
+}
+
+func injectMetrics(hub *websocket.Hub, policy *bluemonday.Policy) metrics.Config {
+	sanitizer := metrics.NewSanitizer(policy)
+	metricsDb := metrics.NewMetricsDb()
+	metricsService := *metrics.NewService(metricsDb, hub)
+
+	return metrics.Config{
+		Service:   &metricsService,
+		Sanitizer: sanitizer,
+	}
+}
+
+func injectPresence(hub *websocket.Hub, policy *bluemonday.Policy) presence.Config {
+	cocoSan := presence.NewCoconodeSanitizer(policy)
+	mixSan := presence.NewMixnodeSanitizer(policy)
+	providerSan := presence.NewMixproviderSanitizer(policy)
+
+	return presence.Config{
+		CocoHostSanitizer:        &cocoSan,
+		MixHostSanitizer:         &mixSan,
+		MixProviderHostSanitizer: &providerSan,
+	}
 }
