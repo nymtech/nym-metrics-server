@@ -44,13 +44,14 @@ func New() *gin.Engine {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
 
+	// Sanitize controller input against XSS attacks using bluemonday.Policy
 	policy := bluemonday.UGCPolicy()
 
 	// Metrics: wire up dependency injection
 	metricsCfg := injectMetrics(hub, policy)
 
 	// Presence: wire up dependency injection
-	presenceCfg := injectPresence(hub, policy)
+	presenceCfg := injectPresence(policy)
 
 	// Register all HTTP controller routes
 	healthcheck.New().RegisterRoutes(router)
@@ -71,7 +72,7 @@ func injectMetrics(hub *websocket.Hub, policy *bluemonday.Policy) metrics.Config
 	}
 }
 
-func injectPresence(hub *websocket.Hub, policy *bluemonday.Policy) presence.Config {
+func injectPresence(policy *bluemonday.Policy) presence.Config {
 	cocoSan := presence.NewCoconodeSanitizer(policy)
 	mixSan := presence.NewMixnodeSanitizer(policy)
 	providerSan := presence.NewMixproviderSanitizer(policy)
