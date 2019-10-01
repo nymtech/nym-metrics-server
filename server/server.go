@@ -44,20 +44,33 @@ func New() *gin.Engine {
 		websocket.Serve(hub, c.Writer, c.Request)
 	})
 
-	sanitizer := metrics.NewSanitizer(bluemonday.UGCPolicy())
+	policy := bluemonday.UGCPolicy()
 
+	// Metrics wiring
+	sanitizer := metrics.NewSanitizer(policy)
 	metricsDb := metrics.NewMetricsDb()
 	metricsService := *metrics.NewService(metricsDb, hub)
 
-	metricsConfig := metrics.Config{
+	metricsCfg := metrics.Config{
 		Service:   &metricsService,
 		Sanitizer: sanitizer,
 	}
 
+	// Presence wiring
+	cocoSan := presence.NewCoconodeSanitizer(policy)
+	mixSan := presence.NewMixnodeSanitizer(policy)
+	providerSan := presence.NewMixproviderSanitizer(policy)
+
+	presenceCfg := presence.Config{
+		CocoHostSanitizer:        &cocoSan,
+		MixHostSanitizer:         &mixSan,
+		MixProviderHostSanitizer: &providerSan,
+	}
+
 	// Register all HTTP controller routes
 	healthcheck.New().RegisterRoutes(router)
-	metrics.New(metricsConfig).RegisterRoutes(router)
-	presence.New().RegisterRoutes(router)
+	metrics.New(metricsCfg).RegisterRoutes(router)
+	presence.New(presenceCfg).RegisterRoutes(router)
 
 	return router
 }
