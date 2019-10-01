@@ -5,7 +5,7 @@ import "github.com/nymtech/nym-directory/models"
 func GoodCocoHost() models.CocoHostInfo {
 	good := models.CocoHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host",
+			Host:   ":1789",
 			PubKey: "pubkey",
 		},
 		Type: "type",
@@ -16,7 +16,7 @@ func GoodCocoHost() models.CocoHostInfo {
 func GoodMixHost() models.MixHostInfo {
 	good := models.MixHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host",
+			Host:   ":1789",
 			PubKey: "pubkey",
 		},
 		Layer: 1,
@@ -30,7 +30,7 @@ func GoodMixProviderHost() models.MixProviderHostInfo {
 	clients := []models.RegisteredClient{client1, client2}
 	good := models.MixProviderHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host",
+			Host:   ":1789",
 			PubKey: "pubkey",
 		},
 		RegisteredClients: clients,
@@ -41,7 +41,7 @@ func GoodMixProviderHost() models.MixProviderHostInfo {
 func XssCocoHost() models.CocoHostInfo {
 	xss := models.CocoHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host<script>alert('gotcha')</script>",
+			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
 		},
 		Type: "type<script>alert('gotcha')",
@@ -52,7 +52,7 @@ func XssCocoHost() models.CocoHostInfo {
 func XssMixHost() models.MixHostInfo {
 	xss := models.MixHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host<script>alert('gotcha')</script>",
+			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
 		},
 		Layer: 1,
@@ -66,7 +66,7 @@ func XssMixProviderHost() models.MixProviderHostInfo {
 	clients := []models.RegisteredClient{client1, client2}
 	xss := models.MixProviderHostInfo{
 		HostInfo: models.HostInfo{
-			Host:   "host<script>alert('gotcha')</script>",
+			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
 		},
 		RegisteredClients: clients,

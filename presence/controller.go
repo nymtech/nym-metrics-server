@@ -11,14 +11,17 @@ import (
 
 // Config for this controller
 type Config struct {
-	Sanitizer MixHostSanitizer
-	Service   IService
+	CocoHostSanitizer        CocoHostSanitizer
+	MixHostSanitizer         MixHostSanitizer
+	MixProviderHostSanitizer MixProviderHostSanitizer
+	Service                  IService
 }
 
 // controller is the presence controller
 type controller struct {
-	service   IService
-	sanitizer MixHostSanitizer
+	service           IService
+	cocoHostSanitizer CocoHostSanitizer
+	mixHostSanitizer  MixHostSanitizer
 }
 
 // Controller is the presence controller interface
@@ -31,7 +34,11 @@ type Controller interface {
 
 // New constructor
 func New(cfg Config) Controller {
-	return &controller{cfg.Service, cfg.Sanitizer}
+	return &controller{
+		cfg.Service,
+		cfg.CocoHostSanitizer,
+		cfg.MixHostSanitizer,
+	}
 }
 
 // RegisterRoutes registers controller routes in Gin.
@@ -56,18 +63,18 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/mixnodes [post]
 func (controller *controller) AddMixNodePresence(c *gin.Context) {
-	var json models.MixHostInfo
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var mixHost models.MixHostInfo
+	if err := c.ShouldBindJSON(&mixHost); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ip, _, err := net.SplitHostPort(json.Host)
+	ip, _, err := net.SplitHostPort(mixHost.Host)
 	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
 		// keep host info we received
 	} else {
-		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+		mixHost.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
-	sanitized := controller.sanitizer.Sanitize(json)
+	sanitized := controller.mixHostSanitizer.Sanitize(mixHost)
 	controller.service.AddMixNodePresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
@@ -86,19 +93,19 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/coconodes [post]
 func (controller *controller) AddCocoNodePresence(c *gin.Context) {
-	var hostInfo models.CocoHostInfo
-	if err := c.ShouldBindJSON(&hostInfo); err != nil {
+	var cocoHost models.CocoHostInfo
+	if err := c.ShouldBindJSON(&cocoHost); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ip, _, err := net.SplitHostPort(hostInfo.Host)
+	ip, _, err := net.SplitHostPort(cocoHost.Host)
 	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
 		// keep host info we received
 	} else {
-		hostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+		cocoHost.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
-	// sanitized := controller.sanitizer.Sanitize(hostInfo)
-	controller.service.AddCocoNodePresence(hostInfo)
+	sanitized := controller.cocoHostSanitizer.Sanitize(cocoHost)
+	controller.service.AddCocoNodePresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 

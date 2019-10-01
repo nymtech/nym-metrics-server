@@ -18,9 +18,21 @@ var _ = Describe("Presence Controller", func() {
 	Describe("creating a mix node presence", func() {
 		Context("containing xss", func() {
 			It("should strip the xss attack", func() {
-				router, mockService, mockSanitizer := SetupRouter()
-				mockSanitizer.On("Sanitize", fixtures.XssMixHost()).Return(fixtures.GoodHost())
-				mockService.On("AddMixNodePresence", fixtures.GoodHost())
+				mockSanitizer := new(mocks.MixHostSanitizer)
+				mockService := new(mocks.IService)
+
+				cfg := Config{
+					MixHostSanitizer: mockSanitizer,
+					Service:          mockService,
+				}
+
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+
+				mockSanitizer.On("Sanitize", fixtures.XssMixHost()).Return(fixtures.GoodMixHost())
+				mockService.On("AddMixNodePresence", fixtures.GoodMixHost())
 				j, _ := json.Marshal(fixtures.XssMixHost())
 
 				resp := performRequest(router, "POST", "/api/presence/mixnodes", j)
@@ -30,7 +42,7 @@ var _ = Describe("Presence Controller", func() {
 
 				assert.Equal(GinkgoT(), 201, resp.Code)
 				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixHost())
-				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodHost())
+				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodMixHost())
 			})
 		})
 	})
@@ -38,39 +50,34 @@ var _ = Describe("Presence Controller", func() {
 	Describe("creating a coconode presence", func() {
 		Context("containing xss", func() {
 			It("should strip the xss attack", func() {
-				// router, mockService, mockSanitizer := SetupRouter()
-				// mockSanitizer.On("Sanitize", fixtures.XssCocoHost()).Return(fixtures.GoodCocoHost())
-				// mockService.On("AddCocoNodePresence", fixtures.GoodCocoHost())
-				// j, _ := json.Marshal(fixtures.XssCocoHost())
+				cocoSan := new(mocks.CocoHostSanitizer)
+				mockService := new(mocks.IService)
 
-				// resp := performRequest(router, "POST", "/api/presence/coconodes", j)
-				// var response map[string]string
-				// json.Unmarshal([]byte(resp.Body.String()), &response)
-				// fmt.Printf("RESPONSE: %v", response)
+				cfg := Config{
+					CocoHostSanitizer: cocoSan,
+					Service:           mockService,
+				}
 
-				// assert.Equal(GinkgoT(), 201, resp.Code)
-				// mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixHost())
-				// mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodHost())
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+				cocoSan.On("Sanitize", fixtures.XssCocoHost()).Return(fixtures.GoodCocoHost())
+				mockService.On("AddCocoNodePresence", fixtures.GoodCocoHost())
+				j, _ := json.Marshal(fixtures.XssCocoHost())
+
+				resp := performRequest(router, "POST", "/api/presence/coconodes", j)
+				var response map[string]string
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+				fmt.Printf("RESPONSE: %v", response)
+
+				assert.Equal(GinkgoT(), 201, resp.Code)
+				cocoSan.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssCocoHost())
+				mockService.AssertCalled(GinkgoT(), "AddCocoNodePresence", fixtures.GoodCocoHost())
 			})
 		})
 	})
 })
-
-func SetupRouter() (*gin.Engine, *mocks.IService, *mocks.MixHostSanitizer) {
-	mockSanitizer := new(mocks.MixHostSanitizer)
-	mockService := new(mocks.IService)
-
-	cfg := Config{
-		Sanitizer: mockSanitizer,
-		Service:   mockService,
-	}
-
-	router := gin.Default()
-
-	controller := New(cfg)
-	controller.RegisterRoutes(router)
-	return router, mockService, mockSanitizer
-}
 
 func performRequest(r http.Handler, method, path string, body []byte) *httptest.ResponseRecorder {
 	buf := bytes.NewBuffer(body)
