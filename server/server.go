@@ -62,8 +62,8 @@ func New() *gin.Engine {
 
 func injectMetrics(hub *websocket.Hub, policy *bluemonday.Policy) metrics.Config {
 	sanitizer := metrics.NewSanitizer(policy)
-	metricsDb := metrics.NewMetricsDb()
-	metricsService := *metrics.NewService(metricsDb, hub)
+	db := metrics.NewDb()
+	metricsService := *metrics.NewService(db, hub)
 
 	return metrics.Config{
 		Service:   &metricsService,
@@ -75,10 +75,13 @@ func injectPresence(hub *websocket.Hub, policy *bluemonday.Policy) presence.Conf
 	cocoSan := presence.NewCoconodeSanitizer(policy)
 	mixSan := presence.NewMixnodeSanitizer(policy)
 	providerSan := presence.NewMixproviderSanitizer(policy)
+	db := presence.NewDb()
+	service := presence.NewService(db)
 
 	return presence.Config{
 		CocoHostSanitizer:        &cocoSan,
 		MixHostSanitizer:         &mixSan,
 		MixProviderHostSanitizer: &providerSan,
+		Service:                  service,
 	}
 }

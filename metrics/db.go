@@ -21,8 +21,8 @@ type Db struct {
 	ticker          *time.Ticker
 }
 
-// NewMetricsDb constructor
-func NewMetricsDb() *Db {
+// NewDb constructor
+func NewDb() *Db {
 	ticker := time.NewTicker(3 * time.Second)
 
 	d := Db{

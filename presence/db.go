@@ -25,7 +25,7 @@ type db struct {
 	mixProviderNodes []models.MixProviderPresence
 }
 
-func newPresenceDb() *db {
+func NewDb() *db {
 	return &db{
 		cocoNodes:        []models.CocoPresence{},
 		mixNodes:         []models.MixNodePresence{},

@@ -13,7 +13,7 @@ var _ = Describe("Presence Db", func() {
 	Describe("listing network topology", func() {
 		Context("when no presence has been registered by any node", func() {
 			It("should return an empty topology object", func() {
-				db := newPresenceDb()
+				db := NewDb()
 				assert.Len(GinkgoT(), db.Topology().CocoNodes, 0)
 				assert.Len(GinkgoT(), db.Topology().MixNodes, 0)
 				assert.Len(GinkgoT(), db.Topology().MixProviderNodes, 0)
@@ -30,7 +30,7 @@ var _ = Describe("Presence Db", func() {
 		)
 		var db *db
 		BeforeEach(func() {
-			db = newPresenceDb()
+			db = NewDb()
 
 			// Set up fixtures
 			var coco1 = models.CocoHostInfo{
@@ -98,7 +98,7 @@ var _ = Describe("Presence Db", func() {
 		)
 		var db *db
 		BeforeEach(func() {
-			db = newPresenceDb()
+			db = NewDb()
 
 			// Set up fixtures
 			var mix1 = models.MixHostInfo{
@@ -171,7 +171,7 @@ var _ = Describe("Presence Db", func() {
 		)
 		var db *db
 		BeforeEach(func() {
-			db = newPresenceDb()
+			db = NewDb()
 
 			// Set up fixtures
 			var mix1 = models.MixProviderHostInfo{

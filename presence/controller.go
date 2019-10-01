@@ -1,11 +1,10 @@
 package presence
 
 import (
-	"net"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nymtech/nym-directory/constants"
 	"github.com/nymtech/nym-directory/models"
 )
 
@@ -70,14 +69,10 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ip, _, err := net.SplitHostPort(mixHost.Host)
-	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
-		// keep host info we received
-	} else {
-		mixHost.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
-	}
 	sanitized := controller.mixHostSanitizer.Sanitize(mixHost)
-	controller.service.AddMixNodePresence(sanitized)
+	ip := c.ClientIP()
+	fmt.Printf("FOOMP: %s\n", ip)
+	controller.service.AddMixNodePresence(sanitized, ip)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -100,14 +95,8 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ip, _, err := net.SplitHostPort(cocoHost.Host)
-	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
-		// keep host info we received
-	} else {
-		cocoHost.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
-	}
 	sanitized := controller.cocoHostSanitizer.Sanitize(cocoHost)
-	controller.service.AddCocoNodePresence(sanitized)
+	controller.service.AddCocoNodePresence(sanitized, c.ClientIP())
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -130,14 +119,8 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ip, _, err := net.SplitHostPort(provider.Host)
-	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
-		// keep host info we received
-	} else {
-		provider.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
-	}
 	sanitized := controller.mixProviderHostSanitizer.Sanitize(provider)
-	controller.service.AddMixProviderPresence(sanitized)
+	controller.service.AddMixProviderPresence(sanitized, c.ClientIP())
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 

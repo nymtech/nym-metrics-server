@@ -23,7 +23,7 @@ var _ = Describe("presence.Service", func() {
 	)
 	BeforeEach(func() {
 		mockDb = *new(mocks.IDb)
-		serv = *newService(&mockDb)
+		serv = *NewService(&mockDb)
 		var now = time.Now()
 		timemock.Freeze(now)
 
@@ -59,14 +59,14 @@ var _ = Describe("presence.Service", func() {
 		Context("for a mixnode", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddMix", presence1)
-				serv.AddMixNodePresence(mix1)
+				serv.AddMixNodePresence(mix1, "ip")
 				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
 			})
 		})
 		Context("for a coconode", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddCoco", presence2)
-				serv.AddCocoNodePresence(coco1)
+				serv.AddCocoNodePresence(coco1, "ip")
 				mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
 			})
 		})
@@ -84,6 +84,57 @@ var _ = Describe("presence.Service", func() {
 				result := serv.Topology()
 				mockDb.AssertCalled(GinkgoT(), "Topology")
 				assert.Equal(GinkgoT(), topology, result)
+			})
+		})
+	})
+
+	Describe("Determining IP of a metrics report", func() {
+		Context("from a localhost request", func() {
+			Context("with a an empty self-reported host body", func() {
+				It("returns server-reported host with the self-reported port", func() {
+					ipa := ipAssigner{}
+					result, _ := ipa.AssignIP("localhost", ":8080")
+					assert.Equal(GinkgoT(), "localhost:8080", result)
+				})
+			})
+			Context("with a normal self-reported host body", func() {
+				It("returns the server-reported host and self-reported port", func() {
+					ipa := ipAssigner{}
+					result, _ := ipa.AssignIP("localhost", "foo.com:8080")
+					assert.Equal(GinkgoT(), "localhost:8080", result)
+				})
+			})
+		})
+		Context("from a 127.0.0.1 request", func() {
+			Context("with a an empty self-reported host body", func() {
+				It("returns server-reported host with the self-reported port", func() {
+					ipa := ipAssigner{}
+					result, _ := ipa.AssignIP("127.0.0.1", ":8080")
+					assert.Equal(GinkgoT(), "127.0.0.1:8080", result)
+				})
+			})
+			Context("with a normal self-reported host body", func() {
+				It("returns the server-reported host and self-reported port", func() {
+					ipa := ipAssigner{}
+					result, _ := ipa.AssignIP("127.0.0.1", "foo.com:8080")
+					assert.Equal(GinkgoT(), "127.0.0.1:8080", result)
+				})
+			})
+		})
+		Context("from a remote request", func() {
+			Context("with a an empty self-reported host body", func() {
+				It("returns server-reported host with the self-reported port", func() {
+					ipa := ipAssigner{}
+					result, _ := ipa.AssignIP("foo.com", ":8080")
+					assert.Equal(GinkgoT(), "foo.com:8080", result)
+				})
+			})
+			Context("with a self-reported host body differing from the server-reported host", func() {
+				It("returns the server-reported host and self-reported port", func() {
+					ipa := ipAssigner{}
+					result, _ := ipa.AssignIP("bar.com", "foo.com:8080")
+					assert.Equal(GinkgoT(), "bar.com:8080", result)
+				})
 			})
 		})
 	})
