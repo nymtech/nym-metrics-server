@@ -17,6 +17,8 @@ var _ = Describe("presence.Service", func() {
 		presence1 models.MixNodePresence
 		coco1     models.CocoHostInfo
 		presence2 models.CocoPresence
+		provider1 models.MixProviderHostInfo
+		presence3 models.MixProviderPresence
 		mockDb    mocks.IDb
 
 		serv service
@@ -48,36 +50,71 @@ var _ = Describe("presence.Service", func() {
 			},
 			Type: "foo",
 		}
+		presence2 = models.CocoPresence{
+			CocoHostInfo: coco1,
+			LastSeen:     timemock.Now().UnixNano(),
+		}
 
+		provider1 = models.MixProviderHostInfo{
+			HostInfo: models.HostInfo{
+				Host:   "baz.com:8000",
+				PubKey: "pubkey2",
+			},
+			RegisteredClients: []models.RegisteredClient{},
+		}
+
+		presence3 = models.MixProviderPresence{
+			MixProviderHostInfo: provider1,
+			LastSeen:            timemock.Now().UnixNano(),
+		}
 	})
 
 	Describe("Adding presence info", func() {
 		Context("for a mixnode", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddMix", presence1)
-				serv.AddMixNodePresence(mix1, "ip")
+				serv.AddMixNodePresence(mix1, "foo.com")
 				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
+			})
+			Context("with a different self-reported IP vs server-reported IP", func() {
+				It("should add a presence to the db using the server-reported IP + the self-reported port", func() {
+					var presenceToSend = presence1
+					presenceToSend.Host = "slammich.com:8000"
+					mockDb.On("AddMix", presenceToSend)
+					serv.AddMixNodePresence(mix1, "slammich.com")
+					mockDb.AssertCalled(GinkgoT(), "AddMix", presenceToSend)
+				})
 			})
 		})
 		Context("for a coconode", func() {
 			It("should add a presence to the db", func() {
-				presence2 = models.CocoPresence{
-					CocoHostInfo: coco1,
-					LastSeen:     timemock.Now().UnixNano(),
-				}
 				mockDb.On("AddCoco", presence2)
-				serv.AddCocoNodePresence(coco1, "ip")
+				serv.AddCocoNodePresence(coco1, "bar.com")
 				mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
 			})
 			Context("with a different self-reported IP vs server-reported IP", func() {
-				FIt("should add a presence to the db using the server-reported IP + the self-reported port", func() {
-					presence2 = models.CocoPresence{
-						CocoHostInfo: coco1,
-						LastSeen:     timemock.Now().UnixNano(),
-					}
+				It("should add a presence to the db using the server-reported IP + the self-reported port", func() {
+					var presenceToSend = presence2
+					presenceToSend.Host = "foo.com:8000"
 					mockDb.On("AddCoco", presence2)
 					serv.AddCocoNodePresence(coco1, "bar.com")
 					mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
+				})
+			})
+		})
+		Context("for a provider node", func() {
+			It("should add a presence to the db", func() {
+				mockDb.On("AddMixProvider", presence3)
+				serv.AddMixProviderPresence(provider1, "baz.com")
+				mockDb.AssertCalled(GinkgoT(), "AddMixProvider", presence3)
+			})
+			Context("with a different self-reported IP vs server-reported IP", func() {
+				It("should add a presence to the db using the server-reported IP + the self-reported port", func() {
+					var presenceToSend = presence3
+					presenceToSend.Host = "foo.com:8000"
+					mockDb.On("AddMixProvider", presenceToSend)
+					serv.AddMixProviderPresence(provider1, "foo.com")
+					mockDb.AssertCalled(GinkgoT(), "AddMixProvider", presenceToSend)
 				})
 			})
 		})
