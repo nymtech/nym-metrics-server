@@ -8,8 +8,8 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
-// Db holds presence information
-type Db interface {
+// IDb holds presence information
+type IDb interface {
 	AddCoco(models.CocoPresence)
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)

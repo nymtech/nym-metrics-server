@@ -14,13 +14,13 @@ import (
 )
 
 var _ = Describe("metrics.Service", func() {
-	var mockDb mocks.Db
+	var mockDb mocks.IDb
 	var m1 models.MixMetric
 	var m2 models.MixMetric
 	var p1 models.PersistedMixMetric
 	var p2 models.PersistedMixMetric
 
-	var serv service
+	var serv Service
 	var received uint = 99
 	var now = time.Now()
 	timemock.Freeze(now)
@@ -51,9 +51,9 @@ var _ = Describe("metrics.Service", func() {
 
 	Describe("Adding a mixmetric", func() {
 		It("should add a PersistedMixMetric to the db and notify the Hub", func() {
-			mockDb = *new(mocks.Db)
-			mockHub := *new(wsMocks.Broadcaster)
-			serv = *newService(&mockDb, &mockHub)
+			mockDb = *new(mocks.IDb)
+			mockHub := *new(wsMocks.IHub)
+			serv = *NewService(&mockDb, &mockHub)
 			mockDb.On("Add", p1)
 			j, _ := json.Marshal(p1)
 			mockHub.On("Notify", j)
@@ -67,12 +67,12 @@ var _ = Describe("metrics.Service", func() {
 	Describe("Listing mixmetrics", func() {
 		Context("when receiving a list request", func() {
 			It("should call to the Db", func() {
-				mockDb = *new(mocks.Db)
-				mockHub := *new(wsMocks.Broadcaster)
+				mockDb = *new(mocks.IDb)
+				mockHub := *new(wsMocks.IHub)
 
 				list := []models.PersistedMixMetric{p1, p2}
 
-				serv = *newService(&mockDb, &mockHub)
+				serv = *NewService(&mockDb, &mockHub)
 				mockDb.On("List").Return(list)
 
 				result := serv.List()
