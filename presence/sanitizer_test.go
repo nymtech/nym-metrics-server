@@ -36,15 +36,15 @@ var _ = Describe("Sanitizer", func() {
 				sanitizer := NewMixnodeSanitizer(policy)
 
 				result := sanitizer.Sanitize(fixtures.XssMixHost())
-				assert.Equal(GinkgoT(), fixtures.GoodHost(), result)
+				assert.Equal(GinkgoT(), fixtures.GoodMixHost(), result)
 			})
 		})
 		Context("when XSS is not present", func() {
 			It("doesn't change input", func() {
 				policy := bluemonday.UGCPolicy()
 				sanitizer := NewMixnodeSanitizer(policy)
-				result := sanitizer.Sanitize(fixtures.GoodHost())
-				assert.Equal(GinkgoT(), fixtures.GoodHost(), result)
+				result := sanitizer.Sanitize(fixtures.GoodMixHost())
+				assert.Equal(GinkgoT(), fixtures.GoodMixHost(), result)
 			})
 		})
 	})
