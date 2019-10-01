@@ -19,9 +19,10 @@ type Config struct {
 
 // controller is the presence controller
 type controller struct {
-	service           IService
-	cocoHostSanitizer CocoHostSanitizer
-	mixHostSanitizer  MixHostSanitizer
+	service                  IService
+	cocoHostSanitizer        CocoHostSanitizer
+	mixHostSanitizer         MixHostSanitizer
+	mixProviderHostSanitizer MixProviderHostSanitizer
 }
 
 // Controller is the presence controller interface
@@ -38,6 +39,7 @@ func New(cfg Config) Controller {
 		cfg.Service,
 		cfg.CocoHostSanitizer,
 		cfg.MixHostSanitizer,
+		cfg.MixProviderHostSanitizer,
 	}
 }
 
@@ -123,18 +125,19 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/providers [post]
 func (controller *controller) AddMixProviderPresence(c *gin.Context) {
-	var json models.MixProviderHostInfo
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var provider models.MixProviderHostInfo
+	if err := c.ShouldBindJSON(&provider); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ip, _, err := net.SplitHostPort(json.Host)
+	ip, _, err := net.SplitHostPort(provider.Host)
 	if (ip == "localhost" || net.ParseIP(ip).IsLoopback()) && err == nil {
 		// keep host info we received
 	} else {
-		json.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
+		provider.HostInfo.Host = net.JoinHostPort(c.ClientIP(), constants.DefaultMixPort)
 	}
-	controller.service.AddMixProviderPresence(json)
+	sanitized := controller.mixProviderHostSanitizer.Sanitize(provider)
+	controller.service.AddMixProviderPresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
