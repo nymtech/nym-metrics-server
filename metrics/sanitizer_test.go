@@ -10,7 +10,7 @@ import (
 var _ = Describe("Sanitizer", func() {
 	Describe("sanitizing inputs", func() {
 		Context("when XSS is present", func() {
-			FIt("sanitizes input", func() {
+			It("sanitizes input", func() {
 				policy := bluemonday.UGCPolicy()
 				sanitizer := NewSanitizer(policy)
 				result := sanitizer.Sanitize(xssMetric())
@@ -18,7 +18,7 @@ var _ = Describe("Sanitizer", func() {
 			})
 		})
 		Context("when XSS is not present", func() {
-			FIt("doesn't change input", func() {
+			It("doesn't change input", func() {
 				policy := bluemonday.UGCPolicy()
 				sanitizer := NewSanitizer(policy)
 				result := sanitizer.Sanitize(goodMetric())

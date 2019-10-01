@@ -66,35 +66,29 @@ type ipAssigner struct {
 // controller) and the self-reported presence IP (taken from the presence report
 // data), and tries to report a reasonable IP. Much like the trouble with SUVs
 // detailed by Paul Graham (http://www.paulgraham.com/hundred.html), this is a
-// gross solution to a gross problem. In our case, the cause of hassle is that AWS
-// boxes (a) don't allow applications hosted on them to determine what address
+// gross solution to a gross problem.
+//
+// In our case, the cause of hassle is that AWS servers:
+// (a) don't allow applications hosted on them to determine what address
 // they're binding to easily, because there are no "real" public IPs
-// assigned, and (b) cause the application to explode if you attempt to bind
+// assigned, and
+// (b) cause the application to explode if you attempt to bind
 // to the public IP at all (private IPs do exist and can be bound to).
-// So in some cases (like our testnet), the self-reported IP of the
-// incoming presence report will likely be incorrect.
 //
 // If we could, we'd always read from the incoming request - but this has another
 // problem: incoming requests don't tell us which port the remote node is
-// listening on. So we need to combine self-reported and real IP in that case.
+// listening on. So we need to combine self-reported and real IP.
 type IPAssigner interface {
 	AssignIP(serverReportedIP string, selfReportedHost string) (string, error)
 }
 
 func (ipa *ipAssigner) AssignIP(serverReportedIP string, selfReportedHost string) (string, error) {
 	var host string
-	selfReportedIP, port, err := net.SplitHostPort(selfReportedHost)
+	_, port, err := net.SplitHostPort(selfReportedHost)
 	if err != nil {
 		return "", err
 	}
-	if ipa.isLocal(selfReportedIP) {
-		host = selfReportedHost // includes a port
-	} else {
-		host = net.JoinHostPort(serverReportedIP, port)
-	}
-	return host, nil
-}
 
-func (ipa *ipAssigner) isLocal(ip string) bool {
-	return ip == "localhost" || net.ParseIP(ip).IsLoopback()
+	host = net.JoinHostPort(serverReportedIP, port)
+	return host, nil
 }
