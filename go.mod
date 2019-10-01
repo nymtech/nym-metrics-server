@@ -22,7 +22,9 @@ require (
 	github.com/json-iterator/go v1.1.7 // indirect
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/mailru/easyjson v0.7.0 // indirect
+	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.9 // indirect
+	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2
 	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.7.0
@@ -33,6 +35,7 @@ require (
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.2
+	github.com/tav/golly v0.0.0-20180823113506-ad032321f11e
 	github.com/ugorji/go v1.1.7 // indirect
 	github.com/urfave/cli v1.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20190909091759-094676da4a83 // indirect

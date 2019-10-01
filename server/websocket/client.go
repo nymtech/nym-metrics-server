@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -118,6 +119,7 @@ func (c *Client) writePump() {
 
 // Serve handles websocket requests from the peer.
 func Serve(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("FOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
