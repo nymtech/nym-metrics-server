@@ -30,7 +30,11 @@
             };
 
             if (window["WebSocket"]) {
-                conn = new WebSocket("wss://" + document.location.host + "/ws");
+                if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                    conn = new WebSocket("ws://" + document.location.host + "/ws");
+                }else {
+                    conn = new WebSocket("wss://" + document.location.host + "/ws");
+                }
                 conn.onclose = function (evt) {
                     var item = document.createElement("div");
                     item.innerHTML = "<b>Connection closed.</b>";
