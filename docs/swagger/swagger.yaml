@@ -22,9 +22,9 @@ definitions:
       type:
         type: string
     required:
+    - lastSeen
     - pubKey
     - type
-    - lastSeen
     type: object
   models.Error:
     properties:
@@ -67,10 +67,9 @@ definitions:
       pubKey:
         type: string
     required:
-    - lastSeen
     - pubKey
     - layer
-
+    - lastSeen
     type: object
   models.MixProviderHostInfo:
     properties:
@@ -133,7 +132,7 @@ info:
     url: https://github.com/nymtech/nym-directory/license
   termsOfService: http://swagger.io/terms/
   title: Nym Directory API
-  version: 0.0.3
+  version: 0.1.0
 paths:
   /api/healthcheck:
     get:
