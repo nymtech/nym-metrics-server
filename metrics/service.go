@@ -9,25 +9,28 @@ import (
 	"github.com/nymtech/nym-directory/server/websocket"
 )
 
-type service struct {
-	db  Db
-	hub websocket.Broadcaster
+// Service struct
+type Service struct {
+	db  IDb
+	hub websocket.IHub
 }
 
-// Service defines the REST service interface for metrics.
-type Service interface {
-	CreateMixMetric() error
-	List() []models.MixMetric
+// IService defines the REST service interface for metrics.
+type IService interface {
+	CreateMixMetric(metric models.MixMetric)
+	List() []models.PersistedMixMetric
 }
 
-func newService(db Db, hub websocket.Broadcaster) *service {
-	return &service{
+// NewService constructor
+func NewService(db IDb, hub websocket.IHub) *Service {
+	return &Service{
 		db:  db,
 		hub: hub,
 	}
 }
 
-func (service *service) CreateMixMetric(metric models.MixMetric) {
+// CreateMixMetric adds a new PersistedMixMetric in the database.
+func (service *Service) CreateMixMetric(metric models.MixMetric) {
 	persist := models.PersistedMixMetric{
 		MixMetric: metric,
 		Timestamp: timemock.Now().UnixNano(),
@@ -43,6 +46,7 @@ func (service *service) CreateMixMetric(metric models.MixMetric) {
 
 }
 
-func (service *service) List() []models.PersistedMixMetric {
+// List lists all mix metrics in the database
+func (service *Service) List() []models.PersistedMixMetric {
 	return service.db.List()
 }

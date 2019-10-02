@@ -8,8 +8,8 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
-// Db holds presence information
-type Db interface {
+// IDb holds presence information
+type IDb interface {
 	AddCoco(models.CocoPresence)
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)
@@ -25,7 +25,8 @@ type db struct {
 	mixProviderNodes map[string]models.MixProviderPresence
 }
 
-func newPresenceDb() *db {
+// NewDb constructor...
+func NewDb() *db {
 	return &db{
 		cocoNodes:        map[string]models.CocoPresence{},
 		mixNodes:         map[string]models.MixNodePresence{},
@@ -66,9 +67,9 @@ func (db *db) AddMixProvider(presence models.MixProviderPresence) {
 func (db *db) Topology() models.Topology {
 	db.killOldsters()
 
-	var cocoNodes []models.CocoPresence
-	var mixNodes []models.MixNodePresence
-	var mixProviderNodes []models.MixProviderPresence
+	cocoNodes := []models.CocoPresence{}
+	mixNodes := []models.MixNodePresence{}
+	mixProviderNodes := []models.MixProviderPresence{}
 
 	for _, value := range db.cocoNodes {
 		cocoNodes = append(cocoNodes, value)

@@ -9,7 +9,7 @@
             "name": "Apache 2.0",
             "url": "https://github.com/nymtech/nym-directory/license"
         },
-        "version": "0.0.3"
+        "version": "0.1.0"
     },
     "paths": {
         "/api/healthcheck": {
@@ -354,9 +354,9 @@
         "models.CocoPresence": {
             "type": "object",
             "required": [
+                "lastSeen",
                 "pubKey",
-                "type",
-                "lastSeen"
+                "type"
             ],
             "properties": {
                 "host": {

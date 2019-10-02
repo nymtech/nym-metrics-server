@@ -4,8 +4,8 @@ package websocket
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Broadcaster notifies attached clients
-type Broadcaster interface {
+// IHub notifies attached clients
+type IHub interface {
 	Notify(msg []byte)
 }
 

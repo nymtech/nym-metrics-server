@@ -5,17 +5,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/nym-directory/models"
-	"github.com/nymtech/nym-directory/server/websocket"
 )
 
 // Config for this controller
 type Config struct {
-	Hub *websocket.Hub
+	Sanitizer Sanitizer
+	Service   IService
 }
 
 // controller is the metrics controller
 type controller struct {
-	service *service
+	service   IService
+	sanitizer Sanitizer
 }
 
 // Controller ...
@@ -26,8 +27,7 @@ type Controller interface {
 
 // New returns a new metrics.Controller
 func New(cfg Config) Controller {
-	db := newMetricsDb()
-	return &controller{newService(db, cfg.Hub)}
+	return &controller{cfg.Service, cfg.Sanitizer}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
@@ -54,7 +54,8 @@ func (controller *controller) CreateMixMetric(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	controller.service.CreateMixMetric(metric)
+	sanitized := controller.sanitizer.Sanitize(metric)
+	controller.service.CreateMixMetric(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
