@@ -20,17 +20,17 @@ type db struct {
 	// TODO: it's slightly inefficient to have a single mutex for all database, because right now
 	// if a mix node was being added, we wouldn't be able to touch cocoNodes
 	sync.Mutex
-	cocoNodes        []models.CocoPresence
-	mixNodes         []models.MixNodePresence
-	mixProviderNodes []models.MixProviderPresence
+	cocoNodes        map[string]models.CocoPresence
+	mixNodes         map[string]models.MixNodePresence
+	mixProviderNodes map[string]models.MixProviderPresence
 }
 
 // NewDb constructor...
 func NewDb() *db {
 	return &db{
-		cocoNodes:        []models.CocoPresence{},
-		mixNodes:         []models.MixNodePresence{},
-		mixProviderNodes: []models.MixProviderPresence{},
+		cocoNodes:        map[string]models.CocoPresence{},
+		mixNodes:         map[string]models.MixNodePresence{},
+		mixProviderNodes: map[string]models.MixProviderPresence{},
 	}
 }
 
@@ -38,21 +38,21 @@ func (db *db) AddCoco(presence models.CocoPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
-	db.cocoNodes = append(db.cocoNodes, presence)
+	db.cocoNodes[presence.PubKey] = presence
 }
 
 func (db *db) AddMix(presence models.MixNodePresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
-	db.mixNodes = append(db.mixNodes, presence)
+	db.mixNodes[presence.PubKey] = presence
 }
 
 func (db *db) AddMixProvider(presence models.MixProviderPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
-	db.mixProviderNodes = append(db.mixProviderNodes, presence)
+	db.mixProviderNodes[presence.PubKey] = presence
 }
 
 // Topology returns the full network Topology
@@ -93,25 +93,19 @@ func (db *db) Topology() models.Topology {
 
 // killOldsters kills any stale presence info
 func (db *db) killOldsters() {
-	for index, presence := range db.mixNodes {
+	for key, presence := range db.mixNodes {
 		if presence.LastSeen <= timeWindow() {
-			ret := make([]models.MixNodePresence, 0)
-			ret = append(ret, db.mixNodes[:index]...)
-			db.mixNodes = append(ret, db.mixNodes[index+1:]...)
+			delete(db.mixNodes, key)
 		}
 	}
-	for index, presence := range db.cocoNodes {
+	for key, presence := range db.cocoNodes {
 		if presence.LastSeen <= timeWindow() {
-			ret := make([]models.CocoPresence, 0)
-			ret = append(ret, db.cocoNodes[:index]...)
-			db.cocoNodes = append(ret, db.cocoNodes[index+1:]...)
+			delete(db.cocoNodes, key)
 		}
 	}
-	for index, presence := range db.mixProviderNodes {
+	for key, presence := range db.mixProviderNodes {
 		if presence.LastSeen <= timeWindow() {
-			ret := make([]models.MixProviderPresence, 0)
-			ret = append(ret, db.mixProviderNodes[:index]...)
-			db.mixProviderNodes = append(ret, db.mixProviderNodes[index+1:]...)
+			delete(db.mixProviderNodes, key)
 		}
 	}
 }
