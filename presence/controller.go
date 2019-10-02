@@ -1,7 +1,6 @@
 package presence
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -71,7 +70,6 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 	}
 	sanitized := controller.mixHostSanitizer.Sanitize(mixHost)
 	ip := c.ClientIP()
-	fmt.Printf("FOOMP: %s\n", ip)
 	controller.service.AddMixNodePresence(sanitized, ip)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
