@@ -84,9 +84,14 @@ type IPAssigner interface {
 
 func (ipa *ipAssigner) AssignIP(serverReportedIP string, selfReportedHost string) (string, error) {
 	var host string
-	_, port, err := net.SplitHostPort(selfReportedHost)
+	selfReportedIP, port, err := net.SplitHostPort(selfReportedHost)
 	if err != nil {
 		return "", err
+	}
+
+	if selfReportedIP == "localhost" || net.ParseIP(selfReportedIP).IsLoopback() {
+		host = net.JoinHostPort(selfReportedIP, port)
+		return host, nil
 	}
 
 	host = net.JoinHostPort(serverReportedIP, port)
