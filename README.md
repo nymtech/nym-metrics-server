@@ -22,7 +22,7 @@ decentralized. Other aspects of it (e.g. metrics) will likely stay centralized.
 it should not be needed.
 
 If you update any of the HTML assets,
-`go-assets-builder server/websocket/home.html -o server/websocket/html.go` will
+`go-assets-builder server/html/index.html -o server/html/index.go` will
 put it in the correct place to be built into the binary. 
 
 ## Usage
