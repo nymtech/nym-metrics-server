@@ -61,7 +61,7 @@ var _ = Describe("Presence Controller", func() {
 				controller.RegisterRoutes(router)
 
 				mockSanitizer.On("Sanitize", fixtures.XssMixHost()).Return(fixtures.GoodMixHost())
-				mockService.On("AddMixNodePresence", fixtures.GoodMixHost(), "") // ip is blank in the default http test client
+				mockService.On("AddMixNodePresence", fixtures.GoodMixHost())
 				j, _ := json.Marshal(fixtures.XssMixHost())
 
 				resp := performRequest(router, "POST", "/api/presence/mixnodes", j)
@@ -70,7 +70,7 @@ var _ = Describe("Presence Controller", func() {
 
 				assert.Equal(GinkgoT(), 201, resp.Code)
 				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixHost())
-				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodMixHost(), "") // ip is blank in the default http test client
+				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodMixHost())
 			})
 		})
 	})
@@ -92,7 +92,7 @@ var _ = Describe("Presence Controller", func() {
 				controller.RegisterRoutes(router)
 
 				mockSanitizer.On("Sanitize", fixtures.XssMixProviderHost()).Return(fixtures.GoodMixProviderHost())
-				mockService.On("AddMixProviderPresence", fixtures.GoodMixProviderHost(), "")
+				mockService.On("AddMixProviderPresence", fixtures.GoodMixProviderHost())
 				j, _ := json.Marshal(fixtures.XssMixProviderHost())
 
 				resp := performRequest(router, "POST", "/api/presence/mixproviders", j)
@@ -101,7 +101,7 @@ var _ = Describe("Presence Controller", func() {
 
 				assert.Equal(GinkgoT(), 201, resp.Code)
 				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixProviderHost())
-				mockService.AssertCalled(GinkgoT(), "AddMixProviderPresence", fixtures.GoodMixProviderHost(), "")
+				mockService.AssertCalled(GinkgoT(), "AddMixProviderPresence", fixtures.GoodMixProviderHost())
 			})
 		})
 	})

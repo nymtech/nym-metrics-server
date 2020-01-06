@@ -15,14 +15,14 @@ func (_m *IService) AddCocoNodePresence(info models.CocoHostInfo, ip string) {
 	_m.Called(info, ip)
 }
 
-// AddMixNodePresence provides a mock function with given fields: info, ip
-func (_m *IService) AddMixNodePresence(info models.MixHostInfo, ip string) {
-	_m.Called(info, ip)
+// AddMixNodePresence provides a mock function with given fields: info
+func (_m *IService) AddMixNodePresence(info models.MixHostInfo) {
+	_m.Called(info)
 }
 
-// AddMixProviderPresence provides a mock function with given fields: info, ip
-func (_m *IService) AddMixProviderPresence(info models.MixProviderHostInfo, ip string) {
-	_m.Called(info, ip)
+// AddMixProviderPresence provides a mock function with given fields: info
+func (_m *IService) AddMixProviderPresence(info models.MixProviderHostInfo) {
+	_m.Called(info)
 }
 
 // Topology provides a mock function with given fields:

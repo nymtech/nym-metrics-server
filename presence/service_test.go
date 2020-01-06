@@ -73,17 +73,8 @@ var _ = Describe("presence.Service", func() {
 		Context("for a mixnode", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddMix", presence1)
-				serv.AddMixNodePresence(mix1, "foo.com")
+				serv.AddMixNodePresence(mix1)
 				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
-			})
-			Context("with a different self-reported IP vs server-reported IP", func() {
-				It("should add a presence to the db using the server-reported IP + the self-reported port", func() {
-					var presenceToSend = presence1
-					presenceToSend.Host = "slammich.com:8000"
-					mockDb.On("AddMix", presenceToSend)
-					serv.AddMixNodePresence(mix1, "slammich.com")
-					mockDb.AssertCalled(GinkgoT(), "AddMix", presenceToSend)
-				})
 			})
 		})
 		Context("for a coconode", func() {
@@ -92,30 +83,12 @@ var _ = Describe("presence.Service", func() {
 				serv.AddCocoNodePresence(coco1, "bar.com")
 				mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
 			})
-			Context("with a different self-reported IP vs server-reported IP", func() {
-				It("should add a presence to the db using the server-reported IP + the self-reported port", func() {
-					var presenceToSend = presence2
-					presenceToSend.Host = "foo.com:8000"
-					mockDb.On("AddCoco", presence2)
-					serv.AddCocoNodePresence(coco1, "bar.com")
-					mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
-				})
-			})
 		})
 		Context("for a provider node", func() {
 			It("should add a presence to the db", func() {
 				mockDb.On("AddMixProvider", presence3)
-				serv.AddMixProviderPresence(provider1, "baz.com")
+				serv.AddMixProviderPresence(provider1)
 				mockDb.AssertCalled(GinkgoT(), "AddMixProvider", presence3)
-			})
-			Context("with a different self-reported IP vs server-reported IP", func() {
-				It("should add a presence to the db using the server-reported IP + the self-reported port", func() {
-					var presenceToSend = presence3
-					presenceToSend.Host = "foo.com:8000"
-					mockDb.On("AddMixProvider", presenceToSend)
-					serv.AddMixProviderPresence(provider1, "foo.com")
-					mockDb.AssertCalled(GinkgoT(), "AddMixProvider", presenceToSend)
-				})
 			})
 		})
 	})
@@ -132,37 +105,6 @@ var _ = Describe("presence.Service", func() {
 				result := serv.Topology()
 				mockDb.AssertCalled(GinkgoT(), "Topology")
 				assert.Equal(GinkgoT(), topology, result)
-			})
-		})
-	})
-
-	Describe("Building the IP of a metrics report", func() {
-		Context("from a localhost request", func() {
-			It("uses server-reported host with the self-reported port", func() {
-				ipa := ipAssigner{}
-				result, _ := ipa.AssignIP("localhost", ":8080")
-				assert.Equal(GinkgoT(), "localhost:8080", result)
-			})
-		})
-		Context("from a 127.0.0.1 request", func() {
-			It("uses server-reported host with the self-reported port", func() {
-				ipa := ipAssigner{}
-				result, _ := ipa.AssignIP("127.0.0.1", ":8080")
-				assert.Equal(GinkgoT(), "127.0.0.1:8080", result)
-			})
-		})
-		Context("from a remote request", func() {
-			It("returns server-reported host with the self-reported port", func() {
-				ipa := ipAssigner{}
-				result, _ := ipa.AssignIP("foo.com", ":8080")
-				assert.Equal(GinkgoT(), "foo.com:8080", result)
-			})
-			Context("with a self-reported host body differing from the server-reported host", func() {
-				It("uses server-reported host with the self-reported port", func() {
-					ipa := ipAssigner{}
-					result, _ := ipa.AssignIP("bar.com", "foo.com:8080")
-					assert.Equal(GinkgoT(), "bar.com:8080", result)
-				})
 			})
 		})
 	})

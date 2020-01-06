@@ -69,7 +69,7 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.mixHostSanitizer.Sanitize(mixHost)
-	controller.service.AddMixNodePresence(sanitized, sanitized.Host)
+	controller.service.AddMixNodePresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -117,7 +117,7 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.mixProviderHostSanitizer.Sanitize(provider)
-	controller.service.AddMixProviderPresence(sanitized, sanitized.Host)
+	controller.service.AddMixProviderPresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
