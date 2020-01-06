@@ -93,7 +93,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.cocoHostSanitizer.Sanitize(cocoHost)
-	controller.service.AddCocoNodePresence(sanitized, sanitized.Host)
+	controller.service.AddCocoNodePresence(sanitized, c.ClientIP())
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
