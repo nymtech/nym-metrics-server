@@ -69,8 +69,7 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.mixHostSanitizer.Sanitize(mixHost)
-	ip := c.ClientIP()
-	controller.service.AddMixNodePresence(sanitized, ip)
+	controller.service.AddMixNodePresence(sanitized, sanitized.Host)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -94,7 +93,7 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.cocoHostSanitizer.Sanitize(cocoHost)
-	controller.service.AddCocoNodePresence(sanitized, c.ClientIP())
+	controller.service.AddCocoNodePresence(sanitized, sanitized.Host)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
@@ -118,7 +117,7 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.mixProviderHostSanitizer.Sanitize(provider)
-	controller.service.AddMixProviderPresence(sanitized, c.ClientIP())
+	controller.service.AddMixProviderPresence(sanitized, sanitized.Host)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
