@@ -74,7 +74,8 @@ type MixproviderSanitizer struct {
 // Sanitize MixProviderHostInfo input
 func (s *MixproviderSanitizer) Sanitize(input models.MixProviderHostInfo) models.MixProviderHostInfo {
 	input.PubKey = s.policy.Sanitize(input.PubKey)
-	input.Host = s.policy.Sanitize(input.Host)
+	input.ClientListener = s.policy.Sanitize(input.ClientListener)
+	input.MixnetListener = s.policy.Sanitize(input.MixnetListener)
 	for i, client := range input.RegisteredClients {
 		input.RegisteredClients[i].PubKey = s.policy.Sanitize(client.PubKey)
 	}
