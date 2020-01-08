@@ -56,10 +56,9 @@ var _ = Describe("presence.Service", func() {
 		}
 
 		provider1 = models.MixProviderHostInfo{
-			HostInfo: models.HostInfo{
-				Host:   "baz.com:8000",
-				PubKey: "pubkey2",
-			},
+			MixnetListener:   "foo.com:8000",
+			ClientListener:   "foo.com:8001",
+			PubKey: "pubkey2",
 			RegisteredClients: []models.RegisteredClient{},
 		}
 
