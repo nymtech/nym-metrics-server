@@ -7,6 +7,7 @@ func GoodCocoHost() models.CocoHostInfo {
 		HostInfo: models.HostInfo{
 			Host:   ":1789",
 			PubKey: "pubkey",
+			Version: "0.1.0",
 		},
 		Type: "type",
 	}
@@ -18,6 +19,7 @@ func GoodMixHost() models.MixHostInfo {
 		HostInfo: models.HostInfo{
 			Host:   ":1789",
 			PubKey: "pubkey",
+			Version: "0.1.0",
 		},
 		Layer: 1,
 	}
@@ -32,6 +34,7 @@ func GoodMixProviderHost() models.MixProviderHostInfo {
 		HostInfo: models.HostInfo{
 			Host:   ":1789",
 			PubKey: "pubkey",
+			Version: "0.1.0",
 		},
 		RegisteredClients: clients,
 	}
@@ -43,6 +46,7 @@ func XssCocoHost() models.CocoHostInfo {
 		HostInfo: models.HostInfo{
 			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
+			Version: "0.1.0",
 		},
 		Type: "type<script>alert('gotcha')",
 	}
@@ -54,6 +58,7 @@ func XssMixHost() models.MixHostInfo {
 		HostInfo: models.HostInfo{
 			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
+			Version: "0.1.0",
 		},
 		Layer: 1,
 	}
@@ -68,6 +73,7 @@ func XssMixProviderHost() models.MixProviderHostInfo {
 		HostInfo: models.HostInfo{
 			Host:   ":1789",
 			PubKey: "pubkey<script>alert('gotcha')</script>",
+			Version: "0.1.0",
 		},
 		RegisteredClients: clients,
 	}

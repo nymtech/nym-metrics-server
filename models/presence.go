@@ -16,6 +16,7 @@ type CocoPresence struct {
 type HostInfo struct {
 	Host   string `json:"host"`
 	PubKey string `json:"pubKey" binding:"required"`
+	Version string `json:"version" binding:"required"`
 }
 
 // MixProviderHostInfo comes from a node telling us it's alive
