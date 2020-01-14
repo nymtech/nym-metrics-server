@@ -113,6 +113,6 @@ func (db *db) killOldsters() {
 // timeWindow defines staleness
 // TODO: kill magic number by pulling this out into a config
 func timeWindow() int64 {
-	d := time.Duration(-5)
+	d := time.Duration(-10)
 	return timemock.Now().Add(time.Duration(d * time.Second)).UnixNano()
 }
