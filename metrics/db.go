@@ -69,7 +69,7 @@ func dbCleaner(ticker *time.Ticker, database *Db) {
 // a consistent view of what happened.
 //
 // Instead we Add() to an `incomingMixMetrics` slice, and read from the
-// `mixMetrics` slice. When we clear the db, we can transfer everythign from
+// `mixMetrics` slice. When we clear the db, we can transfer everything from
 // `incoming` to `mixMetrics` and have a full list, clearing incoming.
 // This way we can offer a consistent view of what happened
 // over any individual bit of time.
