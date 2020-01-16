@@ -78,9 +78,9 @@ var _ = Describe("Presence Db", func() {
 			})
 		})
 		Describe("Presences", func() {
-			Context("more than 5 seconds old", func() {
+			Context("more than 10 seconds old", func() {
 				It("are not returned in the topology", func() {
-					oldtime := timemock.Now().Add(time.Duration(-5 * time.Second)).UnixNano()
+					oldtime := timemock.Now().Add(time.Duration(-10 * time.Second)).UnixNano()
 					presence1.LastSeen = oldtime
 					db.AddCoco(presence1)
 					db.AddCoco(presence2)
@@ -150,9 +150,9 @@ var _ = Describe("Presence Db", func() {
 				})
 			})
 			Describe("Presences", func() {
-				Context("more than 5 seconds old", func() {
+				Context("more than 10 seconds old", func() {
 					It("are not returned in the topology", func() {
-						oldtime := timemock.Now().Add(time.Duration(-5 * time.Second)).UnixNano()
+						oldtime := timemock.Now().Add(time.Duration(-10 * time.Second)).UnixNano()
 						presence1.LastSeen = oldtime
 						db.AddMix(presence1)
 						db.AddMix(presence2)
@@ -221,9 +221,9 @@ var _ = Describe("Presence Db", func() {
 				})
 			})
 			Describe("Presences", func() {
-				Context("more than 5 seconds old", func() {
+				Context("more than 10 seconds old", func() {
 					It("are not returned in the topology", func() {
-						oldtime := timemock.Now().Add(time.Duration(-5 * time.Second)).UnixNano()
+						oldtime := timemock.Now().Add(time.Duration(-10 * time.Second)).UnixNano()
 						presence1.LastSeen = oldtime
 						db.AddMixProvider(presence1)
 						db.AddMixProvider(presence2)
