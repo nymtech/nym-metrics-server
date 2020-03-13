@@ -14,17 +14,19 @@ type CocoPresence struct {
 
 // HostInfo comes from a node telling us it's alive
 type HostInfo struct {
-	Host   string `json:"host"`
-	PubKey string `json:"pubKey" binding:"required"`
-	Version string `json:"version" binding:"required"`
+	Host     string `json:"host"`
+	PubKey   string `json:"pubKey" binding:"required"`
+	Version  string `json:"version" binding:"required"`
+	Location string `json:"location" binding:"required"`
 }
 
 // MixProviderHostInfo comes from a node telling us it's alive
 type MixProviderHostInfo struct {
-	ClientListener   string `json:"clientListener"`
-	MixnetListener   string `json:"mixnetListener"`
-	PubKey string `json:"pubKey" binding:"required"`
-	Version string `json:"version" binding:"required"`
+	ClientListener    string             `json:"clientListener"`
+	MixnetListener    string             `json:"mixnetListener"`
+	PubKey            string             `json:"pubKey" binding:"required"`
+	Version           string             `json:"version" binding:"required"`
+	Location          string             `json:"location" binding:"required"`
 	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
 }
 
@@ -59,7 +61,7 @@ type RegisteredClient struct {
 
 // Topology shows us the current state of the overall Nym network
 type Topology struct {
-	CocoNodes        []CocoPresence `json:"cocoNodes"`
-	MixNodes         []MixNodePresence `json:"mixNodes"`
+	CocoNodes        []CocoPresence        `json:"cocoNodes"`
+	MixNodes         []MixNodePresence     `json:"mixNodes"`
 	MixProviderNodes []MixProviderPresence `json:"mixProviderNodes"`
 }
