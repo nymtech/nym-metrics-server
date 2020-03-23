@@ -7,7 +7,7 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
-const defaultLocation = "Antarctica"
+const defaultLocation = "unknown"
 
 type service struct {
 	db         IDb
