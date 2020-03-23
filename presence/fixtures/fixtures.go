@@ -5,9 +5,10 @@ import "github.com/nymtech/nym-directory/models"
 func GoodCocoHost() models.CocoHostInfo {
 	good := models.CocoHostInfo{
 		HostInfo: models.HostInfo{
-			Host:    ":1789",
-			PubKey:  "pubkey",
-			Version: "0.1.0",
+			Location: "foomplandia",
+			Host:     ":1789",
+			PubKey:   "pubkey",
+			Version:  "0.1.0",
 		},
 		Type: "type",
 	}
@@ -17,9 +18,10 @@ func GoodCocoHost() models.CocoHostInfo {
 func GoodMixHost() models.MixHostInfo {
 	good := models.MixHostInfo{
 		HostInfo: models.HostInfo{
-			Host:    ":1789",
-			PubKey:  "pubkey",
-			Version: "0.1.0",
+			Location: "foomplandia",
+			Host:     ":1789",
+			PubKey:   "pubkey",
+			Version:  "0.1.0",
 		},
 		Layer: 1,
 	}
@@ -31,6 +33,7 @@ func GoodMixProviderHost() models.MixProviderHostInfo {
 	client2 := models.RegisteredClient{PubKey: "client2"}
 	clients := []models.RegisteredClient{client1, client2}
 	good := models.MixProviderHostInfo{
+		Location:          "foomplandia",
 		ClientListener:    ":1789",
 		MixnetListener:    ":1790",
 		PubKey:            "pubkey",
@@ -43,9 +46,10 @@ func GoodMixProviderHost() models.MixProviderHostInfo {
 func XssCocoHost() models.CocoHostInfo {
 	xss := models.CocoHostInfo{
 		HostInfo: models.HostInfo{
-			Host:    ":1789",
-			PubKey:  "pubkey<script>alert('gotcha')</script>",
-			Version: "0.1.0",
+			Location: "foomplandia",
+			Host:     ":1789",
+			PubKey:   "pubkey<script>alert('gotcha')</script>",
+			Version:  "0.1.0",
 		},
 		Type: "type<script>alert('gotcha')",
 	}
@@ -55,9 +59,10 @@ func XssCocoHost() models.CocoHostInfo {
 func XssMixHost() models.MixHostInfo {
 	xss := models.MixHostInfo{
 		HostInfo: models.HostInfo{
-			Host:    ":1789",
-			PubKey:  "pubkey<script>alert('gotcha')</script>",
-			Version: "0.1.0",
+			Location: "foomplandia",
+			Host:     ":1789",
+			PubKey:   "pubkey<script>alert('gotcha')</script>",
+			Version:  "0.1.0",
 		},
 		Layer: 1,
 	}
@@ -69,6 +74,7 @@ func XssMixProviderHost() models.MixProviderHostInfo {
 	client2 := models.RegisteredClient{PubKey: "client2<script>alert('gotcha')</script>"}
 	clients := []models.RegisteredClient{client1, client2}
 	xss := models.MixProviderHostInfo{
+		Location:          "foomplandia",
 		ClientListener:    ":1789",
 		MixnetListener:    ":1790",
 		PubKey:            "pubkey<script>alert('gotcha')</script>",
