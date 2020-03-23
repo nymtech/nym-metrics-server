@@ -17,7 +17,7 @@ type HostInfo struct {
 	Host     string `json:"host"`
 	PubKey   string `json:"pubKey" binding:"required"`
 	Version  string `json:"version" binding:"required"`
-	Location string `json:"location" binding:"required"`
+	Location string `json:"location"`
 }
 
 // MixProviderHostInfo comes from a node telling us it's alive
@@ -26,7 +26,7 @@ type MixProviderHostInfo struct {
 	MixnetListener    string             `json:"mixnetListener"`
 	PubKey            string             `json:"pubKey" binding:"required"`
 	Version           string             `json:"version" binding:"required"`
-	Location          string             `json:"location" binding:"required"`
+	Location          string             `json:"location"`
 	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
 }
 

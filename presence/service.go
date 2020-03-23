@@ -7,6 +7,8 @@ import (
 	"github.com/nymtech/nym-directory/models"
 )
 
+const defaultLocation = "Antarctica"
+
 type service struct {
 	db         IDb
 	ipAssigner IPAssigner
@@ -34,6 +36,9 @@ func (service *service) AddCocoNodePresence(info models.CocoHostInfo, ip string)
 		LastSeen:     timemock.Now().UnixNano(),
 	}
 	presence.HostInfo.Host, _ = service.ipAssigner.AssignIP(ip, presence.Host)
+	if presence.Location == "" || presence.Location == "unknown" {
+		presence.Location = defaultLocation
+	}
 	service.db.AddCoco(presence)
 }
 
@@ -41,6 +46,9 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
 		LastSeen:    timemock.Now().UnixNano(),
+	}
+	if presence.Location == "" || presence.Location == "unknown" {
+		presence.Location = defaultLocation
 	}
 	// presence.HostInfo.Host, _ = service.ipAssigner.AssignIP(ip, presence.Host)
 	service.db.AddMix(presence)
@@ -50,6 +58,9 @@ func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) 
 	presence := models.MixProviderPresence{
 		MixProviderHostInfo: info,
 		LastSeen:            timemock.Now().UnixNano(),
+	}
+	if presence.Location == "" || presence.Location == "unknown" {
+		presence.Location = defaultLocation
 	}
 	// presence.HostInfo.Host, _ = service.ipAssigner.AssignIP(ip, presence.Host)
 	service.db.AddMixProvider(presence)
