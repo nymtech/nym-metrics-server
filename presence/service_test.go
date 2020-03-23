@@ -32,8 +32,9 @@ var _ = Describe("presence.Service", func() {
 		// Set up fixtures
 		mix1 = models.MixHostInfo{
 			HostInfo: models.HostInfo{
-				Host:   "foo.com:8000",
-				PubKey: "pubkey1",
+				Host:     "foo.com:8000",
+				PubKey:   "pubkey1",
+				Location: defaultLocation,
 			},
 			Layer: 1,
 		}
@@ -45,8 +46,9 @@ var _ = Describe("presence.Service", func() {
 
 		coco1 = models.CocoHostInfo{
 			HostInfo: models.HostInfo{
-				Host:   "bar.com:8000",
-				PubKey: "pubkey2",
+				Host:     "bar.com:8000",
+				PubKey:   "pubkey2",
+				Location: defaultLocation,
 			},
 			Type: "foo",
 		}
@@ -56,9 +58,10 @@ var _ = Describe("presence.Service", func() {
 		}
 
 		provider1 = models.MixProviderHostInfo{
-			MixnetListener:   "foo.com:8000",
-			ClientListener:   "foo.com:8001",
-			PubKey: "pubkey2",
+			MixnetListener:    "foo.com:8000",
+			ClientListener:    "foo.com:8001",
+			Location:          defaultLocation,
+			PubKey:            "pubkey2",
 			RegisteredClients: []models.RegisteredClient{},
 		}
 
