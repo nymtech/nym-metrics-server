@@ -13,14 +13,14 @@ type GatewayHostSanitizer struct {
 }
 
 // Sanitize provides a mock function with given fields: _a0
-func (_m *GatewayHostSanitizer) Sanitize(_a0 models.MixProviderHostInfo) models.MixProviderHostInfo {
+func (_m *GatewayHostSanitizer) Sanitize(_a0 models.GatewayHostInfo) models.GatewayHostInfo {
 	ret := _m.Called(_a0)
 
-	var r0 models.MixProviderHostInfo
-	if rf, ok := ret.Get(0).(func(models.MixProviderHostInfo) models.MixProviderHostInfo); ok {
+	var r0 models.GatewayHostInfo
+	if rf, ok := ret.Get(0).(func(models.GatewayHostInfo) models.GatewayHostInfo); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(models.MixProviderHostInfo)
+		r0 = ret.Get(0).(models.GatewayHostInfo)
 	}
 
 	return r0

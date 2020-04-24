@@ -18,7 +18,7 @@ func (_m *IService) AddCocoNodePresence(info models.CocoHostInfo, ip string) {
 }
 
 // AddGatewayPresence provides a mock function with given fields: info
-func (_m *IService) AddGatewayPresence(info models.MixProviderHostInfo) {
+func (_m *IService) AddGatewayPresence(info models.GatewayHostInfo) {
 	_m.Called(info)
 }
 
