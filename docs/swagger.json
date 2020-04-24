@@ -9,10 +9,8 @@
             "name": "Apache 2.0",
             "url": "https://github.com/nymtech/nym-directory/license"
         },
-        "version": "1.0"
+        "version": "0.0.4"
     },
-    "host": "{{.Host}}",
-    "basePath": "{{.BasePath}}",
     "paths": {
         "/api/healthcheck": {
             "get": {
@@ -60,21 +58,18 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     }
@@ -100,7 +95,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.MixMetric"
                         }
                     }
@@ -110,21 +104,18 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     }
@@ -152,7 +143,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.CocoHostInfo"
                         }
                     }
@@ -162,21 +152,66 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/presence/gateways": {
+            "post": {
+                "description": "Nym mix gateways can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Lets a gateway tell the directory server it's alive",
+                "operationId": "addGateway",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.GatewayHostInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
                             "$ref": "#/definitions/models.Error"
                         }
                     }
@@ -204,7 +239,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.MixHostInfo"
                         }
                     }
@@ -214,28 +248,25 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     }
                 }
             }
         },
-        "/api/presence/providers": {
+        "/api/presence/mixproviders": {
             "post": {
                 "description": "Nym mix providers can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
@@ -256,7 +287,6 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.MixProviderHostInfo"
                         }
                     }
@@ -266,21 +296,18 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     }
@@ -299,34 +326,30 @@
                 "tags": [
                     "presence"
                 ],
-                "summary": "Lists which Nym mixnodes, providers, and coconodes are alive",
+                "summary": "Lists which Nym mixnodes, providers, gateways, and coconodes are alive",
                 "operationId": "topology",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Topology"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
                             "$ref": "#/definitions/models.Error"
                         }
                     }
@@ -339,16 +362,52 @@
             "type": "object",
             "required": [
                 "pubKey",
-                "type"
+                "type",
+                "version"
             ],
             "properties": {
                 "host": {
+                    "type": "string"
+                },
+                "location": {
                     "type": "string"
                 },
                 "pubKey": {
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CocoPresence": {
+            "type": "object",
+            "required": [
+                "lastSeen",
+                "pubKey",
+                "type",
+                "version"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
@@ -361,51 +420,21 @@
                 }
             }
         },
-        "models.MixHostInfo": {
+        "models.GatewayHostInfo": {
             "type": "object",
             "required": [
-                "layer",
-                "pubKey"
+                "pubKey",
+                "registeredClients",
+                "version"
             ],
             "properties": {
-                "host": {
+                "clientListener": {
                     "type": "string"
                 },
-                "layer": {
-                    "type": "integer"
-                },
-                "pubKey": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.MixMetric": {
-            "type": "object",
-            "required": [
-                "pubKey"
-            ],
-            "properties": {
-                "pubKey": {
+                "location": {
                     "type": "string"
                 },
-                "received": {
-                    "type": "integer"
-                },
-                "sent": {
-                    "type": "object",
-                    "required": [
-                        "sent"
-                    ]
-                }
-            }
-        },
-        "models.MixProviderHostInfo": {
-            "type": "object",
-            "required": [
-                "pubKey"
-            ],
-            "properties": {
-                "host": {
+                "mixnetListener": {
                     "type": "string"
                 },
                 "pubKey": {
@@ -416,6 +445,185 @@
                     "items": {
                         "$ref": "#/definitions/models.RegisteredClient"
                     }
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GatewayPresence": {
+            "type": "object",
+            "required": [
+                "lastSeen",
+                "pubKey",
+                "registeredClients",
+                "version"
+            ],
+            "properties": {
+                "clientListener": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MixHostInfo": {
+            "type": "object",
+            "required": [
+                "layer",
+                "pubKey",
+                "version"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MixMetric": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "sent"
+            ],
+            "properties": {
+                "pubKey": {
+                    "type": "string"
+                },
+                "received": {
+                    "type": "integer"
+                },
+                "sent": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "models.MixNodePresence": {
+            "type": "object",
+            "required": [
+                "lastSeen",
+                "layer",
+                "pubKey",
+                "version"
+            ],
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MixProviderHostInfo": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "registeredClients",
+                "version"
+            ],
+            "properties": {
+                "clientListener": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MixProviderPresence": {
+            "type": "object",
+            "required": [
+                "lastSeen",
+                "pubKey",
+                "registeredClients",
+                "version"
+            ],
+            "properties": {
+                "clientListener": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                },
+                "version": {
+                    "type": "string"
                 }
             }
         },
@@ -434,13 +642,28 @@
             "type": "object",
             "properties": {
                 "cocoNodes": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CocoPresence"
+                    }
+                },
+                "gateways": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GatewayPresence"
+                    }
                 },
                 "mixNodes": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MixNodePresence"
+                    }
                 },
                 "mixProviderNodes": {
-                    "type": "object"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MixProviderPresence"
+                    }
                 }
             }
         }

@@ -19,6 +19,7 @@ type IService interface {
 	AddCocoNodePresence(info models.CocoHostInfo, ip string)
 	AddMixNodePresence(info models.MixHostInfo)
 	AddMixProviderPresence(info models.MixProviderHostInfo)
+	AddGatewayPresence(info models.GatewayHostInfo)
 	Topology() models.Topology
 }
 
@@ -64,6 +65,18 @@ func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) 
 	}
 	// presence.HostInfo.Host, _ = service.ipAssigner.AssignIP(ip, presence.Host)
 	service.db.AddMixProvider(presence)
+}
+
+func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
+	presence := models.GatewayPresence{
+		GatewayHostInfo: info,
+		LastSeen:            timemock.Now().UnixNano(),
+	}
+	if presence.Location == "" || presence.Location == "unknown" {
+		presence.Location = defaultLocation
+	}
+	// presence.HostInfo.Host, _ = service.ipAssigner.AssignIP(ip, presence.Host)
+	service.db.AddGateway(presence)
 }
 
 func (service *service) Topology() models.Topology {

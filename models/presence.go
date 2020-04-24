@@ -59,9 +59,26 @@ type RegisteredClient struct {
 	PubKey string `json:"pubKey" binding:"required"`
 }
 
+// GatewayHostInfo comes from a node telling us it's alive
+type GatewayHostInfo struct {
+	ClientListener    string             `json:"clientListener"`
+	MixnetListener    string             `json:"mixnetListener"`
+	PubKey            string             `json:"pubKey" binding:"required"`
+	Version           string             `json:"version" binding:"required"`
+	Location          string             `json:"location"`
+	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
+}
+
+// GatewayPresence holds presence info for a gateway node
+type GatewayPresence struct {
+	GatewayHostInfo
+	LastSeen int64 `json:"lastSeen" binding:"required"`
+}
+
 // Topology shows us the current state of the overall Nym network
 type Topology struct {
 	CocoNodes        []CocoPresence        `json:"cocoNodes"`
 	MixNodes         []MixNodePresence     `json:"mixNodes"`
 	MixProviderNodes []MixProviderPresence `json:"mixProviderNodes"`
+	Gateways         []GatewayPresence     `json:"gateways"`
 }

@@ -20,6 +20,11 @@ type MixProviderHostSanitizer interface {
 	Sanitize(models.MixProviderHostInfo) models.MixProviderHostInfo
 }
 
+// GatewayHostSanitizer cleans untrusted input fields
+type GatewayHostSanitizer interface {
+	Sanitize(models.GatewayHostInfo) models.GatewayHostInfo
+}
+
 // NewCoconodeSanitizer constructor...
 func NewCoconodeSanitizer(p *bluemonday.Policy) CoconodeSanitizer {
 	return CoconodeSanitizer{
@@ -73,6 +78,29 @@ type MixproviderSanitizer struct {
 
 // Sanitize MixProviderHostInfo input
 func (s *MixproviderSanitizer) Sanitize(input models.MixProviderHostInfo) models.MixProviderHostInfo {
+	input.PubKey = s.policy.Sanitize(input.PubKey)
+	input.ClientListener = s.policy.Sanitize(input.ClientListener)
+	input.MixnetListener = s.policy.Sanitize(input.MixnetListener)
+	for i, client := range input.RegisteredClients {
+		input.RegisteredClients[i].PubKey = s.policy.Sanitize(client.PubKey)
+	}
+	return input
+}
+
+// NewGatewaySanitizer constructor...
+func NewGatewaySanitizer(p *bluemonday.Policy) GatewaySanitizer {
+	return GatewaySanitizer{
+		policy: p,
+	}
+}
+
+// GatewaySanitizer kills untrusted input in GatewayHostInfo structs
+type GatewaySanitizer struct {
+	policy *bluemonday.Policy
+}
+
+// Sanitize GatewayHostInfo input
+func (s *GatewaySanitizer) Sanitize(input models.GatewayHostInfo) models.GatewayHostInfo {
 	input.PubKey = s.policy.Sanitize(input.PubKey)
 	input.ClientListener = s.policy.Sanitize(input.ClientListener)
 	input.MixnetListener = s.policy.Sanitize(input.MixnetListener)

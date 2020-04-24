@@ -12,6 +12,7 @@ type Config struct {
 	CocoHostSanitizer        CocoHostSanitizer
 	MixHostSanitizer         MixHostSanitizer
 	MixProviderHostSanitizer MixProviderHostSanitizer
+	GatewayHostSanitizer     GatewayHostSanitizer
 	Service                  IService
 }
 
@@ -21,6 +22,7 @@ type controller struct {
 	cocoHostSanitizer        CocoHostSanitizer
 	mixHostSanitizer         MixHostSanitizer
 	mixProviderHostSanitizer MixProviderHostSanitizer
+	gatewayHostSanitizer     GatewayHostSanitizer
 }
 
 // Controller is the presence controller interface
@@ -38,6 +40,7 @@ func New(cfg Config) Controller {
 		cfg.CocoHostSanitizer,
 		cfg.MixHostSanitizer,
 		cfg.MixProviderHostSanitizer,
+		cfg.GatewayHostSanitizer,
 	}
 }
 
@@ -46,6 +49,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
 	router.POST("/api/presence/mixproviders", controller.AddMixProviderPresence)
+	router.POST("/api/presence/gateways", controller.AddGatewayPresence)
 	router.GET("/api/presence/topology", controller.Topology)
 }
 
@@ -121,8 +125,32 @@ func (controller *controller) AddMixProviderPresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
+// AddGatewayPresence ...
+// @Summary Lets a gateway tell the directory server it's alive
+// @Description Nym mix gateways can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
+// @ID addGateway
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Param   object      body   models.GatewayHostInfo     true  "object"
+// @Success 201
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/gateways [post]
+func (controller *controller) AddGatewayPresence(c *gin.Context) {
+	var gateway models.GatewayHostInfo
+	if err := c.ShouldBindJSON(&gateway); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	sanitized := controller.gatewayHostSanitizer.Sanitize(gateway)
+	controller.service.AddGatewayPresence(sanitized)
+	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
 // Topology ...
-// @Summary Lists which Nym mixnodes, providers, and coconodes are alive
+// @Summary Lists which Nym mixnodes, providers, gateways, and coconodes are alive
 // @Description Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.
 // @ID topology
 // @Accept  json
