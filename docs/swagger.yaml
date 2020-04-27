@@ -195,7 +195,7 @@ definitions:
         items:
           $ref: '#/definitions/models.CocoPresence'
         type: array
-      gateways:
+      gatewayNodes:
         items:
           $ref: '#/definitions/models.GatewayPresence'
         type: array

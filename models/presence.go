@@ -80,5 +80,5 @@ type Topology struct {
 	CocoNodes        []CocoPresence        `json:"cocoNodes"`
 	MixNodes         []MixNodePresence     `json:"mixNodes"`
 	MixProviderNodes []MixProviderPresence `json:"mixProviderNodes"`
-	Gateways         []GatewayPresence     `json:"gateways"`
+	Gateways         []GatewayPresence     `json:"gatewayNodes"`
 }

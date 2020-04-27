@@ -39,11 +39,12 @@ require (
 	github.com/urfave/cli v1.22.4 // indirect
 	github.com/yuin/goldmark v1.1.30 // indirect
 	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5 // indirect
-	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd // indirect
+	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
-	golang.org/x/tools v0.0.0-20200423205358-59e73619c742 // indirect
-	golang.org/x/tools/gopls v0.1.6 // indirect
+	golang.org/x/tools v0.0.0-20200426102838-f3a5411a4c3b // indirect
+	golang.org/x/tools/gopls v0.4.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gotest.tools v2.2.0+incompatible
+	mvdan.cc/xurls/v2 v2.2.0 // indirect
 )

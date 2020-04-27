@@ -647,7 +647,7 @@
                         "$ref": "#/definitions/models.CocoPresence"
                     }
                 },
-                "gateways": {
+                "gatewayNodes": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.GatewayPresence"
