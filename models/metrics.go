@@ -5,7 +5,7 @@ package models
 type MixMetric struct {
 	PubKey   string          `json:"pubKey" binding:"required"`
 	Sent     map[string]uint `json:"sent" binding:"required"`
-	Received *uint           `json:"received" binding:"exists"`
+	Received *uint           `json:"received" binding:"required"`
 }
 
 // PersistedMixMetric is a saved MixMetric with a timestamp recording when it
