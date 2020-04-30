@@ -13,6 +13,7 @@ type IDb interface {
 	AddCoco(models.CocoPresence)
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)
+	AddGateway(models.GatewayPresence)
 	Topology() models.Topology
 }
 
@@ -23,6 +24,7 @@ type db struct {
 	cocoNodes        map[string]models.CocoPresence
 	mixNodes         map[string]models.MixNodePresence
 	mixProviderNodes map[string]models.MixProviderPresence
+	gateways         map[string]models.GatewayPresence
 }
 
 // NewDb constructor...
@@ -31,6 +33,7 @@ func NewDb() *db {
 		cocoNodes:        map[string]models.CocoPresence{},
 		mixNodes:         map[string]models.MixNodePresence{},
 		mixProviderNodes: map[string]models.MixProviderPresence{},
+		gateways:         map[string]models.GatewayPresence{},
 	}
 }
 
@@ -55,6 +58,13 @@ func (db *db) AddMixProvider(presence models.MixProviderPresence) {
 	db.mixProviderNodes[presence.PubKey] = presence
 }
 
+func (db *db) AddGateway(presence models.GatewayPresence) {
+	db.Lock()
+	defer db.Unlock()
+	db.killOldsters()
+	db.gateways[presence.PubKey] = presence
+}
+
 // Topology returns the full network Topology
 //
 // This implementation is a little bit involved, and you might wonder why we
@@ -70,6 +80,7 @@ func (db *db) Topology() models.Topology {
 	cocoNodes := []models.CocoPresence{}
 	mixNodes := []models.MixNodePresence{}
 	mixProviderNodes := []models.MixProviderPresence{}
+	gatewayNodes := []models.GatewayPresence{}
 
 	for _, value := range db.cocoNodes {
 		cocoNodes = append(cocoNodes, value)
@@ -83,10 +94,15 @@ func (db *db) Topology() models.Topology {
 		mixProviderNodes = append(mixProviderNodes, value)
 	}
 
+	for _, value := range db.gateways {
+		gatewayNodes = append(gatewayNodes, value)
+	}
+
 	t := models.Topology{
 		CocoNodes:        cocoNodes,
 		MixNodes:         mixNodes,
 		MixProviderNodes: mixProviderNodes,
+		Gateways:         gatewayNodes,
 	}
 	return t
 }
@@ -106,6 +122,11 @@ func (db *db) killOldsters() {
 	for key, presence := range db.mixProviderNodes {
 		if presence.LastSeen <= timeWindow() {
 			delete(db.mixProviderNodes, key)
+		}
+	}
+	for key, presence := range db.gateways {
+		if presence.LastSeen <= timeWindow() {
+			delete(db.gateways, key)
 		}
 	}
 }
