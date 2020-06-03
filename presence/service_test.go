@@ -13,13 +13,13 @@ import (
 
 var _ = Describe("presence.Service", func() {
 	var (
-		mix1      models.MixHostInfo
-		presence1 models.MixNodePresence
-		coco1     models.CocoHostInfo
-		presence2 models.CocoPresence
-		provider1 models.MixProviderHostInfo
-		presence3 models.MixProviderPresence
-		mockDb    mocks.IDb
+		mix1              models.MixHostInfo
+		mixpresence1      models.MixNodePresence
+		coco1             models.CocoHostInfo
+		cocopresence2     models.CocoPresence
+		provider1         models.MixProviderHostInfo
+		providerpresence3 models.MixProviderPresence
+		mockDb            mocks.IDb
 
 		serv service
 	)
@@ -39,7 +39,7 @@ var _ = Describe("presence.Service", func() {
 			Layer: 1,
 		}
 
-		presence1 = models.MixNodePresence{
+		mixpresence1 = models.MixNodePresence{
 			MixHostInfo: mix1,
 			LastSeen:    timemock.Now().UnixNano(),
 		}
@@ -52,7 +52,7 @@ var _ = Describe("presence.Service", func() {
 			},
 			Type: "foo",
 		}
-		presence2 = models.CocoPresence{
+		cocopresence2 = models.CocoPresence{
 			CocoHostInfo: coco1,
 			LastSeen:     timemock.Now().UnixNano(),
 		}
@@ -65,7 +65,7 @@ var _ = Describe("presence.Service", func() {
 			RegisteredClients: []models.RegisteredClient{},
 		}
 
-		presence3 = models.MixProviderPresence{
+		providerpresence3 = models.MixProviderPresence{
 			MixProviderHostInfo: provider1,
 			LastSeen:            timemock.Now().UnixNano(),
 		}
@@ -74,31 +74,42 @@ var _ = Describe("presence.Service", func() {
 	Describe("Adding presence info", func() {
 		Context("for a mixnode", func() {
 			It("should add a presence to the db", func() {
-				mockDb.On("AddMix", presence1)
+				mockDb.On("AddMix", mixpresence1)
 				serv.AddMixNodePresence(mix1)
-				mockDb.AssertCalled(GinkgoT(), "AddMix", presence1)
+				mockDb.AssertCalled(GinkgoT(), "AddMix", mixpresence1)
 			})
 		})
 		Context("for a coconode", func() {
 			It("should add a presence to the db", func() {
-				mockDb.On("AddCoco", presence2)
+				mockDb.On("AddCoco", cocopresence2)
 				serv.AddCocoNodePresence(coco1, "bar.com")
-				mockDb.AssertCalled(GinkgoT(), "AddCoco", presence2)
+				mockDb.AssertCalled(GinkgoT(), "AddCoco", cocopresence2)
 			})
 		})
 		Context("for a provider node", func() {
 			It("should add a presence to the db", func() {
-				mockDb.On("AddMixProvider", presence3)
+				mockDb.On("AddMixProvider", providerpresence3)
 				serv.AddMixProviderPresence(provider1)
-				mockDb.AssertCalled(GinkgoT(), "AddMixProvider", presence3)
+				mockDb.AssertCalled(GinkgoT(), "AddMixProvider", providerpresence3)
 			})
 		})
 	})
-	Describe("Listing presence info", func() {
+	Describe("Getting the Topology", func() {
 		Context("when receiving a list request", func() {
 			It("should call to the Db", func() {
 				list := []models.MixNodePresence{
-					presence1,
+					mixpresence1,
+				}
+				topology := models.Topology{
+					MixNodes: list,
+				}
+				mockDb.On("Topology").Return(topology)
+				result := serv.Topology()
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), topology, result)
+			})
+		})
+
 				}
 				topology := models.Topology{
 					MixNodes: list,
