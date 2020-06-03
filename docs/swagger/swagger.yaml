@@ -12,9 +12,9 @@ definitions:
       version:
         type: string
     required:
-    - pubKey
     - version
     - type
+    - pubKey
     type: object
   models.CocoPresence:
     properties:
@@ -35,11 +35,6 @@ definitions:
     - pubKey
     - version
     - type
-    type: object
-  models.Disallow:
-    properties:
-      hostKey:
-        type: string
     type: object
   models.Error:
     properties:
@@ -85,9 +80,9 @@ definitions:
       version:
         type: string
     required:
+    - version
     - lastSeen
     - pubKey
-    - version
     type: object
   models.MixHostInfo:
     properties:
@@ -102,9 +97,9 @@ definitions:
       version:
         type: string
     required:
+    - pubKey
     - version
     - layer
-    - pubKey
     type: object
   models.MixMetric:
     properties:
@@ -117,8 +112,13 @@ definitions:
         - sent
         type: object
     required:
-    - received
     - pubKey
+    - received
+    type: object
+  models.MixNodeID:
+    properties:
+      pubKey:
+        type: string
     type: object
   models.MixNodePresence:
     properties:
@@ -310,6 +310,43 @@ paths:
         received
       tags:
       - metrics
+  /api/presence/allow:
+    post:
+      consumes:
+      - application/json
+      description: Sometimes when a node isn't working we need to temporarily remove
+        it. This allows us to re-enable it once it's working again.
+      operationId: allow
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixNodeID'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Removes a disallowed node from the disallowed nodes list
+      tags:
+      - presence
   /api/presence/coconodes:
     post:
       consumes:
@@ -361,7 +398,7 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/models.Disallow'
+          $ref: '#/definitions/models.MixNodeID'
           type: object
       produces:
       - application/json

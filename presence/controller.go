@@ -159,11 +159,11 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 // @Produce  json
 // @Tags presence
 // @Param   object      body   models.MixNodeID     true  "object"
-// @Success 201
+// @Success 200
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/presence/disallow [post]
+// @Router /api/presence/allow [post]
 func (controller *controller) Allow(c *gin.Context) {
 	var node models.MixNodeID
 	if err := c.ShouldBindJSON(&node); err != nil {

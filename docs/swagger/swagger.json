@@ -129,6 +129,58 @@
                 }
             }
         },
+        "/api/presence/allow": {
+            "post": {
+                "description": "Sometimes when a node isn't working we need to temporarily remove it. This allows us to re-enable it once it's working again.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Removes a disallowed node from the disallowed nodes list",
+                "operationId": "allow",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.MixNodeID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/presence/coconodes": {
             "post": {
                 "description": "Nym Coconut nodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
@@ -203,7 +255,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.Disallow"
+                            "$ref": "#/definitions/models.MixNodeID"
                         }
                     }
                 ],
@@ -440,9 +492,9 @@
         "models.CocoHostInfo": {
             "type": "object",
             "required": [
-                "pubKey",
                 "version",
-                "type"
+                "type",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -491,14 +543,6 @@
                 }
             }
         },
-        "models.Disallow": {
-            "type": "object",
-            "properties": {
-                "hostKey": {
-                    "type": "string"
-                }
-            }
-        },
         "models.Error": {
             "type": "object",
             "properties": {
@@ -540,9 +584,9 @@
         "models.GatewayPresence": {
             "type": "object",
             "required": [
+                "version",
                 "lastSeen",
-                "pubKey",
-                "version"
+                "pubKey"
             ],
             "properties": {
                 "clientListener": {
@@ -574,9 +618,9 @@
         "models.MixHostInfo": {
             "type": "object",
             "required": [
+                "pubKey",
                 "version",
-                "layer",
-                "pubKey"
+                "layer"
             ],
             "properties": {
                 "host": {
@@ -599,8 +643,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "received",
-                "pubKey"
+                "pubKey",
+                "received"
             ],
             "properties": {
                 "pubKey": {
@@ -614,6 +658,14 @@
                     "required": [
                         "sent"
                     ]
+                }
+            }
+        },
+        "models.MixNodeID": {
+            "type": "object",
+            "properties": {
+                "pubKey": {
+                    "type": "string"
                 }
             }
         },
