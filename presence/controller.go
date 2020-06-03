@@ -50,6 +50,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
 	router.POST("/api/presence/mixproviders", controller.AddMixProviderPresence)
 	router.POST("/api/presence/gateways", controller.AddGatewayPresence)
+	router.POST("/api/presence/disallow", controller.Disallow)
 	router.GET("/api/presence/topology", controller.Topology)
 }
 
@@ -164,4 +165,26 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 func (controller *controller) Topology(c *gin.Context) {
 	topology := controller.service.Topology()
 	c.JSON(http.StatusOK, topology)
+}
+
+// Disallow ...
+// @Summary Takes a node out of the regular topology and shoves it in the disallowed nodes list
+// @Description Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.
+// @ID disallow
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Success 201
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/disallow [post]
+func (controller *controller) Disallow(c *gin.Context) {
+	var disallow models.Disallow
+	if err := c.ShouldBindJSON(&disallow); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	controller.service.Disallow(disallow)
+	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }

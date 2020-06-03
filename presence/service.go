@@ -20,6 +20,7 @@ type IService interface {
 	AddMixNodePresence(info models.MixHostInfo)
 	AddMixProviderPresence(info models.MixProviderHostInfo)
 	AddGatewayPresence(info models.GatewayHostInfo)
+	Disallow(hostKey models.Disallow)
 	Topology() models.Topology
 }
 
@@ -70,13 +71,18 @@ func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) 
 func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
 	presence := models.GatewayPresence{
 		GatewayHostInfo: info,
-		LastSeen:            timemock.Now().UnixNano(),
+		LastSeen:        timemock.Now().UnixNano(),
 	}
 	if presence.Location == "" || presence.Location == "unknown" {
 		presence.Location = defaultLocation
 	}
 	// presence.HostInfo.Host, _ = service.ipAssigner.AssignIP(ip, presence.Host)
 	service.db.AddGateway(presence)
+}
+
+func (service *service) Disallow(hostKey models.Disallow) {
+	// return service.db.Topology()
+	return
 }
 
 func (service *service) Topology() models.Topology {

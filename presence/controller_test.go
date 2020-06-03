@@ -106,6 +106,33 @@ var _ = Describe("Presence Controller", func() {
 		})
 	})
 
+	Describe("disallowing a node", func() {
+		Context("with a properly formatted node key", func() {
+			It("should tell the service to disallow the node", func() {
+				mockSanitizer := new(mocks.MixProviderHostSanitizer)
+				mockService := new(mocks.IService)
+
+				cfg := Config{
+					MixProviderHostSanitizer: mockSanitizer,
+					Service:                  mockService,
+				}
+
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+
+				hostKey, _ := json.Marshal(fixtures.Disallow())
+				mockService.On("Disallow", fixtures.Disallow())
+
+				resp := performRequest(router, "POST", "/api/presence/disallow", hostKey)
+				var response map[string]string
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+
+				assert.Equal(GinkgoT(), 201, resp.Code)
+			})
+		})
+	})
 })
 
 func performRequest(r http.Handler, method, path string, body []byte) *httptest.ResponseRecorder {
