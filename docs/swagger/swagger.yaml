@@ -12,9 +12,9 @@ definitions:
       version:
         type: string
     required:
+    - pubKey
     - version
     - type
-    - pubKey
     type: object
   models.CocoPresence:
     properties:
@@ -31,10 +31,10 @@ definitions:
       version:
         type: string
     required:
-    - lastSeen
-    - pubKey
     - version
     - type
+    - lastSeen
+    - pubKey
     type: object
   models.Error:
     properties:
@@ -80,9 +80,9 @@ definitions:
       version:
         type: string
     required:
+    - pubKey
     - version
     - lastSeen
-    - pubKey
     type: object
   models.MixHostInfo:
     properties:
@@ -135,10 +135,10 @@ definitions:
       version:
         type: string
     required:
-    - pubKey
     - version
     - layer
     - lastSeen
+    - pubKey
     type: object
   models.MixProviderHostInfo:
     properties:
@@ -157,8 +157,8 @@ definitions:
       version:
         type: string
     required:
-    - version
     - pubKey
+    - version
     type: object
   models.MixProviderPresence:
     properties:
@@ -179,9 +179,9 @@ definitions:
       version:
         type: string
     required:
-    - lastSeen
     - pubKey
     - version
+    - lastSeen
     type: object
   models.RegisteredClient:
     properties:
@@ -195,10 +195,6 @@ definitions:
       cocoNodes:
         items:
           $ref: '#/definitions/models.CocoPresence'
-        type: array
-      disallowed:
-        items:
-          $ref: '#/definitions/models.MixNodePresence'
         type: array
       gatewayNodes:
         items:
@@ -421,6 +417,40 @@ paths:
             type: object
       summary: Takes a node out of the regular topology and puts it in the disallowed
         nodes list
+      tags:
+      - presence
+  /api/presence/disallowed:
+    get:
+      consumes:
+      - application/json
+      description: Sometimes we need to take mixnodes out of the network for repair.
+        This shows which ones are currently disallowed.
+      operationId: disallowed
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixNodePresence'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Lists Nym mixnodes that are currently disallowed
       tags:
       - presence
   /api/presence/gateways:

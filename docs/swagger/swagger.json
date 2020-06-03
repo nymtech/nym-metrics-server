@@ -285,6 +285,54 @@
                 }
             }
         },
+        "/api/presence/disallowed": {
+            "get": {
+                "description": "Sometimes we need to take mixnodes out of the network for repair. This shows which ones are currently disallowed.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Lists Nym mixnodes that are currently disallowed",
+                "operationId": "disallowed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MixNodePresence"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/presence/gateways": {
             "post": {
                 "description": "Nym mix gateways can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
@@ -492,9 +540,9 @@
         "models.CocoHostInfo": {
             "type": "object",
             "required": [
+                "pubKey",
                 "version",
-                "type",
-                "pubKey"
+                "type"
             ],
             "properties": {
                 "host": {
@@ -517,10 +565,10 @@
         "models.CocoPresence": {
             "type": "object",
             "required": [
-                "lastSeen",
-                "pubKey",
                 "version",
-                "type"
+                "type",
+                "lastSeen",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -584,9 +632,9 @@
         "models.GatewayPresence": {
             "type": "object",
             "required": [
+                "pubKey",
                 "version",
-                "lastSeen",
-                "pubKey"
+                "lastSeen"
             ],
             "properties": {
                 "clientListener": {
@@ -672,10 +720,10 @@
         "models.MixNodePresence": {
             "type": "object",
             "required": [
-                "pubKey",
                 "version",
                 "layer",
-                "lastSeen"
+                "lastSeen",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -701,8 +749,8 @@
         "models.MixProviderHostInfo": {
             "type": "object",
             "required": [
-                "version",
-                "pubKey"
+                "pubKey",
+                "version"
             ],
             "properties": {
                 "clientListener": {
@@ -731,9 +779,9 @@
         "models.MixProviderPresence": {
             "type": "object",
             "required": [
-                "lastSeen",
                 "pubKey",
-                "version"
+                "version",
+                "lastSeen"
             ],
             "properties": {
                 "clientListener": {
@@ -780,12 +828,6 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.CocoPresence"
-                    }
-                },
-                "disallowed": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.MixNodePresence"
                     }
                 },
                 "gatewayNodes": {

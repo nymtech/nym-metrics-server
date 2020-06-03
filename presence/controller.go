@@ -199,6 +199,18 @@ func (controller *controller) Disallow(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
+// Disallowed ...
+// @Summary Lists Nym mixnodes that are currently disallowed
+// @Description Sometimes we need to take mixnodes out of the network for repair. This shows which ones are currently disallowed.
+// @ID disallowed
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Success 200 {array} models.MixNodePresence
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/disallowed [get]
 func (controller *controller) Disallowed(c *gin.Context) {
 	disallowed := controller.service.ListDisallowed()
 	c.JSON(http.StatusOK, disallowed)
