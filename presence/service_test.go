@@ -14,7 +14,9 @@ import (
 var _ = Describe("presence.Service", func() {
 	var (
 		mix1              models.MixHostInfo
+		mix2              models.MixHostInfo
 		mixpresence1      models.MixNodePresence
+		mixpresence2      models.MixNodePresence
 		coco1             models.CocoHostInfo
 		cocopresence2     models.CocoPresence
 		provider1         models.MixProviderHostInfo
@@ -41,6 +43,20 @@ var _ = Describe("presence.Service", func() {
 
 		mixpresence1 = models.MixNodePresence{
 			MixHostInfo: mix1,
+			LastSeen:    timemock.Now().UnixNano(),
+		}
+
+		mix2 = models.MixHostInfo{
+			HostInfo: models.HostInfo{
+				Host:     "floop.com:8000",
+				PubKey:   "pubkeymix2",
+				Location: defaultLocation,
+			},
+			Layer: 1,
+		}
+
+		mixpresence2 = models.MixNodePresence{
+			MixHostInfo: mix2,
 			LastSeen:    timemock.Now().UnixNano(),
 		}
 
@@ -104,20 +120,46 @@ var _ = Describe("presence.Service", func() {
 					MixNodes: list,
 				}
 				mockDb.On("Topology").Return(topology)
+				mockDb.On("ListDisallowed").Return(make([]string, 0))
 				result := serv.Topology()
 				mockDb.AssertCalled(GinkgoT(), "Topology")
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
 				assert.Equal(GinkgoT(), topology, result)
 			})
 		})
 
+		Context("when there are disallowed nodes", func() {
+			It("should remove disallowed mixnodes and put them in the disallowed list", func() {
+				mixnodes := []models.MixNodePresence{
+					mixpresence1, mixpresence2,
 				}
-				topology := models.Topology{
-					MixNodes: list,
+
+				dbTopology := models.Topology{
+					MixNodes: mixnodes,
 				}
-				mockDb.On("Topology").Return(topology)
+
+				disallowed := make([]string, 1)
+				disallowed[0] = mix2.PubKey
+
+				mockDb.On("Topology").Return(dbTopology)
+				mockDb.On("ListDisallowed").Return(disallowed)
+
+				// Now we set up an expectation that mixpresence2 should be in
+				// the topology's returned disallowed nodes, but not in the
+				// regular mixnodes list
+				expectedTopology := models.Topology{
+					MixNodes:   []models.MixNodePresence{mixpresence1},
+					Disallowed: []models.MixNodePresence{mixpresence2},
+				}
+
 				result := serv.Topology()
+
 				mockDb.AssertCalled(GinkgoT(), "Topology")
-				assert.Equal(GinkgoT(), topology, result)
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				assert.Equal(GinkgoT(), expectedTopology, result)
+				assert.NotContains(GinkgoT(), result.MixNodes, mixpresence2)
+				assert.Contains(GinkgoT(), result.MixNodes, mixpresence1)
+				assert.Contains(GinkgoT(), result.Disallowed, mixpresence2)
 			})
 		})
 	})

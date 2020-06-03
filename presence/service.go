@@ -24,6 +24,7 @@ type IService interface {
 	Topology() models.Topology
 }
 
+// NewService constructor
 func NewService(db IDb) *service {
 	ipa := ipAssigner{}
 	return &service{
@@ -85,8 +86,21 @@ func (service *service) Disallow(hostKey models.Disallow) {
 	return
 }
 
+// Topology returns the directory server's current view of the network.
+// If there are any disallowed mixnodes, they'll be removed from the Mixnodes slice
+// and shoved into the Disallowed slice instead.
 func (service *service) Topology() models.Topology {
-	return service.db.Topology()
+	topology := service.db.Topology()
+	disallowed := service.db.ListDisallowed()
+	for i, mixpresence := range topology.MixNodes {
+		for _, key := range disallowed {
+			if mixpresence.PubKey == key {
+				topology.Disallowed = append(topology.Disallowed, mixpresence)
+				topology.MixNodes = removeIndex(topology.MixNodes, i)
+			}
+		}
+	}
+	return topology
 }
 
 type ipAssigner struct {
@@ -126,4 +140,10 @@ func (ipa *ipAssigner) AssignIP(serverReportedIP string, selfReportedHost string
 
 	host = net.JoinHostPort(serverReportedIP, port)
 	return host, nil
+}
+
+func removeIndex(s []models.MixNodePresence, index int) []models.MixNodePresence {
+	ret := make([]models.MixNodePresence, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
 }

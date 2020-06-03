@@ -14,6 +14,7 @@ type IDb interface {
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)
 	AddGateway(models.GatewayPresence)
+	ListDisallowed() []string
 	Topology() models.Topology
 }
 
@@ -22,6 +23,7 @@ type db struct {
 	// if a mix node was being added, we wouldn't be able to touch cocoNodes
 	sync.Mutex
 	cocoNodes        map[string]models.CocoPresence
+	disallowed       []string
 	mixNodes         map[string]models.MixNodePresence
 	mixProviderNodes map[string]models.MixProviderPresence
 	gateways         map[string]models.GatewayPresence
@@ -31,6 +33,7 @@ type db struct {
 func NewDb() *db {
 	return &db{
 		cocoNodes:        map[string]models.CocoPresence{},
+		disallowed:       make([]string, 0),
 		mixNodes:         map[string]models.MixNodePresence{},
 		mixProviderNodes: map[string]models.MixProviderPresence{},
 		gateways:         map[string]models.GatewayPresence{},
@@ -63,6 +66,10 @@ func (db *db) AddGateway(presence models.GatewayPresence) {
 	defer db.Unlock()
 	db.killOldsters()
 	db.gateways[presence.PubKey] = presence
+}
+
+func (db *db) ListDisallowed() []string {
+	return db.disallowed
 }
 
 // Topology returns the full network Topology
@@ -100,6 +107,7 @@ func (db *db) Topology() models.Topology {
 
 	t := models.Topology{
 		CocoNodes:        cocoNodes,
+		Disallowed:       []models.MixNodePresence{},
 		MixNodes:         mixNodes,
 		MixProviderNodes: mixProviderNodes,
 		Gateways:         gatewayNodes,
