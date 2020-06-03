@@ -46,11 +46,12 @@ func New(cfg Config) Controller {
 
 // RegisterRoutes registers controller routes in Gin.
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
+	router.POST("/api/presence/allow", controller.Allow)
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
+	router.POST("/api/presence/disallow", controller.Disallow)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
 	router.POST("/api/presence/mixproviders", controller.AddMixProviderPresence)
 	router.POST("/api/presence/gateways", controller.AddGatewayPresence)
-	router.POST("/api/presence/disallow", controller.Disallow)
 	router.GET("/api/presence/topology", controller.Topology)
 }
 
@@ -150,6 +151,29 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
+// Allow ...
+// @Summary Removes a disallowed node from the disallowed nodes list
+// @Description Sometimes when a node isn't working we need to temporarily remove it. This allows us to re-enable it once it's working again.
+// @ID allow
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Param   object      body   models.MixNodeID     true  "object"
+// @Success 201
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/disallow [post]
+func (controller *controller) Allow(c *gin.Context) {
+	var node models.MixNodeID
+	if err := c.ShouldBindJSON(&node); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	controller.service.Allow(node)
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
 // Disallow ...
 // @Summary Takes a node out of the regular topology and puts it in the disallowed nodes list
 // @Description Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.
@@ -157,7 +181,7 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Tags presence
-// @Param   object      body   models.Disallow     true  "object"
+// @Param   object      body   models.MixNodeID     true  "object"
 // @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error

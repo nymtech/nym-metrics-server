@@ -2,7 +2,7 @@ package fixtures
 
 import "github.com/nymtech/nym-directory/models"
 
-func Disallow() models.MixNodeID {
+func MixNodeID() models.MixNodeID {
 	d := models.MixNodeID{
 		PubKey: "abc123",
 	}
