@@ -3,12 +3,17 @@ definitions:
     properties:
       host:
         type: string
+      location:
+        type: string
       pubKey:
         type: string
       type:
         type: string
+      version:
+        type: string
     required:
     - pubKey
+    - version
     - type
     type: object
   models.CocoPresence:
@@ -17,19 +22,72 @@ definitions:
         type: string
       lastSeen:
         type: integer
+      location:
+        type: string
       pubKey:
         type: string
       type:
         type: string
+      version:
+        type: string
     required:
-    - pubKey
-    - type
     - lastSeen
+    - pubKey
+    - version
+    - type
+    type: object
+  models.Disallow:
+    properties:
+      hostKey:
+        type: string
     type: object
   models.Error:
     properties:
       error:
         type: string
+    type: object
+  models.GatewayHostInfo:
+    properties:
+      clientListener:
+        type: string
+      location:
+        type: string
+      mixnetListener:
+        type: string
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+      version:
+        type: string
+    required:
+    - pubKey
+    - version
+    type: object
+  models.GatewayPresence:
+    properties:
+      clientListener:
+        type: string
+      lastSeen:
+        type: integer
+      location:
+        type: string
+      mixnetListener:
+        type: string
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+      version:
+        type: string
+    required:
+    - lastSeen
+    - pubKey
+    - version
     type: object
   models.MixHostInfo:
     properties:
@@ -37,11 +95,16 @@ definitions:
         type: string
       layer:
         type: integer
+      location:
+        type: string
       pubKey:
         type: string
+      version:
+        type: string
     required:
-    - pubKey
+    - version
     - layer
+    - pubKey
     type: object
   models.MixMetric:
     properties:
@@ -54,6 +117,7 @@ definitions:
         - sent
         type: object
     required:
+    - received
     - pubKey
     type: object
   models.MixNodePresence:
@@ -64,16 +128,25 @@ definitions:
         type: integer
       layer:
         type: integer
+      location:
+        type: string
       pubKey:
+        type: string
+      version:
         type: string
     required:
     - pubKey
+    - version
     - layer
     - lastSeen
     type: object
   models.MixProviderHostInfo:
     properties:
-      host:
+      clientListener:
+        type: string
+      location:
+        type: string
+      mixnetListener:
         type: string
       pubKey:
         type: string
@@ -81,24 +154,34 @@ definitions:
         items:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
+      version:
+        type: string
     required:
+    - version
     - pubKey
     type: object
   models.MixProviderPresence:
     properties:
-      host:
+      clientListener:
         type: string
       lastSeen:
         type: integer
+      location:
+        type: string
+      mixnetListener:
+        type: string
       pubKey:
         type: string
       registeredClients:
         items:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
+      version:
+        type: string
     required:
-    - pubKey
     - lastSeen
+    - pubKey
+    - version
     type: object
   models.RegisteredClient:
     properties:
@@ -112,6 +195,14 @@ definitions:
       cocoNodes:
         items:
           $ref: '#/definitions/models.CocoPresence'
+        type: array
+      disallowed:
+        items:
+          $ref: '#/definitions/models.MixNodePresence'
+        type: array
+      gatewayNodes:
+        items:
+          $ref: '#/definitions/models.GatewayPresence'
         type: array
       mixNodes:
         items:
@@ -257,6 +348,82 @@ paths:
       summary: Lets a coconut node tell the directory server it's alive
       tags:
       - presence
+  /api/presence/disallow:
+    post:
+      consumes:
+      - application/json
+      description: Sometimes when a node isn't working we need to temporarily remove
+        it from use so that it doesn't mess up QoS for the whole network.
+      operationId: disallow
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.Disallow'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Takes a node out of the regular topology and puts it in the disallowed
+        nodes list
+      tags:
+      - presence
+  /api/presence/gateways:
+    post:
+      consumes:
+      - application/json
+      description: Nym mix gateways can ping this method to let the directory server
+        know they're up. We can then use this info to create topologies of the overall
+        Nym network.
+      operationId: addGateway
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.GatewayHostInfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Lets a gateway tell the directory server it's alive
+      tags:
+      - presence
   /api/presence/mixnodes:
     post:
       consumes:
@@ -295,7 +462,7 @@ paths:
       summary: Lets mixnode a node tell the directory server it's alive
       tags:
       - presence
-  /api/presence/providers:
+  /api/presence/mixproviders:
     post:
       consumes:
       - application/json
@@ -364,7 +531,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists which Nym mixnodes, providers, and coconodes are alive
+      summary: Lists which Nym mixnodes, providers, gateways, and coconodes are alive
       tags:
       - presence
 swagger: "2.0"

@@ -151,12 +151,13 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 }
 
 // Disallow ...
-// @Summary Takes a node out of the regular topology and shoves it in the disallowed nodes list
+// @Summary Takes a node out of the regular topology and puts it in the disallowed nodes list
 // @Description Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.
 // @ID disallow
 // @Accept  json
 // @Produce  json
 // @Tags presence
+// @Param   object      body   models.Disallow     true  "object"
 // @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
