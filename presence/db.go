@@ -121,7 +121,6 @@ func (db *db) Topology() models.Topology {
 
 	t := models.Topology{
 		CocoNodes:        cocoNodes,
-		Disallowed:       []models.MixNodePresence{},
 		MixNodes:         mixNodes,
 		MixProviderNodes: mixProviderNodes,
 		Gateways:         gatewayNodes,

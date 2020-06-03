@@ -240,7 +240,6 @@ var _ = Describe("Presence Db", func() {
 			It("should add the pubkey and return it in the disallowed list", func() {
 				// initial state
 				db := NewDb()
-				assert.Len(GinkgoT(), db.Topology().Disallowed, 0)
 				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
 
 				pubkey := "abc123"

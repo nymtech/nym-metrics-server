@@ -85,7 +85,6 @@ type GatewayPresence struct {
 // Topology shows us the current state of the overall Nym network
 type Topology struct {
 	CocoNodes        []CocoPresence        `json:"cocoNodes"`
-	Disallowed       []MixNodePresence     `json:"disallowed"`
 	MixNodes         []MixNodePresence     `json:"mixNodes"`
 	MixProviderNodes []MixProviderPresence `json:"mixProviderNodes"`
 	Gateways         []GatewayPresence     `json:"gatewayNodes"`

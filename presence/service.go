@@ -99,7 +99,6 @@ func (service *service) Topology() models.Topology {
 	for i, mixpresence := range topology.MixNodes {
 		for _, key := range disallowed {
 			if mixpresence.PubKey == key {
-				topology.Disallowed = append(topology.Disallowed, mixpresence)
 				topology.MixNodes = removeMixnode(topology.MixNodes, i)
 			}
 		}

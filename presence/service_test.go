@@ -129,7 +129,7 @@ var _ = Describe("presence.Service", func() {
 		})
 
 		Context("when there are disallowed nodes", func() {
-			It("should remove disallowed mixnodes and put them in the disallowed list", func() {
+			It("should remove disallowed mixnodes", func() {
 				mixnodes := []models.MixNodePresence{
 					mixpresence1, mixpresence2,
 				}
@@ -148,8 +148,7 @@ var _ = Describe("presence.Service", func() {
 				// the topology's returned disallowed nodes, but not in the
 				// regular mixnodes list
 				expectedTopology := models.Topology{
-					MixNodes:   []models.MixNodePresence{mixpresence1},
-					Disallowed: []models.MixNodePresence{mixpresence2},
+					MixNodes: []models.MixNodePresence{mixpresence1},
 				}
 
 				result := serv.Topology()
@@ -159,7 +158,6 @@ var _ = Describe("presence.Service", func() {
 				assert.Equal(GinkgoT(), expectedTopology, result)
 				assert.NotContains(GinkgoT(), result.MixNodes, mixpresence2)
 				assert.Contains(GinkgoT(), result.MixNodes, mixpresence1)
-				assert.Contains(GinkgoT(), result.Disallowed, mixpresence2)
 			})
 		})
 	})
