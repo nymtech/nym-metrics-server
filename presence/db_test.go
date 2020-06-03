@@ -234,4 +234,18 @@ var _ = Describe("Presence Db", func() {
 			})
 		})
 	})
+
+	Describe("disallowing mixnodes", func() {
+		Context("adding a disallowed pubkey", func() {
+			It("should add the pubkey and return it in the disallowed list", func() {
+				pubkey := "abc123"
+				db := NewDb()
+				assert.Len(GinkgoT(), db.Topology().Disallowed, 0)
+				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
+				db.Disallow(pubkey)
+				assert.Len(GinkgoT(), db.ListDisallowed(), 1)
+				assert.Contains(GinkgoT(), db.ListDisallowed(), pubkey)
+			})
+		})
+	})
 })

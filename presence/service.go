@@ -81,8 +81,8 @@ func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
 	service.db.AddGateway(presence)
 }
 
-func (service *service) Disallow(hostKey models.Disallow) {
-	// return service.db.Topology()
+func (service *service) Disallow(host models.Disallow) {
+	service.db.Disallow(host.HostKey)
 	return
 }
 

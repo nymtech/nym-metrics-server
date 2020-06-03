@@ -1,6 +1,7 @@
 package presence
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
@@ -14,6 +15,7 @@ type IDb interface {
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)
 	AddGateway(models.GatewayPresence)
+	Disallow(string)
 	ListDisallowed() []string
 	Topology() models.Topology
 }
@@ -33,7 +35,7 @@ type db struct {
 func NewDb() *db {
 	return &db{
 		cocoNodes:        map[string]models.CocoPresence{},
-		disallowed:       make([]string, 0),
+		disallowed:       []string{},
 		mixNodes:         map[string]models.MixNodePresence{},
 		mixProviderNodes: map[string]models.MixProviderPresence{},
 		gateways:         map[string]models.GatewayPresence{},
@@ -66,6 +68,15 @@ func (db *db) AddGateway(presence models.GatewayPresence) {
 	defer db.Unlock()
 	db.killOldsters()
 	db.gateways[presence.PubKey] = presence
+}
+
+func (db *db) Disallow(pubkey string) {
+	db.Lock()
+	defer db.Unlock()
+	fmt.Println("disallowed: ", db.disallowed)
+	db.disallowed = append(db.disallowed, pubkey)
+	fmt.Println("disallowed: ", db.disallowed)
+
 }
 
 func (db *db) ListDisallowed() []string {
