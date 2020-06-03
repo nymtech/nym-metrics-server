@@ -30,6 +30,11 @@ func (_m *IDb) AddMixProvider(_a0 models.MixProviderPresence) {
 	_m.Called(_a0)
 }
 
+// Allow provides a mock function with given fields: _a0
+func (_m *IDb) Allow(_a0 string) {
+	_m.Called(_a0)
+}
+
 // Disallow provides a mock function with given fields: _a0
 func (_m *IDb) Disallow(_a0 string) {
 	_m.Called(_a0)

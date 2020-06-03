@@ -235,17 +235,41 @@ var _ = Describe("Presence Db", func() {
 		})
 	})
 
-	Describe("disallowing mixnodes", func() {
+	Describe("allowing and disallowing mixnodes", func() {
 		Context("adding a disallowed pubkey", func() {
 			It("should add the pubkey and return it in the disallowed list", func() {
-				pubkey := "abc123"
+				// initial state
 				db := NewDb()
 				assert.Len(GinkgoT(), db.Topology().Disallowed, 0)
 				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
+
+				pubkey := "abc123"
+
+				// disallowing
 				db.Disallow(pubkey)
 				assert.Len(GinkgoT(), db.ListDisallowed(), 1)
 				assert.Contains(GinkgoT(), db.ListDisallowed(), pubkey)
+
+				// allowing
+				db.Allow(pubkey)
+				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
+				assert.NotContains(GinkgoT(), db.ListDisallowed(), pubkey)
+
 			})
 		})
 	})
+
+	// Describe("allowing mixnodes", func() {
+	// 	Context("adding an allowed pubkey", func() {
+	// 		It("should remove the pubkey from the disallowed list", func() {
+	// 			pubkey := "abc123"
+	// 			db := NewDb()
+	// 			assert.Len(GinkgoT(), db.Topology().Disallowed, 0)
+	// 			assert.Len(GinkgoT(), db.ListDisallowed(), 0)
+	// 			db.Disallow(pubkey)
+	// 			assert.Len(GinkgoT(), db.ListDisallowed(), 1)
+	// 			assert.Contains(GinkgoT(), db.ListDisallowed(), pubkey)
+	// 		})
+	// 	})
+	// })
 })

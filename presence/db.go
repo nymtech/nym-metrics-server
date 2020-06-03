@@ -1,7 +1,6 @@
 package presence
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
@@ -15,6 +14,7 @@ type IDb interface {
 	AddMix(models.MixNodePresence)
 	AddMixProvider(models.MixProviderPresence)
 	AddGateway(models.GatewayPresence)
+	Allow(string)
 	Disallow(string)
 	ListDisallowed() []string
 	Topology() models.Topology
@@ -70,13 +70,16 @@ func (db *db) AddGateway(presence models.GatewayPresence) {
 	db.gateways[presence.PubKey] = presence
 }
 
+func (db *db) Allow(pubkey string) {
+	db.Lock()
+	defer db.Unlock()
+	db.disallowed = remove(db.disallowed, pubkey)
+}
+
 func (db *db) Disallow(pubkey string) {
 	db.Lock()
 	defer db.Unlock()
-	fmt.Println("disallowed: ", db.disallowed)
 	db.disallowed = append(db.disallowed, pubkey)
-	fmt.Println("disallowed: ", db.disallowed)
-
 }
 
 func (db *db) ListDisallowed() []string {
@@ -155,4 +158,13 @@ func (db *db) killOldsters() {
 func timeWindow() int64 {
 	d := time.Duration(-10)
 	return timemock.Now().Add(time.Duration(d * time.Second)).UnixNano()
+}
+
+func remove(list []string, item string) []string {
+	for i, other := range list {
+		if other == item {
+			return append(list[:i], list[i+1:]...)
+		}
+	}
+	return list
 }
