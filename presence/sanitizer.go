@@ -25,6 +25,11 @@ type GatewayHostSanitizer interface {
 	Sanitize(models.GatewayHostInfo) models.GatewayHostInfo
 }
 
+// IMixNodeIDSanitizer cleans untrusted input fields
+type IMixNodeIDSanitizer interface {
+	Sanitize(models.MixNodeID) models.MixNodeID
+}
+
 // NewCoconodeSanitizer constructor...
 func NewCoconodeSanitizer(p *bluemonday.Policy) CoconodeSanitizer {
 	return CoconodeSanitizer{
@@ -107,5 +112,23 @@ func (s *GatewaySanitizer) Sanitize(input models.GatewayHostInfo) models.Gateway
 	for i, client := range input.RegisteredClients {
 		input.RegisteredClients[i].PubKey = s.policy.Sanitize(client.PubKey)
 	}
+	return input
+}
+
+// NewMixnodeIDSanitizer ...
+func NewMixnodeIDSanitizer(p *bluemonday.Policy) MixNodeIDSanitizer {
+	return MixNodeIDSanitizer{
+		policy: p,
+	}
+}
+
+// MixNodeIDSanitizer kills untrusted input in CocoHostInfo structs
+type MixNodeIDSanitizer struct {
+	policy *bluemonday.Policy
+}
+
+// Sanitize MixNodeID input
+func (s *MixNodeIDSanitizer) Sanitize(input models.MixNodeID) models.MixNodeID {
+	input.PubKey = s.policy.Sanitize(input.PubKey)
 	return input
 }
