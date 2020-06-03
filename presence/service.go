@@ -96,7 +96,7 @@ func (service *service) Topology() models.Topology {
 		for _, key := range disallowed {
 			if mixpresence.PubKey == key {
 				topology.Disallowed = append(topology.Disallowed, mixpresence)
-				topology.MixNodes = removeIndex(topology.MixNodes, i)
+				topology.MixNodes = removeMixnode(topology.MixNodes, i)
 			}
 		}
 	}
@@ -142,7 +142,7 @@ func (ipa *ipAssigner) AssignIP(serverReportedIP string, selfReportedHost string
 	return host, nil
 }
 
-func removeIndex(s []models.MixNodePresence, index int) []models.MixNodePresence {
+func removeMixnode(s []models.MixNodePresence, index int) []models.MixNodePresence {
 	ret := make([]models.MixNodePresence, 0)
 	ret = append(ret, s[:index]...)
 	return append(ret, s[index+1:]...)
