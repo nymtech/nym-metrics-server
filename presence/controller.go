@@ -11,6 +11,7 @@ import (
 type Config struct {
 	CocoHostSanitizer        CocoHostSanitizer
 	MixHostSanitizer         MixHostSanitizer
+	MixNodeIDSanitizer       IMixNodeIDSanitizer
 	MixProviderHostSanitizer MixProviderHostSanitizer
 	GatewayHostSanitizer     GatewayHostSanitizer
 	Service                  IService
@@ -49,6 +50,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/allow", controller.Allow)
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
 	router.POST("/api/presence/disallow", controller.Disallow)
+	router.GET("/api/presence/disallowed", controller.Disallowed)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
 	router.POST("/api/presence/mixproviders", controller.AddMixProviderPresence)
 	router.POST("/api/presence/gateways", controller.AddGatewayPresence)
@@ -195,6 +197,11 @@ func (controller *controller) Disallow(c *gin.Context) {
 	}
 	controller.service.Disallow(node)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+func (controller *controller) Disallowed(c *gin.Context) {
+	disallowed := controller.service.ListDisallowed()
+	c.JSON(http.StatusOK, disallowed)
 }
 
 // Topology ...

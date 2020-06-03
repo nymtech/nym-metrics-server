@@ -22,6 +22,7 @@ type IService interface {
 	AddGatewayPresence(info models.GatewayHostInfo)
 	Allow(hostKey models.MixNodeID)
 	Disallow(hostKey models.MixNodeID)
+	ListDisallowed() []models.MixNodePresence
 	Topology() models.Topology
 }
 
@@ -88,6 +89,22 @@ func (service *service) Allow(node models.MixNodeID) {
 
 func (service *service) Disallow(node models.MixNodeID) {
 	service.db.Disallow(node.PubKey)
+}
+
+func (service *service) ListDisallowed() []models.MixNodePresence {
+	topology := service.db.Topology()
+	disallowed := service.db.ListDisallowed()
+	response := []models.MixNodePresence{}
+	for i, mixpresence := range topology.MixNodes {
+		for _, key := range disallowed {
+			if mixpresence.PubKey == key {
+				response = append(response, mixpresence)
+				topology.MixNodes = removeMixnode(topology.MixNodes, i)
+			}
+		}
+	}
+
+	return response
 }
 
 // Topology returns the directory server's current view of the network.

@@ -40,6 +40,22 @@ func (_m *IService) Disallow(hostKey models.MixNodeID) {
 	_m.Called(hostKey)
 }
 
+// ListDisallowed provides a mock function with given fields:
+func (_m *IService) ListDisallowed() []models.MixNodePresence {
+	ret := _m.Called()
+
+	var r0 []models.MixNodePresence
+	if rf, ok := ret.Get(0).(func() []models.MixNodePresence); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.MixNodePresence)
+		}
+	}
+
+	return r0
+}
+
 // Topology provides a mock function with given fields:
 func (_m *IService) Topology() models.Topology {
 	ret := _m.Called()

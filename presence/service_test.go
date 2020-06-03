@@ -5,6 +5,7 @@ import (
 
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/nym-directory/models"
+	"github.com/nymtech/nym-directory/presence/fixtures"
 	"github.com/nymtech/nym-directory/presence/mocks"
 	. "github.com/onsi/ginkgo"
 	_ "github.com/onsi/gomega"
@@ -179,6 +180,33 @@ var _ = Describe("presence.Service", func() {
 				mockDb.On("Disallow", node.PubKey)
 				serv.Disallow(node)
 				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
+			})
+		})
+	})
+
+	Describe("Listing disallowed nodes", func() {
+		Context("happy path", func() {
+			It("should return a list of disallowed MixNodePresence objects", func() {
+				mixpresence1 := models.MixNodePresence{
+					MixHostInfo: fixtures.GoodMixHost(),
+					LastSeen:    1234,
+				}
+				mixpresence1.PubKey = "abc"
+				mixpresence2 := mixpresence1
+				mixpresence2.PubKey = "123"
+
+				topology := models.Topology{
+					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
+				}
+				mockDb.On("ListDisallowed").Return([]string{"abc"})
+				mockDb.On("Topology").Return(topology)
+
+				expectedDisallowed := []models.MixNodePresence{mixpresence1}
+
+				response := serv.ListDisallowed()
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), expectedDisallowed, response)
 			})
 		})
 	})

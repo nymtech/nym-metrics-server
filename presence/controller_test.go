@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nymtech/nym-directory/models"
 	"github.com/nymtech/nym-directory/presence/fixtures"
 	"github.com/nymtech/nym-directory/presence/mocks"
 	. "github.com/onsi/ginkgo"
@@ -137,12 +138,12 @@ var _ = Describe("Presence Controller", func() {
 	Describe("allowing a node", func() {
 		Context("with a properly formatted node key", func() {
 			It("should tell the service to allow the node", func() {
-				mockSanitizer := new(mocks.MixProviderHostSanitizer)
+				mockSanitizer := new(mocks.IMixNodeIDSanitizer)
 				mockService := new(mocks.IService)
 
 				cfg := Config{
-					MixProviderHostSanitizer: mockSanitizer,
-					Service:                  mockService,
+					MixNodeIDSanitizer: mockSanitizer,
+					Service:            mockService,
 				}
 
 				router := gin.Default()
@@ -158,6 +159,44 @@ var _ = Describe("Presence Controller", func() {
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 
 				assert.Equal(GinkgoT(), 200, resp.Code)
+			})
+		})
+	})
+
+	Describe("Listing disallowed nodes", func() {
+		Context("when there are some nodes", func() {
+			It("should ask the service for a list and then send them out as json", func() {
+				mockSanitizer := new(mocks.MixProviderHostSanitizer)
+				mockService := new(mocks.IService)
+
+				cfg := Config{
+					MixProviderHostSanitizer: mockSanitizer,
+					Service:                  mockService,
+				}
+
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+
+				mixpresence1 := models.MixNodePresence{
+					MixHostInfo: fixtures.GoodMixHost(),
+					LastSeen:    1234,
+				}
+				mixpresence2 := mixpresence1
+
+				disallowed := []models.MixNodePresence{mixpresence1, mixpresence2}
+
+				mockService.On("ListDisallowed").Return(disallowed)
+
+				resp := performRequest(router, "GET", "/api/presence/disallowed", nil)
+
+				var response []models.MixNodePresence
+
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+
+				assert.Equal(GinkgoT(), 200, resp.Code)
+				assert.Equal(GinkgoT(), disallowed, response)
 			})
 		})
 	})

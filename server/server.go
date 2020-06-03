@@ -75,6 +75,7 @@ func injectMetrics(hub *websocket.Hub, policy *bluemonday.Policy) metrics.Config
 func injectPresence(policy *bluemonday.Policy) presence.Config {
 	cocoSan := presence.NewCoconodeSanitizer(policy)
 	mixSan := presence.NewMixnodeSanitizer(policy)
+	mixnodeIDSan := presence.NewMixnodeIDSanitizer(policy)
 	providerSan := presence.NewMixproviderSanitizer(policy)
 	gatewaySan := presence.NewGatewaySanitizer(policy)
 	db := presence.NewDb()
@@ -83,8 +84,9 @@ func injectPresence(policy *bluemonday.Policy) presence.Config {
 	return presence.Config{
 		CocoHostSanitizer:        &cocoSan,
 		MixHostSanitizer:         &mixSan,
+		MixNodeIDSanitizer:       &mixnodeIDSan,
 		MixProviderHostSanitizer: &providerSan,
-		GatewayHostSanitizer: &gatewaySan,
+		GatewayHostSanitizer:     &gatewaySan,
 		Service:                  service,
 	}
 }
