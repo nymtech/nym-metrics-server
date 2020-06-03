@@ -12,10 +12,11 @@ type CocoPresence struct {
 	LastSeen int64 `json:"lastSeen" binding:"required"`
 }
 
-// Disallow is a request to knock a node out of the regular topology and into
-// the disallowed list
-type Disallow struct {
-	HostKey string
+// MixNodeID is a request to knock a node out of the regular topology and into
+// the disallowed list. It's a temporary band-aid until we have staking and
+// doesn't relate to anything else.
+type MixNodeID struct {
+	PubKey string
 }
 
 // HostInfo comes from a node telling us it's alive

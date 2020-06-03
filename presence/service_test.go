@@ -163,4 +163,25 @@ var _ = Describe("presence.Service", func() {
 			})
 		})
 	})
+
+	Describe("Allowing nodes", func() {
+		Context("happy path", func() {
+			It("should ask the db to allow the provided pubkey", func() {
+				node := models.MixNodeID{PubKey: "abc123"}
+				mockDb.On("Allow", node.PubKey)
+				serv.Allow(node)
+				mockDb.AssertCalled(GinkgoT(), "Allow", node.PubKey)
+			})
+		})
+	})
+	Describe("Disallowing nodes", func() {
+		Context("happy path", func() {
+			It("should ask the db to disallow the provided pubkey", func() {
+				node := models.MixNodeID{PubKey: "abc123"}
+				mockDb.On("Disallow", node.PubKey)
+				serv.Disallow(node)
+				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
+			})
+		})
+	})
 })

@@ -164,12 +164,12 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/presence/disallow [post]
 func (controller *controller) Disallow(c *gin.Context) {
-	var disallow models.Disallow
-	if err := c.ShouldBindJSON(&disallow); err != nil {
+	var node models.MixNodeID
+	if err := c.ShouldBindJSON(&node); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	controller.service.Disallow(disallow)
+	controller.service.Disallow(node)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 

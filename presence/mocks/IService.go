@@ -30,8 +30,13 @@ func (_m *IService) AddMixProviderPresence(info models.MixProviderHostInfo) {
 	_m.Called(info)
 }
 
+// Allow provides a mock function with given fields: hostKey
+func (_m *IService) Allow(hostKey models.MixNodeID) {
+	_m.Called(hostKey)
+}
+
 // Disallow provides a mock function with given fields: hostKey
-func (_m *IService) Disallow(hostKey models.Disallow) {
+func (_m *IService) Disallow(hostKey models.MixNodeID) {
 	_m.Called(hostKey)
 }
 

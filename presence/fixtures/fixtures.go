@@ -2,9 +2,9 @@ package fixtures
 
 import "github.com/nymtech/nym-directory/models"
 
-func Disallow() models.Disallow {
-	d := models.Disallow{
-		HostKey: "abc123",
+func Disallow() models.MixNodeID {
+	d := models.MixNodeID{
+		PubKey: "abc123",
 	}
 	return d
 }

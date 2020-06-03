@@ -20,7 +20,8 @@ type IService interface {
 	AddMixNodePresence(info models.MixHostInfo)
 	AddMixProviderPresence(info models.MixProviderHostInfo)
 	AddGatewayPresence(info models.GatewayHostInfo)
-	Disallow(hostKey models.Disallow)
+	Allow(hostKey models.MixNodeID)
+	Disallow(hostKey models.MixNodeID)
 	Topology() models.Topology
 }
 
@@ -81,9 +82,12 @@ func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
 	service.db.AddGateway(presence)
 }
 
-func (service *service) Disallow(host models.Disallow) {
-	service.db.Disallow(host.HostKey)
-	return
+func (service *service) Allow(node models.MixNodeID) {
+	service.db.Allow(node.PubKey)
+}
+
+func (service *service) Disallow(node models.MixNodeID) {
+	service.db.Disallow(node.PubKey)
 }
 
 // Topology returns the directory server's current view of the network.
