@@ -150,23 +150,6 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 
-// Topology ...
-// @Summary Lists which Nym mixnodes, providers, gateways, and coconodes are alive
-// @Description Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.
-// @ID topology
-// @Accept  json
-// @Produce  json
-// @Tags presence
-// @Success 200 {object} models.Topology
-// @Failure 400 {object} models.Error
-// @Failure 404 {object} models.Error
-// @Failure 500 {object} models.Error
-// @Router /api/presence/topology [get]
-func (controller *controller) Topology(c *gin.Context) {
-	topology := controller.service.Topology()
-	c.JSON(http.StatusOK, topology)
-}
-
 // Disallow ...
 // @Summary Takes a node out of the regular topology and shoves it in the disallowed nodes list
 // @Description Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.
@@ -187,4 +170,21 @@ func (controller *controller) Disallow(c *gin.Context) {
 	}
 	controller.service.Disallow(disallow)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+// Topology ...
+// @Summary Lists which Nym mixnodes, providers, gateways, and coconodes are alive
+// @Description Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.
+// @ID topology
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Success 200 {object} models.Topology
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/topology [get]
+func (controller *controller) Topology(c *gin.Context) {
+	topology := controller.service.Topology()
+	c.JSON(http.StatusOK, topology)
 }
