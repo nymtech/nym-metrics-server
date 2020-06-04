@@ -129,6 +129,58 @@
                 }
             }
         },
+        "/api/presence/allow": {
+            "post": {
+                "description": "Sometimes when a node isn't working we need to temporarily remove it. This allows us to re-enable it once it's working again.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Removes a disallowed node from the disallowed nodes list",
+                "operationId": "allow",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.MixNodeID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/presence/coconodes": {
             "post": {
                 "description": "Nym Coconut nodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
@@ -152,6 +204,158 @@
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/models.CocoHostInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/presence/disallow": {
+            "post": {
+                "description": "Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Takes a node out of the regular topology and puts it in the disallowed nodes list",
+                "operationId": "disallow",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.MixNodeID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/presence/disallowed": {
+            "get": {
+                "description": "Sometimes we need to take mixnodes out of the network for repair. This shows which ones are currently disallowed.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Lists Nym mixnodes that are currently disallowed",
+                "operationId": "disallowed",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MixNodePresence"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/presence/gateways": {
+            "post": {
+                "description": "Nym mix gateways can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "presence"
+                ],
+                "summary": "Lets a gateway tell the directory server it's alive",
+                "operationId": "addGateway",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.GatewayHostInfo"
                         }
                     }
                 ],
@@ -233,7 +437,7 @@
                 }
             }
         },
-        "/api/presence/providers": {
+        "/api/presence/mixproviders": {
             "post": {
                 "description": "Nym mix providers can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
                 "consumes": [
@@ -297,7 +501,7 @@
                 "tags": [
                     "presence"
                 ],
-                "summary": "Lists which Nym mixnodes, providers, and coconodes are alive",
+                "summary": "Lists which Nym mixnodes, providers, gateways, and coconodes are alive",
                 "operationId": "topology",
                 "responses": {
                     "200": {
@@ -337,10 +541,14 @@
             "type": "object",
             "required": [
                 "pubKey",
+                "version",
                 "type"
             ],
             "properties": {
                 "host": {
+                    "type": "string"
+                },
+                "location": {
                     "type": "string"
                 },
                 "pubKey": {
@@ -348,15 +556,19 @@
                 },
                 "type": {
                     "type": "string"
+                },
+                "version": {
+                    "type": "string"
                 }
             }
         },
         "models.CocoPresence": {
             "type": "object",
             "required": [
-                "pubKey",
+                "version",
                 "type",
-                "lastSeen"
+                "lastSeen",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -365,10 +577,16 @@
                 "lastSeen": {
                     "type": "integer"
                 },
+                "location": {
+                    "type": "string"
+                },
                 "pubKey": {
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
@@ -381,10 +599,75 @@
                 }
             }
         },
+        "models.GatewayHostInfo": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "version"
+            ],
+            "properties": {
+                "clientListener": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GatewayPresence": {
+            "type": "object",
+            "required": [
+                "pubKey",
+                "version",
+                "lastSeen"
+            ],
+            "properties": {
+                "clientListener": {
+                    "type": "string"
+                },
+                "lastSeen": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "registeredClients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RegisteredClient"
+                    }
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
         "models.MixHostInfo": {
             "type": "object",
             "required": [
                 "pubKey",
+                "version",
                 "layer"
             ],
             "properties": {
@@ -394,7 +677,13 @@
                 "layer": {
                     "type": "integer"
                 },
+                "location": {
+                    "type": "string"
+                },
                 "pubKey": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
@@ -402,7 +691,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "pubKey"
+                "pubKey",
+                "received"
             ],
             "properties": {
                 "pubKey": {
@@ -419,12 +709,21 @@
                 }
             }
         },
+        "models.MixNodeID": {
+            "type": "object",
+            "properties": {
+                "pubKey": {
+                    "type": "string"
+                }
+            }
+        },
         "models.MixNodePresence": {
             "type": "object",
             "required": [
-                "pubKey",
+                "version",
                 "layer",
-                "lastSeen"
+                "lastSeen",
+                "pubKey"
             ],
             "properties": {
                 "host": {
@@ -436,7 +735,13 @@
                 "layer": {
                     "type": "integer"
                 },
+                "location": {
+                    "type": "string"
+                },
                 "pubKey": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
@@ -444,10 +749,17 @@
         "models.MixProviderHostInfo": {
             "type": "object",
             "required": [
-                "pubKey"
+                "pubKey",
+                "version"
             ],
             "properties": {
-                "host": {
+                "clientListener": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
                     "type": "string"
                 },
                 "pubKey": {
@@ -458,6 +770,9 @@
                     "items": {
                         "$ref": "#/definitions/models.RegisteredClient"
                     }
+                },
+                "version": {
+                    "type": "string"
                 }
             }
         },
@@ -465,14 +780,21 @@
             "type": "object",
             "required": [
                 "pubKey",
+                "version",
                 "lastSeen"
             ],
             "properties": {
-                "host": {
+                "clientListener": {
                     "type": "string"
                 },
                 "lastSeen": {
                     "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mixnetListener": {
+                    "type": "string"
                 },
                 "pubKey": {
                     "type": "string"
@@ -482,6 +804,9 @@
                     "items": {
                         "$ref": "#/definitions/models.RegisteredClient"
                     }
+                },
+                "version": {
+                    "type": "string"
                 }
             }
         },
@@ -503,6 +828,12 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.CocoPresence"
+                    }
+                },
+                "gatewayNodes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GatewayPresence"
                     }
                 },
                 "mixNodes": {

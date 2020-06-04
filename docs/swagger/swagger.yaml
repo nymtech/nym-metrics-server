@@ -3,12 +3,17 @@ definitions:
     properties:
       host:
         type: string
+      location:
+        type: string
       pubKey:
         type: string
       type:
         type: string
+      version:
+        type: string
     required:
     - pubKey
+    - version
     - type
     type: object
   models.CocoPresence:
@@ -17,19 +22,67 @@ definitions:
         type: string
       lastSeen:
         type: integer
+      location:
+        type: string
       pubKey:
         type: string
       type:
         type: string
+      version:
+        type: string
     required:
-    - pubKey
+    - version
     - type
     - lastSeen
+    - pubKey
     type: object
   models.Error:
     properties:
       error:
         type: string
+    type: object
+  models.GatewayHostInfo:
+    properties:
+      clientListener:
+        type: string
+      location:
+        type: string
+      mixnetListener:
+        type: string
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+      version:
+        type: string
+    required:
+    - pubKey
+    - version
+    type: object
+  models.GatewayPresence:
+    properties:
+      clientListener:
+        type: string
+      lastSeen:
+        type: integer
+      location:
+        type: string
+      mixnetListener:
+        type: string
+      pubKey:
+        type: string
+      registeredClients:
+        items:
+          $ref: '#/definitions/models.RegisteredClient'
+        type: array
+      version:
+        type: string
+    required:
+    - pubKey
+    - version
+    - lastSeen
     type: object
   models.MixHostInfo:
     properties:
@@ -37,10 +90,15 @@ definitions:
         type: string
       layer:
         type: integer
+      location:
+        type: string
       pubKey:
+        type: string
+      version:
         type: string
     required:
     - pubKey
+    - version
     - layer
     type: object
   models.MixMetric:
@@ -55,6 +113,12 @@ definitions:
         type: object
     required:
     - pubKey
+    - received
+    type: object
+  models.MixNodeID:
+    properties:
+      pubKey:
+        type: string
     type: object
   models.MixNodePresence:
     properties:
@@ -64,16 +128,25 @@ definitions:
         type: integer
       layer:
         type: integer
+      location:
+        type: string
       pubKey:
         type: string
+      version:
+        type: string
     required:
-    - pubKey
+    - version
     - layer
     - lastSeen
+    - pubKey
     type: object
   models.MixProviderHostInfo:
     properties:
-      host:
+      clientListener:
+        type: string
+      location:
+        type: string
+      mixnetListener:
         type: string
       pubKey:
         type: string
@@ -81,23 +154,33 @@ definitions:
         items:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
+      version:
+        type: string
     required:
     - pubKey
+    - version
     type: object
   models.MixProviderPresence:
     properties:
-      host:
+      clientListener:
         type: string
       lastSeen:
         type: integer
+      location:
+        type: string
+      mixnetListener:
+        type: string
       pubKey:
         type: string
       registeredClients:
         items:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
+      version:
+        type: string
     required:
     - pubKey
+    - version
     - lastSeen
     type: object
   models.RegisteredClient:
@@ -112,6 +195,10 @@ definitions:
       cocoNodes:
         items:
           $ref: '#/definitions/models.CocoPresence'
+        type: array
+      gatewayNodes:
+        items:
+          $ref: '#/definitions/models.GatewayPresence'
         type: array
       mixNodes:
         items:
@@ -219,6 +306,43 @@ paths:
         received
       tags:
       - metrics
+  /api/presence/allow:
+    post:
+      consumes:
+      - application/json
+      description: Sometimes when a node isn't working we need to temporarily remove
+        it. This allows us to re-enable it once it's working again.
+      operationId: allow
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixNodeID'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Removes a disallowed node from the disallowed nodes list
+      tags:
+      - presence
   /api/presence/coconodes:
     post:
       consumes:
@@ -255,6 +379,116 @@ paths:
             $ref: '#/definitions/models.Error'
             type: object
       summary: Lets a coconut node tell the directory server it's alive
+      tags:
+      - presence
+  /api/presence/disallow:
+    post:
+      consumes:
+      - application/json
+      description: Sometimes when a node isn't working we need to temporarily remove
+        it from use so that it doesn't mess up QoS for the whole network.
+      operationId: disallow
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixNodeID'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Takes a node out of the regular topology and puts it in the disallowed
+        nodes list
+      tags:
+      - presence
+  /api/presence/disallowed:
+    get:
+      consumes:
+      - application/json
+      description: Sometimes we need to take mixnodes out of the network for repair.
+        This shows which ones are currently disallowed.
+      operationId: disallowed
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixNodePresence'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Lists Nym mixnodes that are currently disallowed
+      tags:
+      - presence
+  /api/presence/gateways:
+    post:
+      consumes:
+      - application/json
+      description: Nym mix gateways can ping this method to let the directory server
+        know they're up. We can then use this info to create topologies of the overall
+        Nym network.
+      operationId: addGateway
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.GatewayHostInfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+            type: object
+      summary: Lets a gateway tell the directory server it's alive
       tags:
       - presence
   /api/presence/mixnodes:
@@ -295,7 +529,7 @@ paths:
       summary: Lets mixnode a node tell the directory server it's alive
       tags:
       - presence
-  /api/presence/providers:
+  /api/presence/mixproviders:
     post:
       consumes:
       - application/json
@@ -364,7 +598,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
             type: object
-      summary: Lists which Nym mixnodes, providers, and coconodes are alive
+      summary: Lists which Nym mixnodes, providers, gateways, and coconodes are alive
       tags:
       - presence
 swagger: "2.0"

@@ -11,6 +11,7 @@ import (
 type Config struct {
 	CocoHostSanitizer        CocoHostSanitizer
 	MixHostSanitizer         MixHostSanitizer
+	MixNodeIDSanitizer       IMixNodeIDSanitizer
 	MixProviderHostSanitizer MixProviderHostSanitizer
 	GatewayHostSanitizer     GatewayHostSanitizer
 	Service                  IService
@@ -46,7 +47,10 @@ func New(cfg Config) Controller {
 
 // RegisterRoutes registers controller routes in Gin.
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
+	router.POST("/api/presence/allow", controller.Allow)
 	router.POST("/api/presence/coconodes", controller.AddCocoNodePresence)
+	router.POST("/api/presence/disallow", controller.Disallow)
+	router.GET("/api/presence/disallowed", controller.Disallowed)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
 	router.POST("/api/presence/mixproviders", controller.AddMixProviderPresence)
 	router.POST("/api/presence/gateways", controller.AddGatewayPresence)
@@ -147,6 +151,69 @@ func (controller *controller) AddGatewayPresence(c *gin.Context) {
 	sanitized := controller.gatewayHostSanitizer.Sanitize(gateway)
 	controller.service.AddGatewayPresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+// Allow ...
+// @Summary Removes a disallowed node from the disallowed nodes list
+// @Description Sometimes when a node isn't working we need to temporarily remove it. This allows us to re-enable it once it's working again.
+// @ID allow
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Param   object      body   models.MixNodeID     true  "object"
+// @Success 200
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/allow [post]
+func (controller *controller) Allow(c *gin.Context) {
+	var node models.MixNodeID
+	if err := c.ShouldBindJSON(&node); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	controller.service.Allow(node)
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+// Disallow ...
+// @Summary Takes a node out of the regular topology and puts it in the disallowed nodes list
+// @Description Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.
+// @ID disallow
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Param   object      body   models.MixNodeID     true  "object"
+// @Success 201
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/disallow [post]
+func (controller *controller) Disallow(c *gin.Context) {
+	var node models.MixNodeID
+	if err := c.ShouldBindJSON(&node); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	controller.service.Disallow(node)
+	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+// Disallowed ...
+// @Summary Lists Nym mixnodes that are currently disallowed
+// @Description Sometimes we need to take mixnodes out of the network for repair. This shows which ones are currently disallowed.
+// @ID disallowed
+// @Accept  json
+// @Produce  json
+// @Tags presence
+// @Success 200 {array} models.MixNodePresence
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/presence/disallowed [get]
+func (controller *controller) Disallowed(c *gin.Context) {
+	disallowed := controller.service.ListDisallowed()
+	c.JSON(http.StatusOK, disallowed)
 }
 
 // Topology ...

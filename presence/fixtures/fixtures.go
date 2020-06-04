@@ -2,6 +2,13 @@ package fixtures
 
 import "github.com/nymtech/nym-directory/models"
 
+func MixNodeID() models.MixNodeID {
+	d := models.MixNodeID{
+		PubKey: "abc123",
+	}
+	return d
+}
+
 func GoodCocoHost() models.CocoHostInfo {
 	good := models.CocoHostInfo{
 		HostInfo: models.HostInfo{

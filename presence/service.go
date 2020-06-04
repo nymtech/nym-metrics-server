@@ -20,9 +20,13 @@ type IService interface {
 	AddMixNodePresence(info models.MixHostInfo)
 	AddMixProviderPresence(info models.MixProviderHostInfo)
 	AddGatewayPresence(info models.GatewayHostInfo)
+	Allow(hostKey models.MixNodeID)
+	Disallow(hostKey models.MixNodeID)
+	ListDisallowed() []models.MixNodePresence
 	Topology() models.Topology
 }
 
+// NewService constructor
 func NewService(db IDb) *service {
 	ipa := ipAssigner{}
 	return &service{
@@ -70,7 +74,7 @@ func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) 
 func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
 	presence := models.GatewayPresence{
 		GatewayHostInfo: info,
-		LastSeen:            timemock.Now().UnixNano(),
+		LastSeen:        timemock.Now().UnixNano(),
 	}
 	if presence.Location == "" || presence.Location == "unknown" {
 		presence.Location = defaultLocation
@@ -79,8 +83,44 @@ func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
 	service.db.AddGateway(presence)
 }
 
+func (service *service) Allow(node models.MixNodeID) {
+	service.db.Allow(node.PubKey)
+}
+
+func (service *service) Disallow(node models.MixNodeID) {
+	service.db.Disallow(node.PubKey)
+}
+
+func (service *service) ListDisallowed() []models.MixNodePresence {
+	topology := service.db.Topology()
+	disallowed := service.db.ListDisallowed()
+	response := []models.MixNodePresence{}
+	for i, mixpresence := range topology.MixNodes {
+		for _, key := range disallowed {
+			if mixpresence.PubKey == key {
+				response = append(response, mixpresence)
+				topology.MixNodes = removeMixnode(topology.MixNodes, i)
+			}
+		}
+	}
+
+	return response
+}
+
+// Topology returns the directory server's current view of the network.
+// If there are any disallowed mixnodes, they'll be removed from the Mixnodes slice
+// and shoved into the Disallowed slice instead.
 func (service *service) Topology() models.Topology {
-	return service.db.Topology()
+	topology := service.db.Topology()
+	disallowed := service.db.ListDisallowed()
+	for i, mixpresence := range topology.MixNodes {
+		for _, key := range disallowed {
+			if mixpresence.PubKey == key {
+				topology.MixNodes = removeMixnode(topology.MixNodes, i)
+			}
+		}
+	}
+	return topology
 }
 
 type ipAssigner struct {
@@ -120,4 +160,10 @@ func (ipa *ipAssigner) AssignIP(serverReportedIP string, selfReportedHost string
 
 	host = net.JoinHostPort(serverReportedIP, port)
 	return host, nil
+}
+
+func removeMixnode(s []models.MixNodePresence, index int) []models.MixNodePresence {
+	ret := make([]models.MixNodePresence, 0)
+	ret = append(ret, s[:index]...)
+	return append(ret, s[index+1:]...)
 }
