@@ -79,6 +79,11 @@ func (db *db) Allow(pubkey string) {
 func (db *db) Disallow(pubkey string) {
 	db.Lock()
 	defer db.Unlock()
+	for _, disallowedNode := range db.disallowed {
+		if disallowedNode == pubkey {
+			return
+		}
+	}
 	db.disallowed = append(db.disallowed, pubkey)
 }
 
