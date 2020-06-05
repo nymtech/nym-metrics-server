@@ -256,6 +256,26 @@ var _ = Describe("Presence Db", func() {
 
 			})
 		})
+
+		Context("adding a disallowed base64 pubkey", func() {
+			It("should add the pubkey and return it in the disallowed list", func() {
+				// initial state
+				db := NewDb()
+				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
+
+				pubkey := "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI"
+
+				// disallowing
+				db.Disallow(pubkey)
+				assert.Len(GinkgoT(), db.ListDisallowed(), 1)
+				assert.Contains(GinkgoT(), db.ListDisallowed(), pubkey)
+
+				// allowing
+				db.Allow(pubkey)
+				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
+				assert.NotContains(GinkgoT(), db.ListDisallowed(), pubkey)
+			})
+		})
 	})
 
 	Describe("disallowing mixnodes", func() {

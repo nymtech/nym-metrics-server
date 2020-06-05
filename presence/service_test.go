@@ -228,6 +228,14 @@ var _ = Describe("presence.Service", func() {
 				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
 			})
 		})
+		Context("once with base64 pubkey", func() {
+			It("should ask the db to disallow the provided pubkey", func() {
+				node := models.MixNodeID{PubKey: "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI"}
+				mockDb.On("Disallow", node.PubKey)
+				serv.Disallow(node)
+				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
+			})
+		})
 
 		Context("twice for the same node", func() {
 			It("should ask the db to disallow the provided pubkey twice", func() {
