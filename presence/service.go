@@ -111,10 +111,10 @@ func (service *service) ListDisallowed() []models.MixNodePresence {
 func (service *service) Topology() models.Topology {
 	topology := service.db.Topology()
 	disallowed := service.db.ListDisallowed()
-	for i, mixpresence := range topology.MixNodes {
+	for _, mixpresence := range topology.MixNodes {
 		for _, key := range disallowed {
 			if mixpresence.PubKey == key {
-				topology.MixNodes = removeMixnode(topology.MixNodes, i)
+				topology.MixNodes = removePresence(topology.MixNodes, mixpresence)
 			}
 		}
 	}
@@ -160,8 +160,14 @@ func (ipa *ipAssigner) AssignIP(serverReportedIP string, selfReportedHost string
 	return host, nil
 }
 
-func removeMixnode(s []models.MixNodePresence, index int) []models.MixNodePresence {
-	ret := make([]models.MixNodePresence, 0)
-	ret = append(ret, s[:index]...)
-	return append(ret, s[index+1:]...)
+func removePresence(items []models.MixNodePresence, item models.MixNodePresence) []models.MixNodePresence {
+	newitems := []models.MixNodePresence{}
+
+	for _, i := range items {
+		if i != item {
+			newitems = append(newitems, i)
+		}
+	}
+
+	return newitems
 }
