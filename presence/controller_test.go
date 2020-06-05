@@ -17,7 +17,7 @@ import (
 var _ = Describe("Presence Controller", func() {
 	Describe("creating a coconode presence", func() {
 		Context("containing xss", func() {
-			It("should strip the xss attack", func() {
+			It("should strip the xss attack and proceed normally", func() {
 				cocoSan := new(mocks.CocoHostSanitizer)
 				mockService := new(mocks.IService)
 
@@ -47,7 +47,7 @@ var _ = Describe("Presence Controller", func() {
 
 	Describe("creating a mix node presence", func() {
 		Context("containing xss", func() {
-			It("should strip the xss attack", func() {
+			It("should strip the xss attack and proceed normally", func() {
 				mockSanitizer := new(mocks.MixHostSanitizer)
 				mockService := new(mocks.IService)
 
@@ -72,6 +72,37 @@ var _ = Describe("Presence Controller", func() {
 				assert.Equal(GinkgoT(), 201, resp.Code)
 				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixHost())
 				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodMixHost())
+			})
+		})
+	})
+
+	Describe("creating a gateway presence", func() {
+		Context("containing xss", func() {
+			It("should strip the xss attack and proceed normally", func() {
+				mockSanitizer := new(mocks.GatewayHostSanitizer)
+				mockService := new(mocks.IService)
+
+				cfg := Config{
+					GatewayHostSanitizer: mockSanitizer,
+					Service:              mockService,
+				}
+
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+
+				mockSanitizer.On("Sanitize", fixtures.XssGatewayHost()).Return(fixtures.GoodGatewayHost())
+				mockService.On("AddGatewayPresence", fixtures.GoodGatewayHost())
+				j, _ := json.Marshal(fixtures.XssGatewayHost())
+
+				resp := performRequest(router, "POST", "/api/presence/gateways", j)
+				var response map[string]string
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+
+				assert.Equal(GinkgoT(), 201, resp.Code)
+				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssGatewayHost())
+				mockService.AssertCalled(GinkgoT(), "AddGatewayPresence", fixtures.GoodGatewayHost())
 			})
 		})
 	})

@@ -35,11 +35,11 @@ func GoodMixHost() models.MixHostInfo {
 	return good
 }
 
-func GoodMixProviderHost() models.MixProviderHostInfo {
+func GoodGatewayHost() models.GatewayHostInfo {
 	client1 := models.RegisteredClient{PubKey: "client1"}
 	client2 := models.RegisteredClient{PubKey: "client2"}
 	clients := []models.RegisteredClient{client1, client2}
-	good := models.MixProviderHostInfo{
+	good := models.GatewayHostInfo{
 		Location:          "foomplandia",
 		ClientListener:    ":1789",
 		MixnetListener:    ":1790",
@@ -76,11 +76,11 @@ func XssMixHost() models.MixHostInfo {
 	return xss
 }
 
-func XssMixProviderHost() models.MixProviderHostInfo {
+func XssGatewayHost() models.GatewayHostInfo {
 	client1 := models.RegisteredClient{PubKey: "client1<script>alert('gotcha')</script>"}
 	client2 := models.RegisteredClient{PubKey: "client2<script>alert('gotcha')</script>"}
 	clients := []models.RegisteredClient{client1, client2}
-	xss := models.MixProviderHostInfo{
+	xss := models.GatewayHostInfo{
 		Location:          "foomplandia",
 		ClientListener:    ":1789",
 		MixnetListener:    ":1790",

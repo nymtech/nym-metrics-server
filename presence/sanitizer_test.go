@@ -48,22 +48,22 @@ var _ = Describe("Sanitizer", func() {
 			})
 		})
 	})
-	Context("for MixProviderHostInfo", func() {
+	Context("for GatewayHostInfo", func() {
 		Context("when XSS is present", func() {
 			It("sanitizes input", func() {
 				policy := bluemonday.UGCPolicy()
-				sanitizer := NewMixproviderSanitizer(policy)
+				sanitizer := NewGatewaySanitizer(policy)
 
-				result := sanitizer.Sanitize(fixtures.XssMixProviderHost())
-				assert.Equal(GinkgoT(), fixtures.GoodMixProviderHost(), result)
+				result := sanitizer.Sanitize(fixtures.XssGatewayHost())
+				assert.Equal(GinkgoT(), fixtures.GoodGatewayHost(), result)
 			})
 		})
 		Context("when XSS is not present", func() {
 			It("doesn't change input", func() {
 				policy := bluemonday.UGCPolicy()
-				sanitizer := NewMixproviderSanitizer(policy)
-				result := sanitizer.Sanitize(fixtures.GoodMixProviderHost())
-				assert.Equal(GinkgoT(), fixtures.GoodMixProviderHost(), result)
+				sanitizer := NewGatewaySanitizer(policy)
+				result := sanitizer.Sanitize(fixtures.GoodGatewayHost())
+				assert.Equal(GinkgoT(), fixtures.GoodGatewayHost(), result)
 			})
 		})
 	})
