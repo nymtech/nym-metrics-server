@@ -174,12 +174,36 @@ var _ = Describe("presence.Service", func() {
 		})
 	})
 	Describe("Disallowing nodes", func() {
-		Context("happy path", func() {
+		Context("once", func() {
 			It("should ask the db to disallow the provided pubkey", func() {
 				node := models.MixNodeID{PubKey: "abc123"}
 				mockDb.On("Disallow", node.PubKey)
 				serv.Disallow(node)
 				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
+			})
+		})
+
+		Context("twice for the same node", func() {
+			It("should ask the db to disallow the provided pubkey twice", func() {
+				node := models.MixNodeID{PubKey: "abc123"}
+				mockDb.On("Disallow", node.PubKey)
+				serv.Disallow(node)
+				serv.Disallow(node)
+				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
+				mockDb.AssertNumberOfCalls(GinkgoT(), "Disallow", 2)
+			})
+		})
+
+		Context("for two different nodes", func() {
+			It("should ask the db to disallow the provided pubkeys", func() {
+				node1 := models.MixNodeID{PubKey: "abc123"}
+				node2 := models.MixNodeID{PubKey: "def456"}
+				mockDb.On("Disallow", node1.PubKey)
+				mockDb.On("Disallow", node2.PubKey)
+				serv.Disallow(node1)
+				serv.Disallow(node2)
+				mockDb.AssertCalled(GinkgoT(), "Disallow", node1.PubKey)
+				mockDb.AssertNumberOfCalls(GinkgoT(), "Disallow", 2)
 			})
 		})
 	})
