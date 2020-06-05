@@ -3,6 +3,7 @@ package presence
 import (
 	"net/http"
 
+	"github.com/blang/semver/v4"
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/nym-directory/models"
 )
@@ -76,6 +77,17 @@ func (controller *controller) AddMixNodePresence(c *gin.Context) {
 		return
 	}
 	sanitized := controller.mixHostSanitizer.Sanitize(mixHost)
+	version, err := semver.Make(mixHost.Version)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	minVersion, _ := semver.Make("0.6.0")
+	if version.LT(minVersion) {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Minimum support mixnode version is 0.6.0"})
+		return
+	}
+
 	controller.service.AddMixNodePresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }

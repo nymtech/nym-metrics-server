@@ -28,7 +28,7 @@ func GoodMixHost() models.MixHostInfo {
 			Location: "foomplandia",
 			Host:     ":1789",
 			PubKey:   "pubkey",
-			Version:  "0.1.0",
+			Version:  "0.7.0",
 		},
 		Layer: 1,
 	}
@@ -69,7 +69,7 @@ func XssMixHost() models.MixHostInfo {
 			Location: "foomplandia",
 			Host:     ":1789",
 			PubKey:   "pubkey<script>alert('gotcha')</script>",
-			Version:  "0.1.0",
+			Version:  "0.7.0",
 		},
 		Layer: 1,
 	}
