@@ -312,6 +312,24 @@ var _ = Describe("presence.Service", func() {
 			})
 		})
 
+		Context("with 1 disallowed node having a base64 pubkey", func() {
+			FIt("should return a list containing 1 disallowed MixNodePresence objects", func() {
+				mixpresence1.PubKey = "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="
+				topology := models.Topology{
+					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
+				}
+				mockDb.On("ListDisallowed").Return([]string{mixpresence1.PubKey})
+				mockDb.On("Topology").Return(topology)
+
+				expectedDisallowed := []models.MixNodePresence{mixpresence1}
+
+				response := serv.ListDisallowed()
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), expectedDisallowed, response)
+			})
+		})
+
 		Context("with 2 disallowed nodes", func() {
 			It("should return a list containing 2 disallowed MixNodePresence objects", func() {
 				topology := models.Topology{
