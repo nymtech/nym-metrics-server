@@ -52,7 +52,6 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/presence/disallow", controller.Disallow)
 	router.GET("/api/presence/disallowed", controller.Disallowed)
 	router.POST("/api/presence/mixnodes", controller.AddMixNodePresence)
-	router.POST("/api/presence/mixproviders", controller.AddMixProviderPresence)
 	router.POST("/api/presence/gateways", controller.AddGatewayPresence)
 	router.GET("/api/presence/topology", controller.Topology)
 }
@@ -102,30 +101,6 @@ func (controller *controller) AddCocoNodePresence(c *gin.Context) {
 	}
 	sanitized := controller.cocoHostSanitizer.Sanitize(cocoHost)
 	controller.service.AddCocoNodePresence(sanitized, c.ClientIP())
-	c.JSON(http.StatusCreated, gin.H{"ok": true})
-}
-
-// AddMixNodePresence ...
-// @Summary Lets a mixnode tell the directory server it's alive
-// @Description Nym mix providers can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
-// @ID addMixProvider
-// @Accept  json
-// @Produce  json
-// @Tags presence
-// @Param   object      body   models.MixProviderHostInfo     true  "object"
-// @Success 201
-// @Failure 400 {object} models.Error
-// @Failure 404 {object} models.Error
-// @Failure 500 {object} models.Error
-// @Router /api/presence/mixproviders [post]
-func (controller *controller) AddMixProviderPresence(c *gin.Context) {
-	var provider models.MixProviderHostInfo
-	if err := c.ShouldBindJSON(&provider); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	sanitized := controller.mixProviderHostSanitizer.Sanitize(provider)
-	controller.service.AddMixProviderPresence(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
 

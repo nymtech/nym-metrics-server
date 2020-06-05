@@ -12,9 +12,9 @@ definitions:
       version:
         type: string
     required:
+    - type
     - pubKey
     - version
-    - type
     type: object
   models.CocoPresence:
     properties:
@@ -31,10 +31,10 @@ definitions:
       version:
         type: string
     required:
+    - pubKey
     - version
     - type
     - lastSeen
-    - pubKey
     type: object
   models.Error:
     properties:
@@ -80,9 +80,9 @@ definitions:
       version:
         type: string
     required:
+    - lastSeen
     - pubKey
     - version
-    - lastSeen
     type: object
   models.MixHostInfo:
     properties:
@@ -112,8 +112,8 @@ definitions:
         - sent
         type: object
     required:
-    - pubKey
     - received
+    - pubKey
     type: object
   models.MixNodeID:
     properties:
@@ -135,28 +135,8 @@ definitions:
       version:
         type: string
     required:
-    - version
     - layer
     - lastSeen
-    - pubKey
-    type: object
-  models.MixProviderHostInfo:
-    properties:
-      clientListener:
-        type: string
-      location:
-        type: string
-      mixnetListener:
-        type: string
-      pubKey:
-        type: string
-      registeredClients:
-        items:
-          $ref: '#/definitions/models.RegisteredClient'
-        type: array
-      version:
-        type: string
-    required:
     - pubKey
     - version
     type: object
@@ -527,44 +507,6 @@ paths:
             $ref: '#/definitions/models.Error'
             type: object
       summary: Lets mixnode a node tell the directory server it's alive
-      tags:
-      - presence
-  /api/presence/mixproviders:
-    post:
-      consumes:
-      - application/json
-      description: Nym mix providers can ping this method to let the directory server
-        know they're up. We can then use this info to create topologies of the overall
-        Nym network.
-      operationId: addMixProvider
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.MixProviderHostInfo'
-          type: object
-      produces:
-      - application/json
-      responses:
-        "201": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-            type: object
-      summary: Lets a mixnode tell the directory server it's alive
       tags:
       - presence
   /api/presence/topology:
