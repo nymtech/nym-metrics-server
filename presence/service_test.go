@@ -15,8 +15,10 @@ var _ = Describe("presence.Service", func() {
 	var (
 		mix1              models.MixHostInfo
 		mix2              models.MixHostInfo
+		mix3              models.MixHostInfo
 		mixpresence1      models.MixNodePresence
 		mixpresence2      models.MixNodePresence
+		mixpresence3      models.MixNodePresence
 		coco1             models.CocoHostInfo
 		cocopresence2     models.CocoPresence
 		provider1         models.MixProviderHostInfo
@@ -49,7 +51,7 @@ var _ = Describe("presence.Service", func() {
 		mix2 = models.MixHostInfo{
 			HostInfo: models.HostInfo{
 				Host:     "floop.com:8000",
-				PubKey:   "pubkeymix2",
+				PubKey:   "pubkey2",
 				Location: defaultLocation,
 			},
 			Layer: 1,
@@ -57,6 +59,20 @@ var _ = Describe("presence.Service", func() {
 
 		mixpresence2 = models.MixNodePresence{
 			MixHostInfo: mix2,
+			LastSeen:    timemock.Now().UnixNano(),
+		}
+
+		mix3 = models.MixHostInfo{
+			HostInfo: models.HostInfo{
+				Host:     "snoop.com:8000",
+				PubKey:   "pubkey3",
+				Location: defaultLocation,
+			},
+			Layer: 1,
+		}
+
+		mixpresence3 = models.MixNodePresence{
+			MixHostInfo: mix3,
 			LastSeen:    timemock.Now().UnixNano(),
 		}
 
@@ -128,8 +144,8 @@ var _ = Describe("presence.Service", func() {
 			})
 		})
 
-		Context("when there are disallowed nodes", func() {
-			It("should remove disallowed mixnodes", func() {
+		Context("when there is 1 disallowed nodes", func() {
+			It("should remove 1 disallowed mixnodes and return the rest", func() {
 				mixnodes := []models.MixNodePresence{
 					mixpresence1, mixpresence2,
 				}
@@ -158,6 +174,37 @@ var _ = Describe("presence.Service", func() {
 				assert.Equal(GinkgoT(), expectedTopology, result)
 				assert.NotContains(GinkgoT(), result.MixNodes, mixpresence2)
 				assert.Contains(GinkgoT(), result.MixNodes, mixpresence1)
+			})
+		})
+
+		Context("when there are 2 disallowed nodes out of 3", func() {
+			It("should remove 2 disallowed mixnodes and return the other one", func() {
+				mixnodes := []models.MixNodePresence{
+					mixpresence1, mixpresence2, mixpresence3,
+				}
+
+				dbTopology := models.Topology{
+					MixNodes: mixnodes,
+				}
+
+				disallowed := []string{mix1.PubKey, mix2.PubKey}
+
+				mockDb.On("Topology").Return(dbTopology)
+				mockDb.On("ListDisallowed").Return(disallowed)
+
+				// expectedTopologyResult := models.Topology{
+				// 	MixNodes: []models.MixNodePresence{mixpresence3},
+				// }
+
+				result := serv.Topology()
+
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				// assert.Equal(GinkgoT(), expectedTopologyResult, result)
+				assert.Contains(GinkgoT(), result.MixNodes, mixpresence3)
+				assert.NotContains(GinkgoT(), result.MixNodes, mixpresence1)
+				assert.NotContains(GinkgoT(), result.MixNodes, mixpresence2)
+				assert.Contains(GinkgoT(), result.MixNodes, mixpresence3)
 			})
 		})
 	})
