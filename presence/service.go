@@ -95,11 +95,10 @@ func (service *service) ListDisallowed() []models.MixNodePresence {
 	topology := service.db.Topology()
 	disallowed := service.db.ListDisallowed()
 	response := []models.MixNodePresence{}
-	for i, mixpresence := range topology.MixNodes {
+	for _, mixpresence := range topology.MixNodes {
 		for _, key := range disallowed {
 			if mixpresence.PubKey == key {
 				response = append(response, mixpresence)
-				topology.MixNodes = removeMixnode(topology.MixNodes, i)
 			}
 		}
 	}
