@@ -5,7 +5,6 @@ import (
 
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/nym-directory/models"
-	"github.com/nymtech/nym-directory/presence/fixtures"
 	"github.com/nymtech/nym-directory/presence/mocks"
 	. "github.com/onsi/ginkgo"
 	_ "github.com/onsi/gomega"
