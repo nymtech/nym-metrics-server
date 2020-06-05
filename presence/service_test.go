@@ -154,7 +154,6 @@ var _ = Describe("presence.Service", func() {
 					MixNodes: mixnodes,
 				}
 
-				disallowed := make([]string, 1)
 				disallowed := []string{mix2.PubKey}
 
 				mockDb.On("Topology").Return(dbTopology)
