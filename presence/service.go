@@ -109,7 +109,6 @@ func (service *service) ListDisallowed() []models.MixNodePresence {
 
 // Topology returns the directory server's current view of the network.
 // If there are any disallowed mixnodes, they'll be removed from the Mixnodes slice
-// and shoved into the Disallowed slice instead.
 func (service *service) Topology() models.Topology {
 	topology := service.db.Topology()
 	disallowed := service.db.ListDisallowed()
