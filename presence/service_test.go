@@ -185,23 +185,49 @@ var _ = Describe("presence.Service", func() {
 	})
 
 	Describe("Listing disallowed nodes", func() {
-		Context("happy path", func() {
-			It("should return a list of disallowed MixNodePresence objects", func() {
-				mixpresence1 := models.MixNodePresence{
-					MixHostInfo: fixtures.GoodMixHost(),
-					LastSeen:    1234,
-				}
-				mixpresence1.PubKey = "abc"
-				mixpresence2 := mixpresence1
-				mixpresence2.PubKey = "123"
-
+		Context("with 1 disallowed node", func() {
+			It("should return a list containing 1 disallowed MixNodePresence objects", func() {
 				topology := models.Topology{
 					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
 				}
-				mockDb.On("ListDisallowed").Return([]string{"abc"})
+				mockDb.On("ListDisallowed").Return([]string{"pubkey1"})
 				mockDb.On("Topology").Return(topology)
 
 				expectedDisallowed := []models.MixNodePresence{mixpresence1}
+
+				response := serv.ListDisallowed()
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), expectedDisallowed, response)
+			})
+		})
+
+		Context("with 2 disallowed nodes", func() {
+			It("should return a list containing 2 disallowed MixNodePresence objects", func() {
+				topology := models.Topology{
+					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
+				}
+				mockDb.On("ListDisallowed").Return([]string{"pubkey1", "pubkey2"})
+				mockDb.On("Topology").Return(topology)
+
+				expectedDisallowed := []models.MixNodePresence{mixpresence1, mixpresence2}
+
+				response := serv.ListDisallowed()
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), expectedDisallowed, response)
+			})
+		})
+
+		Context("if there's a nonexistent pubkey", func() {
+			It("should return a list containing 0 disallowed MixNodePresence objects", func() {
+				topology := models.Topology{
+					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
+				}
+				mockDb.On("ListDisallowed").Return([]string{"foomp"})
+				mockDb.On("Topology").Return(topology)
+
+				expectedDisallowed := []models.MixNodePresence{}
 
 				response := serv.ListDisallowed()
 				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
