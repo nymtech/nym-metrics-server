@@ -154,8 +154,40 @@ var _ = Describe("presence.Service", func() {
 					MixNodes: mixnodes,
 				}
 
-				disallowed := make([]string, 1)
-				disallowed[0] = mix2.PubKey
+				disallowed := []string{mix2.PubKey}
+
+				mockDb.On("Topology").Return(dbTopology)
+				mockDb.On("ListDisallowed").Return(disallowed)
+
+				// Now we set up an expectation that mixpresence2 should be in
+				// the topology's returned disallowed nodes, but not in the
+				// regular mixnodes list
+				expectedTopology := models.Topology{
+					MixNodes: []models.MixNodePresence{mixpresence1},
+				}
+
+				result := serv.Topology()
+
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				assert.Equal(GinkgoT(), expectedTopology, result)
+				assert.NotContains(GinkgoT(), result.MixNodes, mixpresence2)
+				assert.Contains(GinkgoT(), result.MixNodes, mixpresence1)
+			})
+		})
+
+		Context("when there is 1 disallowed node with a base64 pubkey", func() {
+			It("should remove 1 disallowed mixnode and return the rest", func() {
+				mixpresence2.PubKey = "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="
+				mixnodes := []models.MixNodePresence{
+					mixpresence1, mixpresence2,
+				}
+
+				dbTopology := models.Topology{
+					MixNodes: mixnodes,
+				}
+
+				disallowed := []string{mixpresence2.PubKey}
 
 				mockDb.On("Topology").Return(dbTopology)
 				mockDb.On("ListDisallowed").Return(disallowed)
@@ -228,6 +260,14 @@ var _ = Describe("presence.Service", func() {
 				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
 			})
 		})
+		Context("once with base64 pubkey", func() {
+			It("should ask the db to disallow the provided pubkey", func() {
+				node := models.MixNodeID{PubKey: "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="}
+				mockDb.On("Disallow", node.PubKey)
+				serv.Disallow(node)
+				mockDb.AssertCalled(GinkgoT(), "Disallow", node.PubKey)
+			})
+		})
 
 		Context("twice for the same node", func() {
 			It("should ask the db to disallow the provided pubkey twice", func() {
@@ -261,6 +301,24 @@ var _ = Describe("presence.Service", func() {
 					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
 				}
 				mockDb.On("ListDisallowed").Return([]string{"pubkey1"})
+				mockDb.On("Topology").Return(topology)
+
+				expectedDisallowed := []models.MixNodePresence{mixpresence1}
+
+				response := serv.ListDisallowed()
+				mockDb.AssertCalled(GinkgoT(), "ListDisallowed")
+				mockDb.AssertCalled(GinkgoT(), "Topology")
+				assert.Equal(GinkgoT(), expectedDisallowed, response)
+			})
+		})
+
+		Context("with 1 disallowed node having a base64 pubkey", func() {
+			It("should return a list containing 1 disallowed MixNodePresence objects", func() {
+				mixpresence1.PubKey = "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="
+				topology := models.Topology{
+					MixNodes: []models.MixNodePresence{mixpresence1, mixpresence2},
+				}
+				mockDb.On("ListDisallowed").Return([]string{mixpresence1.PubKey})
 				mockDb.On("Topology").Return(topology)
 
 				expectedDisallowed := []models.MixNodePresence{mixpresence1}

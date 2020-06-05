@@ -17,7 +17,7 @@ import (
 var _ = Describe("Presence Controller", func() {
 	Describe("creating a coconode presence", func() {
 		Context("containing xss", func() {
-			It("should strip the xss attack", func() {
+			It("should strip the xss attack and proceed normally", func() {
 				cocoSan := new(mocks.CocoHostSanitizer)
 				mockService := new(mocks.IService)
 
@@ -47,7 +47,7 @@ var _ = Describe("Presence Controller", func() {
 
 	Describe("creating a mix node presence", func() {
 		Context("containing xss", func() {
-			It("should strip the xss attack", func() {
+			It("should strip the xss and proceed normally", func() {
 				mockSanitizer := new(mocks.MixHostSanitizer)
 				mockService := new(mocks.IService)
 
@@ -74,17 +74,15 @@ var _ = Describe("Presence Controller", func() {
 				mockService.AssertCalled(GinkgoT(), "AddMixNodePresence", fixtures.GoodMixHost())
 			})
 		})
-	})
 
-	Describe("creating a mix provider node presence", func() {
-		Context("containing xss", func() {
-			It("should strip the xss attack", func() {
-				mockSanitizer := new(mocks.MixProviderHostSanitizer)
+		Context("with a version less than 0.6.0", func() {
+			It("should return a 422 Unprocessable Entity", func() {
+				mockSanitizer := new(mocks.MixHostSanitizer)
 				mockService := new(mocks.IService)
 
 				cfg := Config{
-					MixProviderHostSanitizer: mockSanitizer,
-					Service:                  mockService,
+					MixHostSanitizer: mockSanitizer,
+					Service:          mockService,
 				}
 
 				router := gin.Default()
@@ -92,17 +90,49 @@ var _ = Describe("Presence Controller", func() {
 				controller := New(cfg)
 				controller.RegisterRoutes(router)
 
-				mockSanitizer.On("Sanitize", fixtures.XssMixProviderHost()).Return(fixtures.GoodMixProviderHost())
-				mockService.On("AddMixProviderPresence", fixtures.GoodMixProviderHost())
-				j, _ := json.Marshal(fixtures.XssMixProviderHost())
+				presence := fixtures.GoodMixHost()
+				presence.Version = "0.3.2"
+				mockSanitizer.On("Sanitize", presence).Return(presence)
+				j, _ := json.Marshal(presence)
 
-				resp := performRequest(router, "POST", "/api/presence/mixproviders", j)
+				resp := performRequest(router, "POST", "/api/presence/mixnodes", j)
+				var response map[string]string
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+
+				assert.Equal(GinkgoT(), 422, resp.Code)
+				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", presence)
+				mockService.AssertNotCalled(GinkgoT(), "AddMixNodePresence")
+			})
+		})
+	})
+
+	Describe("creating a gateway presence", func() {
+		Context("containing xss", func() {
+			It("should strip the xss attack and proceed normally", func() {
+				mockSanitizer := new(mocks.GatewayHostSanitizer)
+				mockService := new(mocks.IService)
+
+				cfg := Config{
+					GatewayHostSanitizer: mockSanitizer,
+					Service:              mockService,
+				}
+
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+
+				mockSanitizer.On("Sanitize", fixtures.XssGatewayHost()).Return(fixtures.GoodGatewayHost())
+				mockService.On("AddGatewayPresence", fixtures.GoodGatewayHost())
+				j, _ := json.Marshal(fixtures.XssGatewayHost())
+
+				resp := performRequest(router, "POST", "/api/presence/gateways", j)
 				var response map[string]string
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 
 				assert.Equal(GinkgoT(), 201, resp.Code)
-				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssMixProviderHost())
-				mockService.AssertCalled(GinkgoT(), "AddMixProviderPresence", fixtures.GoodMixProviderHost())
+				mockSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XssGatewayHost())
+				mockService.AssertCalled(GinkgoT(), "AddGatewayPresence", fixtures.GoodGatewayHost())
 			})
 		})
 	})
@@ -123,10 +153,39 @@ var _ = Describe("Presence Controller", func() {
 				controller := New(cfg)
 				controller.RegisterRoutes(router)
 
-				hostKey, _ := json.Marshal(fixtures.MixNodeID())
+				bytes, _ := json.Marshal(fixtures.MixNodeID())
 				mockService.On("Disallow", fixtures.MixNodeID())
 
-				resp := performRequest(router, "POST", "/api/presence/disallow", hostKey)
+				resp := performRequest(router, "POST", "/api/presence/disallow", bytes)
+				var response map[string]string
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+
+				assert.Equal(GinkgoT(), 201, resp.Code)
+			})
+		})
+
+		Context("with a base64 node key", func() {
+			It("should tell the service to disallow the node", func() {
+				mockSanitizer := new(mocks.MixProviderHostSanitizer)
+				mockService := new(mocks.IService)
+
+				cfg := Config{
+					MixProviderHostSanitizer: mockSanitizer,
+					Service:                  mockService,
+				}
+
+				router := gin.Default()
+
+				controller := New(cfg)
+				controller.RegisterRoutes(router)
+
+				node := fixtures.MixNodeID()
+				node.PubKey = "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="
+
+				bytes, _ := json.Marshal(node)
+				mockService.On("Disallow", node)
+
+				resp := performRequest(router, "POST", "/api/presence/disallow", bytes)
 				var response map[string]string
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 

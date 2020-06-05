@@ -437,58 +437,6 @@
                 }
             }
         },
-        "/api/presence/mixproviders": {
-            "post": {
-                "description": "Nym mix providers can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "presence"
-                ],
-                "summary": "Lets a mixnode tell the directory server it's alive",
-                "operationId": "addMixProvider",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.MixProviderHostInfo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {},
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/api/presence/topology": {
             "get": {
                 "description": "Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.",
@@ -540,9 +488,9 @@
         "models.CocoHostInfo": {
             "type": "object",
             "required": [
+                "type",
                 "pubKey",
-                "version",
-                "type"
+                "version"
             ],
             "properties": {
                 "host": {
@@ -565,10 +513,10 @@
         "models.CocoPresence": {
             "type": "object",
             "required": [
+                "pubKey",
                 "version",
                 "type",
-                "lastSeen",
-                "pubKey"
+                "lastSeen"
             ],
             "properties": {
                 "host": {
@@ -632,9 +580,9 @@
         "models.GatewayPresence": {
             "type": "object",
             "required": [
+                "lastSeen",
                 "pubKey",
-                "version",
-                "lastSeen"
+                "version"
             ],
             "properties": {
                 "clientListener": {
@@ -691,8 +639,8 @@
         "models.MixMetric": {
             "type": "object",
             "required": [
-                "pubKey",
-                "received"
+                "received",
+                "pubKey"
             ],
             "properties": {
                 "pubKey": {
@@ -720,10 +668,10 @@
         "models.MixNodePresence": {
             "type": "object",
             "required": [
-                "version",
                 "layer",
                 "lastSeen",
-                "pubKey"
+                "pubKey",
+                "version"
             ],
             "properties": {
                 "host": {
@@ -740,36 +688,6 @@
                 },
                 "pubKey": {
                     "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.MixProviderHostInfo": {
-            "type": "object",
-            "required": [
-                "pubKey",
-                "version"
-            ],
-            "properties": {
-                "clientListener": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "string"
-                },
-                "mixnetListener": {
-                    "type": "string"
-                },
-                "pubKey": {
-                    "type": "string"
-                },
-                "registeredClients": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.RegisteredClient"
-                    }
                 },
                 "version": {
                     "type": "string"
