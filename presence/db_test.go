@@ -263,7 +263,7 @@ var _ = Describe("Presence Db", func() {
 				db := NewDb()
 				assert.Len(GinkgoT(), db.ListDisallowed(), 0)
 
-				pubkey := "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI"
+				pubkey := "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="
 
 				// disallowing
 				db.Disallow(pubkey)

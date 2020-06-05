@@ -150,7 +150,7 @@ var _ = Describe("Presence Controller", func() {
 				controller.RegisterRoutes(router)
 
 				node := fixtures.MixNodeID()
-				node.PubKey = "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI"
+				node.PubKey = "bzWdTz9E-VD9UWnvDSz5-qEs_lOQ_7PA7cOp9wIwzxI="
 
 				bytes, _ := json.Marshal(node)
 				mockService.On("Disallow", node)
