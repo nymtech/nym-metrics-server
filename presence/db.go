@@ -67,7 +67,7 @@ func (db *db) AddGateway(presence models.GatewayPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
-	db.gateways[presence.PubKey] = presence
+	db.gateways[presence.IdentityKey] = presence
 }
 
 func (db *db) Allow(pubkey string) {
