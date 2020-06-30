@@ -45,26 +45,33 @@ definitions:
     properties:
       clientListener:
         type: string
+      identityKey:
+        type: string
       location:
         type: string
       mixnetListener:
-        type: string
-      pubKey:
         type: string
       registeredClients:
         items:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
+      sphinxKey:
+        type: string
       version:
         type: string
     required:
-    - pubKey
+    - clientListener
+    - identityKey
+    - mixnetListener
     - registeredClients
+    - sphinxKey
     - version
     type: object
   models.GatewayPresence:
     properties:
       clientListener:
+        type: string
+      identityKey:
         type: string
       lastSeen:
         type: integer
@@ -72,18 +79,21 @@ definitions:
         type: string
       mixnetListener:
         type: string
-      pubKey:
-        type: string
       registeredClients:
         items:
           $ref: '#/definitions/models.RegisteredClient'
         type: array
+      sphinxKey:
+        type: string
       version:
         type: string
     required:
+    - clientListener
+    - identityKey
     - lastSeen
-    - pubKey
+    - mixnetListener
     - registeredClients
+    - sphinxKey
     - version
     type: object
   models.MixHostInfo:
@@ -115,7 +125,13 @@ definitions:
         type: object
     required:
     - pubKey
+    - received
     - sent
+    type: object
+  models.MixNodeID:
+    properties:
+      pubKey:
+        type: string
     type: object
   models.MixNodePresence:
     properties:
@@ -135,27 +151,6 @@ definitions:
     - lastSeen
     - layer
     - pubKey
-    - version
-    type: object
-  models.MixProviderHostInfo:
-    properties:
-      clientListener:
-        type: string
-      location:
-        type: string
-      mixnetListener:
-        type: string
-      pubKey:
-        type: string
-      registeredClients:
-        items:
-          $ref: '#/definitions/models.RegisteredClient'
-        type: array
-      version:
-        type: string
-    required:
-    - pubKey
-    - registeredClients
     - version
     type: object
   models.MixProviderPresence:
@@ -298,6 +293,39 @@ paths:
         received
       tags:
       - metrics
+  /api/presence/allow:
+    post:
+      consumes:
+      - application/json
+      description: Sometimes when a node isn't working we need to temporarily remove
+        it. This allows us to re-enable it once it's working again.
+      operationId: allow
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixNodeID'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Removes a disallowed node from the disallowed nodes list
+      tags:
+      - presence
   /api/presence/coconodes:
     post:
       consumes:
@@ -330,6 +358,71 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: Lets a coconut node tell the directory server it's alive
+      tags:
+      - presence
+  /api/presence/disallow:
+    post:
+      consumes:
+      - application/json
+      description: Sometimes when a node isn't working we need to temporarily remove
+        it from use so that it doesn't mess up QoS for the whole network.
+      operationId: disallow
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixNodeID'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Takes a node out of the regular topology and puts it in the disallowed
+        nodes list
+      tags:
+      - presence
+  /api/presence/disallowed:
+    get:
+      consumes:
+      - application/json
+      description: Sometimes we need to take mixnodes out of the network for repair.
+        This shows which ones are currently disallowed.
+      operationId: disallowed
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixNodePresence'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lists Nym mixnodes that are currently disallowed
       tags:
       - presence
   /api/presence/gateways:
@@ -398,40 +491,6 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: Lets mixnode a node tell the directory server it's alive
-      tags:
-      - presence
-  /api/presence/mixproviders:
-    post:
-      consumes:
-      - application/json
-      description: Nym mix providers can ping this method to let the directory server
-        know they're up. We can then use this info to create topologies of the overall
-        Nym network.
-      operationId: addMixProvider
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.MixProviderHostInfo'
-      produces:
-      - application/json
-      responses:
-        "201": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-      summary: Lets a mixnode tell the directory server it's alive
       tags:
       - presence
   /api/presence/topology:

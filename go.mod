@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/BorisBorshevsky/timemock v0.0.0-20180501151413-a469e345aaba
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/blang/semver/v4 v4.0.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgraph-io/badger v1.6.0 // indirect

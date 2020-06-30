@@ -106,7 +106,8 @@ type GatewaySanitizer struct {
 
 // Sanitize GatewayHostInfo input
 func (s *GatewaySanitizer) Sanitize(input models.GatewayHostInfo) models.GatewayHostInfo {
-	input.PubKey = s.policy.Sanitize(input.PubKey)
+	input.IdentityKey = s.policy.Sanitize(input.IdentityKey)
+	input.SphinxKey = s.policy.Sanitize(input.SphinxKey)
 	input.ClientListener = s.policy.Sanitize(input.ClientListener)
 	input.MixnetListener = s.policy.Sanitize(input.MixnetListener)
 	for i, client := range input.RegisteredClients {

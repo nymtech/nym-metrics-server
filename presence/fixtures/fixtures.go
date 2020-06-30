@@ -43,7 +43,8 @@ func GoodGatewayHost() models.GatewayHostInfo {
 		Location:          "foomplandia",
 		ClientListener:    ":1789",
 		MixnetListener:    ":1790",
-		PubKey:            "pubkey",
+		IdentityKey:       "pubkey",
+		SphinxKey:         "sphinxkey",
 		Version:           "0.1.0",
 		RegisteredClients: clients,
 	}
@@ -84,7 +85,8 @@ func XssGatewayHost() models.GatewayHostInfo {
 		Location:          "foomplandia",
 		ClientListener:    ":1789",
 		MixnetListener:    ":1790",
-		PubKey:            "pubkey<script>alert('gotcha')</script>",
+		IdentityKey:       "pubkey<script>alert('gotcha')</script>",
+		SphinxKey:         "sphinxkey",
 		Version:           "0.1.0",
 		RegisteredClients: clients,
 	}

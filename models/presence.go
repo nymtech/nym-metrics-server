@@ -68,9 +68,10 @@ type RegisteredClient struct {
 
 // GatewayHostInfo comes from a node telling us it's alive
 type GatewayHostInfo struct {
-	ClientListener    string             `json:"clientListener"`
-	MixnetListener    string             `json:"mixnetListener"`
-	PubKey            string             `json:"pubKey" binding:"required"`
+	ClientListener    string             `json:"clientListener" binding:"required"`
+	MixnetListener    string             `json:"mixnetListener" binding:"required"`
+	IdentityKey       string             `json:"identityKey" binding:"required"`
+	SphinxKey         string             `json:"sphinxKey" binding:"required"`
 	Version           string             `json:"version" binding:"required"`
 	Location          string             `json:"location"`
 	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
