@@ -36,9 +36,6 @@ func GoodMixHost() models.MixHostInfo {
 }
 
 func GoodGatewayHost() models.GatewayHostInfo {
-	client1 := models.RegisteredClient{PubKey: "client1"}
-	client2 := models.RegisteredClient{PubKey: "client2"}
-	clients := []models.RegisteredClient{client1, client2}
 	good := models.GatewayHostInfo{
 		Location:          "foomplandia",
 		ClientListener:    ":1789",
@@ -46,7 +43,6 @@ func GoodGatewayHost() models.GatewayHostInfo {
 		IdentityKey:       "pubkey",
 		SphinxKey:         "sphinxkey",
 		Version:           "0.1.0",
-		RegisteredClients: clients,
 	}
 	return good
 }
@@ -78,9 +74,6 @@ func XssMixHost() models.MixHostInfo {
 }
 
 func XssGatewayHost() models.GatewayHostInfo {
-	client1 := models.RegisteredClient{PubKey: "client1<script>alert('gotcha')</script>"}
-	client2 := models.RegisteredClient{PubKey: "client2<script>alert('gotcha')</script>"}
-	clients := []models.RegisteredClient{client1, client2}
 	xss := models.GatewayHostInfo{
 		Location:          "foomplandia",
 		ClientListener:    ":1789",
@@ -88,7 +81,6 @@ func XssGatewayHost() models.GatewayHostInfo {
 		IdentityKey:       "pubkey<script>alert('gotcha')</script>",
 		SphinxKey:         "sphinxkey",
 		Version:           "0.1.0",
-		RegisteredClients: clients,
 	}
 	return xss
 }

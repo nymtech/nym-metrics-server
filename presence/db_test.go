@@ -178,7 +178,6 @@ var _ = Describe("Presence Db", func() {
 				MixnetListener:    "foo.com:8000",
 				ClientListener:    "foo.com:8001",
 				PubKey:            "pubkey1",
-				RegisteredClients: []models.RegisteredClient{},
 			}
 			presence1 = models.MixProviderPresence{
 				MixProviderHostInfo: mix1,
@@ -189,7 +188,6 @@ var _ = Describe("Presence Db", func() {
 				MixnetListener:    "foo.com:8000",
 				ClientListener:    "foo.com:8001",
 				PubKey:            "pubkey2",
-				RegisteredClients: []models.RegisteredClient{},
 			}
 			presence2 = models.MixProviderPresence{
 				MixProviderHostInfo: mix2,

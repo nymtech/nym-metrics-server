@@ -51,10 +51,6 @@ definitions:
         type: string
       mixnetListener:
         type: string
-      registeredClients:
-        items:
-          $ref: '#/definitions/models.RegisteredClient'
-        type: array
       sphinxKey:
         type: string
       version:
@@ -63,7 +59,6 @@ definitions:
     - clientListener
     - identityKey
     - mixnetListener
-    - registeredClients
     - sphinxKey
     - version
     type: object
@@ -79,10 +74,6 @@ definitions:
         type: string
       mixnetListener:
         type: string
-      registeredClients:
-        items:
-          $ref: '#/definitions/models.RegisteredClient'
-        type: array
       sphinxKey:
         type: string
       version:
@@ -92,7 +83,6 @@ definitions:
     - identityKey
     - lastSeen
     - mixnetListener
-    - registeredClients
     - sphinxKey
     - version
     type: object
@@ -165,24 +155,12 @@ definitions:
         type: string
       pubKey:
         type: string
-      registeredClients:
-        items:
-          $ref: '#/definitions/models.RegisteredClient'
-        type: array
       version:
         type: string
     required:
     - lastSeen
     - pubKey
-    - registeredClients
     - version
-    type: object
-  models.RegisteredClient:
-    properties:
-      pubKey:
-        type: string
-    required:
-    - pubKey
     type: object
   models.Topology:
     properties:

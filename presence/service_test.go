@@ -94,7 +94,6 @@ var _ = Describe("presence.Service", func() {
 			ClientListener:    "foo.com:8001",
 			Location:          defaultLocation,
 			PubKey:            "pubkey2",
-			RegisteredClients: []models.RegisteredClient{},
 		}
 
 		providerpresence3 = models.MixProviderPresence{
