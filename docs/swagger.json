@@ -519,7 +519,6 @@
                 "clientListener",
                 "identityKey",
                 "mixnetListener",
-                "registeredClients",
                 "sphinxKey",
                 "version"
             ],
@@ -536,12 +535,6 @@
                 "mixnetListener": {
                     "type": "string"
                 },
-                "registeredClients": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.RegisteredClient"
-                    }
-                },
                 "sphinxKey": {
                     "type": "string"
                 },
@@ -557,7 +550,6 @@
                 "identityKey",
                 "lastSeen",
                 "mixnetListener",
-                "registeredClients",
                 "sphinxKey",
                 "version"
             ],
@@ -576,12 +568,6 @@
                 },
                 "mixnetListener": {
                     "type": "string"
-                },
-                "registeredClients": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.RegisteredClient"
-                    }
                 },
                 "sphinxKey": {
                     "type": "string"
@@ -680,7 +666,6 @@
             "required": [
                 "lastSeen",
                 "pubKey",
-                "registeredClients",
                 "version"
             ],
             "properties": {
@@ -699,24 +684,7 @@
                 "pubKey": {
                     "type": "string"
                 },
-                "registeredClients": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.RegisteredClient"
-                    }
-                },
                 "version": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.RegisteredClient": {
-            "type": "object",
-            "required": [
-                "pubKey"
-            ],
-            "properties": {
-                "pubKey": {
                     "type": "string"
                 }
             }

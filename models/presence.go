@@ -34,7 +34,6 @@ type MixProviderHostInfo struct {
 	PubKey            string             `json:"pubKey" binding:"required"`
 	Version           string             `json:"version" binding:"required"`
 	Location          string             `json:"location"`
-	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
 }
 
 // MixProviderPresence holds presence info for a mix provider node
@@ -61,11 +60,6 @@ type Presence struct {
 	LastSeen int64 `json:"lastSeen" binding:"required"`
 }
 
-// RegisteredClient holds information about client registered at a provider
-type RegisteredClient struct {
-	PubKey string `json:"pubKey" binding:"required"`
-}
-
 // GatewayHostInfo comes from a node telling us it's alive
 type GatewayHostInfo struct {
 	ClientListener    string             `json:"clientListener" binding:"required"`
@@ -74,7 +68,6 @@ type GatewayHostInfo struct {
 	SphinxKey         string             `json:"sphinxKey" binding:"required"`
 	Version           string             `json:"version" binding:"required"`
 	Location          string             `json:"location"`
-	RegisteredClients []RegisteredClient `json:"registeredClients" binding:"required"`
 }
 
 // GatewayPresence holds presence info for a gateway node

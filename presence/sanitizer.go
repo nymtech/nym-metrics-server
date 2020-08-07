@@ -86,9 +86,6 @@ func (s *MixproviderSanitizer) Sanitize(input models.MixProviderHostInfo) models
 	input.PubKey = s.policy.Sanitize(input.PubKey)
 	input.ClientListener = s.policy.Sanitize(input.ClientListener)
 	input.MixnetListener = s.policy.Sanitize(input.MixnetListener)
-	for i, client := range input.RegisteredClients {
-		input.RegisteredClients[i].PubKey = s.policy.Sanitize(client.PubKey)
-	}
 	return input
 }
 
@@ -110,9 +107,6 @@ func (s *GatewaySanitizer) Sanitize(input models.GatewayHostInfo) models.Gateway
 	input.SphinxKey = s.policy.Sanitize(input.SphinxKey)
 	input.ClientListener = s.policy.Sanitize(input.ClientListener)
 	input.MixnetListener = s.policy.Sanitize(input.MixnetListener)
-	for i, client := range input.RegisteredClients {
-		input.RegisteredClients[i].PubKey = s.policy.Sanitize(client.PubKey)
-	}
 	return input
 }
 
