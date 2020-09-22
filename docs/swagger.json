@@ -31,6 +31,54 @@
                 }
             }
         },
+        "/api/measurements": {
+            "post": {
+                "description": "Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "measurements"
+                ],
+                "summary": "Lets the network monitor create a new uptime status for a mix",
+                "operationId": "addMixStatus",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MixStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/metrics/mixes": {
             "get": {
                 "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
@@ -686,6 +734,25 @@
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "models.MixStatus": {
+            "type": "object",
+            "required": [
+                "protocol",
+                "pubKey",
+                "status"
+            ],
+            "properties": {
+                "protocol": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
                 }
             }
         },
