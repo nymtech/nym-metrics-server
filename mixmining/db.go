@@ -1,4 +1,4 @@
-package measurements
+package mixmining
 
 import "github.com/nymtech/nym-directory/models"
 
@@ -8,7 +8,7 @@ type IDb interface {
 	List(pubkey string) []models.PersistedMixStatus
 }
 
-// Db is a hashtable that holds mixnode uptime measurements
+// Db is a hashtable that holds mixnode uptime mixmining
 type Db struct {
 	mixStatuses map[string][]models.PersistedMixStatus
 }

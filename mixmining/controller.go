@@ -1,4 +1,4 @@
-package measurements
+package mixmining
 
 import (
 	"net/http"
@@ -25,14 +25,14 @@ type Controller interface {
 	RegisterRoutes(router *gin.Engine)
 }
 
-// New returns a new measurements.Controller
+// New returns a new mixmining.Controller
 func New(cfg Config) Controller {
 	return &controller{cfg.Service, cfg.Sanitizer}
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
-	router.POST("/api/measurements", controller.CreateMixStatus)
-	router.GET("/api/measurements/:pubkey", controller.ListMeasurements)
+	router.POST("/api/mixmining", controller.CreateMixStatus)
+	router.GET("/api/mixmining/:pubkey", controller.ListMeasurements)
 }
 
 // ListMeasurements lists mixnode statuses
@@ -47,7 +47,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/measurements [get]
+// @Router /api/mixmining [get]
 func (controller *controller) ListMeasurements(c *gin.Context) {
 	pubkey := c.Param("pubkey")
 	measurements := controller.service.List(pubkey)
@@ -60,13 +60,13 @@ func (controller *controller) ListMeasurements(c *gin.Context) {
 // @ID addMixStatus
 // @Accept  json
 // @Produce  json
-// @Tags measurements
+// @Tags mixmining
 // @Param   object      body   models.MixStatus     true  "object"
 // @Success 201
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/measurements [post]
+// @Router /api/mixmining [post]
 func (controller *controller) CreateMixStatus(c *gin.Context) {
 	var status models.MixStatus
 	if err := c.ShouldBindJSON(&status); err != nil {

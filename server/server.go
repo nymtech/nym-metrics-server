@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/healthcheck"
-	"github.com/nymtech/nym-directory/measurements"
+	"github.com/nymtech/nym-directory/mixmining"
 	"github.com/nymtech/nym-directory/metrics"
 	"github.com/nymtech/nym-directory/presence"
 	"github.com/nymtech/nym-directory/server/html"
@@ -49,7 +49,7 @@ func New() *gin.Engine {
 	policy := bluemonday.UGCPolicy()
 
 	// Measurements: wire up dependency injection
-	measurementsCfg := measurements.Config{}
+	measurementsCfg := mixmining.Config{}
 
 	// Metrics: wire up dependency injection
 	metricsCfg := injectMetrics(hub, policy)
@@ -59,19 +59,19 @@ func New() *gin.Engine {
 
 	// Register all HTTP controller routes
 	healthcheck.New().RegisterRoutes(router)
-	measurements.New(measurementsCfg).RegisterRoutes(router)
+	mixmining.New(measurementsCfg).RegisterRoutes(router)
 	metrics.New(metricsCfg).RegisterRoutes(router)
 	presence.New(presenceCfg).RegisterRoutes(router)
 
 	return router
 }
 
-func injectMeasurements(policy *bluemonday.Policy) measurements.Config {
-	sanitizer := measurements.NewSanitizer(policy)
-	db := measurements.NewDb()
-	measurementsService := *measurements.NewService(db)
+func injectMeasurements(policy *bluemonday.Policy) mixmining.Config {
+	sanitizer := mixmining.NewSanitizer(policy)
+	db := mixmining.NewDb()
+	measurementsService := *mixmining.NewService(db)
 
-	return measurements.Config{
+	return mixmining.Config{
 		Service:   &measurementsService,
 		Sanitizer: sanitizer,
 	}

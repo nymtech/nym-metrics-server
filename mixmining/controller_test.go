@@ -1,4 +1,4 @@
-package measurements
+package mixmining
 
 import (
 	"bytes"
@@ -9,8 +9,8 @@ import (
 	"github.com/nymtech/nym-directory/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nymtech/nym-directory/measurements/fixtures"
-	"github.com/nymtech/nym-directory/measurements/mocks"
+	"github.com/nymtech/nym-directory/mixmining/fixtures"
+	"github.com/nymtech/nym-directory/mixmining/mocks"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +25,7 @@ var _ = Describe("Controller", func() {
 				mockService.On("CreateMixStatus", fixtures.GoodMixStatus())
 				j, _ := json.Marshal(fixtures.XSSMixStatus())
 
-				resp := performRequest(router, "POST", "/api/measurements", j)
+				resp := performRequest(router, "POST", "/api/mixmining", j)
 				var response map[string]string
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 
@@ -41,7 +41,7 @@ var _ = Describe("Controller", func() {
 			It("returns an empty list", func() {
 				router, mockService, _ := SetupRouter()
 				mockService.On("List", "foo").Return([]models.PersistedMixStatus{})
-				resp := performRequest(router, "GET", "/api/measurements/foo", nil)
+				resp := performRequest(router, "GET", "/api/mixmining/foo", nil)
 
 				assert.Equal(GinkgoT(), 200, resp.Code)
 			})
@@ -51,7 +51,7 @@ var _ = Describe("Controller", func() {
 			It("should return the list of statuses as json", func() {
 				router, mockService, _ := SetupRouter()
 				mockService.On("List", "pubkey1").Return(fixtures.MixStatusesList())
-				url := "/api/measurements/pubkey1"
+				url := "/api/mixmining/pubkey1"
 				resp := performRequest(router, "GET", url, nil)
 				var response []models.PersistedMixStatus
 				json.Unmarshal([]byte(resp.Body.String()), &response)

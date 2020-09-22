@@ -31,54 +31,6 @@
                 }
             }
         },
-        "/api/measurements": {
-            "post": {
-                "description": "Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "measurements"
-                ],
-                "summary": "Lets the network monitor create a new uptime status for a mix",
-                "operationId": "addMixStatus",
-                "parameters": [
-                    {
-                        "description": "object",
-                        "name": "object",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.MixStatus"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {},
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/api/metrics/mixes": {
             "get": {
                 "description": "For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.",
@@ -144,6 +96,97 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.MixMetric"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mixmining": {
+            "get": {
+                "description": "Lists all mixnode statuses",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "metrics"
+                ],
+                "summary": "Lists mixnode activity",
+                "operationId": "listMixMeasurements",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MixMetric"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "mixmining"
+                ],
+                "summary": "Lets the network monitor create a new uptime status for a mix",
+                "operationId": "addMixStatus",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MixStatus"
                         }
                     }
                 ],
@@ -740,18 +783,18 @@
         "models.MixStatus": {
             "type": "object",
             "required": [
-                "protocol",
+                "ipVersion",
                 "pubKey",
-                "status"
+                "up"
             ],
             "properties": {
-                "protocol": {
+                "ipVersion": {
                     "type": "string"
                 },
                 "pubKey": {
                     "type": "string"
                 },
-                "status": {
+                "up": {
                     "type": "boolean"
                 }
             }

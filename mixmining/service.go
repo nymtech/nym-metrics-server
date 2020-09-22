@@ -1,4 +1,4 @@
-package measurements
+package mixmining
 
 import (
 	"github.com/BorisBorshevsky/timemock"

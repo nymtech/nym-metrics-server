@@ -1,4 +1,4 @@
-package measurements_test
+package mixmining_test
 
 import (
 	"testing"

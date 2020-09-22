@@ -1,16 +1,16 @@
-package measurements
+package mixmining
 
 import (
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
-	"github.com/nymtech/nym-directory/measurements/mocks"
+	"github.com/nymtech/nym-directory/mixmining/mocks"
 	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"gotest.tools/assert"
 )
 
-var _ = Describe("measurements.Service", func() {
+var _ = Describe("mixmining.Service", func() {
 	var mockDb mocks.IDb
 	var m1 models.MixStatus
 	var m2 models.MixStatus

@@ -164,16 +164,16 @@ definitions:
     type: object
   models.MixStatus:
     properties:
-      protocol:
+      ipVersion:
         type: string
       pubKey:
         type: string
-      status:
+      up:
         type: boolean
     required:
-    - protocol
+    - ipVersion
     - pubKey
-    - status
+    - up
     type: object
   models.Topology:
     properties:
@@ -217,38 +217,6 @@ paths:
       summary: Lets the directory server tell the world it's alive.
       tags:
       - healthcheck
-  /api/measurements:
-    post:
-      consumes:
-      - application/json
-      description: Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.
-      operationId: addMixStatus
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.MixStatus'
-      produces:
-      - application/json
-      responses:
-        "201": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-      summary: Lets the network monitor create a new uptime status for a mix
-      tags:
-      - measurements
   /api/metrics/mixes:
     get:
       consumes:
@@ -310,6 +278,67 @@ paths:
       summary: Create a metric detailing how many messages a given mixnode sent and received
       tags:
       - metrics
+  /api/mixmining:
+    get:
+      consumes:
+      - application/json
+      description: Lists all mixnode statuses
+      operationId: listMixMeasurements
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixMetric'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lists mixnode activity
+      tags:
+      - metrics
+    post:
+      consumes:
+      - application/json
+      description: Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.
+      operationId: addMixStatus
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixStatus'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lets the network monitor create a new uptime status for a mix
+      tags:
+      - mixmining
   /api/presence/allow:
     post:
       consumes:
