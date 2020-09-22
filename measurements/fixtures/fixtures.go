@@ -7,16 +7,17 @@ func MixStatusesList() []models.PersistedMixStatus {
 	upTrue := true
 	m1 := models.PersistedMixStatus{
 		MixStatus: models.MixStatus{
-			IPVersion: "4",
+			IPVersion: "6",
 			PubKey:    "pubkey1",
 			Up:        &upTrue,
 		},
+		Timestamp: 123,
 	}
 
 	m2 := models.PersistedMixStatus{
 		MixStatus: models.MixStatus{
 			IPVersion: "6",
-			PubKey:    "pubkey2",
+			PubKey:    "pubkey1",
 			Up:        &upTrue,
 		},
 		Timestamp: 1234,
@@ -40,10 +41,17 @@ func XSSMixStatus() models.MixStatus {
 // GoodMixStatus ...
 func GoodMixStatus() models.MixStatus {
 	upTrue := true
-	xss := models.MixStatus{
+	return models.MixStatus{
 		IPVersion: "6",
 		PubKey:    "pubkey2",
 		Up:        &upTrue,
 	}
-	return xss
+}
+
+// GoodPersistedMixStatus ...
+func GoodPersistedMixStatus() models.PersistedMixStatus {
+	return models.PersistedMixStatus{
+		MixStatus: GoodMixStatus(),
+		Timestamp: 1234,
+	}
 }

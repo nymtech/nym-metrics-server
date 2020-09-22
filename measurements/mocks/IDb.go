@@ -17,13 +17,13 @@ func (_m *IDb) Add(_a0 models.PersistedMixStatus) {
 	_m.Called(_a0)
 }
 
-// List provides a mock function with given fields:
-func (_m *IDb) List() []models.PersistedMixStatus {
-	ret := _m.Called()
+// List provides a mock function with given fields: pubkey
+func (_m *IDb) List(pubkey string) []models.PersistedMixStatus {
+	ret := _m.Called(pubkey)
 
 	var r0 []models.PersistedMixStatus
-	if rf, ok := ret.Get(0).(func() []models.PersistedMixStatus); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) []models.PersistedMixStatus); ok {
+		r0 = rf(pubkey)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]models.PersistedMixStatus)

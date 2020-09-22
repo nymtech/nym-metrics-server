@@ -32,7 +32,7 @@ func New(cfg Config) Controller {
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/measurements", controller.CreateMixStatus)
-	router.GET("/api/measurements", controller.ListMeasurements)
+	router.GET("/api/measurements/:pubkey", controller.ListMeasurements)
 }
 
 // ListMeasurements lists mixnode statuses
@@ -49,7 +49,8 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 500 {object} models.Error
 // @Router /api/measurements [get]
 func (controller *controller) ListMeasurements(c *gin.Context) {
-	measurements := controller.service.List()
+	pubkey := c.Param("pubkey")
+	measurements := controller.service.List(pubkey)
 	c.JSON(http.StatusOK, measurements)
 }
 
@@ -75,8 +76,4 @@ func (controller *controller) CreateMixStatus(c *gin.Context) {
 	sanitized := controller.sanitizer.Sanitize(status)
 	controller.service.CreateMixStatus(sanitized)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
-}
-
-func deserialize(body []byte) {
-
 }

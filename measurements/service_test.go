@@ -10,7 +10,7 @@ import (
 	"gotest.tools/assert"
 )
 
-var _ = Describe("metrics.Service", func() {
+var _ = Describe("measurements.Service", func() {
 	var mockDb mocks.IDb
 	var m1 models.MixStatus
 	var m2 models.MixStatus
@@ -64,11 +64,11 @@ var _ = Describe("metrics.Service", func() {
 				list := []models.PersistedMixStatus{p1, p2}
 
 				serv = *NewService(&mockDb)
-				mockDb.On("List").Return(list)
+				mockDb.On("List", p1.PubKey).Return(list)
 
-				result := serv.List()
+				result := serv.List(p1.PubKey)
 
-				mockDb.AssertCalled(GinkgoT(), "List")
+				mockDb.AssertCalled(GinkgoT(), "List", p1.PubKey)
 				assert.Equal(GinkgoT(), list[0].MixStatus.PubKey, result[0].MixStatus.PubKey)
 				assert.Equal(GinkgoT(), list[1].MixStatus.PubKey, result[1].MixStatus.PubKey)
 			})

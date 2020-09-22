@@ -17,13 +17,13 @@ func (_m *IService) CreateMixStatus(metric models.MixStatus) {
 	_m.Called(metric)
 }
 
-// List provides a mock function with given fields:
-func (_m *IService) List() []models.PersistedMixStatus {
-	ret := _m.Called()
+// List provides a mock function with given fields: pubkey
+func (_m *IService) List(pubkey string) []models.PersistedMixStatus {
+	ret := _m.Called(pubkey)
 
 	var r0 []models.PersistedMixStatus
-	if rf, ok := ret.Get(0).(func() []models.PersistedMixStatus); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) []models.PersistedMixStatus); ok {
+		r0 = rf(pubkey)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]models.PersistedMixStatus)
