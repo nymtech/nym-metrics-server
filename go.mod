@@ -15,7 +15,6 @@ require (
 	github.com/go-openapi/spec v0.19.9 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/golang/mock v1.3.1 // indirect
-	github.com/golang/protobuf v1.4.0 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
@@ -25,12 +24,13 @@ require (
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/microcosm-cc/bluemonday v1.0.2
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	github.com/onsi/ginkgo v1.10.1
-	github.com/onsi/gomega v1.7.0
+	github.com/onsi/ginkgo v1.14.1
+	github.com/onsi/gomega v1.10.1
+	github.com/rakyll/gotest v0.0.5 // indirect
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/russross/blackfriday v2.0.0+incompatible // indirect
 	github.com/stretchr/testify v1.5.1
@@ -42,7 +42,7 @@ require (
 	github.com/urfave/cli/v2 v2.2.0 // indirect
 	github.com/vektra/mockery/v2 v2.2.1 // indirect
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
-	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
+	golang.org/x/sys v0.0.0-20200922070232-aee5d888a860 // indirect
 	golang.org/x/tools v0.0.0-20200921210052-fa0125251cc4 // indirect
 	golang.org/x/tools/gopls v0.4.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect

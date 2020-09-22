@@ -21,12 +21,12 @@ var _ = Describe("metrics.Service", func() {
 	var now = time.Now()
 	timemock.Freeze(now)
 	var frozenNow = timemock.Now().UnixNano()
-
+	upTrue := true
 	// set up fixtures
 	m1 = models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
-		Up:        true,
+		Up:        &upTrue,
 	}
 
 	p1 = models.PersistedMixStatus{
@@ -37,7 +37,7 @@ var _ = Describe("metrics.Service", func() {
 	m2 = models.MixStatus{
 		PubKey:    "key2",
 		IPVersion: "6",
-		Up:        false,
+		Up:        &upTrue,
 	}
 
 	p2 = models.PersistedMixStatus{

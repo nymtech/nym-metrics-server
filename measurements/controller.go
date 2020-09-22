@@ -1,6 +1,11 @@
 package measurements
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/nymtech/nym-directory/models"
+)
 
 // Config for this controller
 type Config struct {
@@ -26,12 +31,26 @@ func New(cfg Config) Controller {
 }
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
-	// router.POST("/api/measurements/mixes", controller.CreateMixStatus)
+	router.POST("/api/measurements", controller.CreateMixStatus)
 	router.GET("/api/measurements", controller.ListMeasurements)
 }
 
+// ListMeasurements lists mixnode statuses
+// @Summary Lists mixnode activity
+// @Description Lists all mixnode statuses
+// @ID listMixMeasurements
+// @Accept  json
+// @Produce  json
+// @Tags metrics
+// Param   object      body   models.ObjectRequest     true  "object"
+// @Success 200 {array} models.MixMetric
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/measurements [get]
 func (controller *controller) ListMeasurements(c *gin.Context) {
-
+	measurements := controller.service.List()
+	c.JSON(http.StatusOK, measurements)
 }
 
 // CreateMixStatus ...
@@ -48,5 +67,16 @@ func (controller *controller) ListMeasurements(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/measurements [post]
 func (controller *controller) CreateMixStatus(c *gin.Context) {
+	var status models.MixStatus
+	if err := c.ShouldBindJSON(&status); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	sanitized := controller.sanitizer.Sanitize(status)
+	controller.service.CreateMixStatus(sanitized)
+	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+func deserialize(body []byte) {
 
 }

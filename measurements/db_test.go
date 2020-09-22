@@ -10,7 +10,7 @@ var _ = Describe("The measurements db", func() {
 		Context("a new db", func() {
 			It("should have no measurements", func() {
 				db := NewDb()
-				assert.Len(GinkgoT(), db.List(), 1)
+				assert.Len(GinkgoT(), db.List(), 0)
 			})
 		})
 	})
