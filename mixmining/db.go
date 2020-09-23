@@ -38,9 +38,9 @@ func NewDb() *Db {
 }
 
 // List returns all models.PersistedMixStatus in the orm
-func (db *Db) List(pubkey string) []models.PersistedMixStatus {
+func (db *Db) List(pubkey string, limit uint) []models.PersistedMixStatus {
 	var statuses []models.PersistedMixStatus
-	if err := db.orm.Where("pub_key = ?", pubkey).Find(&statuses).Error; err != nil {
+	if err := db.orm.Order("timestamp desc").Limit(limit).Where("pub_key = ?", pubkey).Find(&statuses).Error; err != nil {
 		return make([]models.PersistedMixStatus, 0)
 	}
 	return statuses

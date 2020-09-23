@@ -12,7 +12,7 @@ var _ = Describe("The mixmining db", func() {
 			It("should have no mixmining", func() {
 				db := NewDb()
 				db.orm.Exec("DELETE FROM persisted_mix_statuses")
-				assert.Len(GinkgoT(), db.List("foo"), 0)
+				assert.Len(GinkgoT(), db.List("foo", 5), 0)
 			})
 		})
 	})
@@ -26,13 +26,13 @@ var _ = Describe("The mixmining db", func() {
 
 				// add one
 				db.Add(status)
-				measurements := db.List(status.PubKey)
+				measurements := db.List(status.PubKey, 5)
 				assert.Len(GinkgoT(), measurements, 1)
 				assert.Equal(GinkgoT(), status, measurements[0])
 
 				// add another
 				db.Add(status)
-				measurements = db.List(status.PubKey)
+				measurements = db.List(status.PubKey, 5)
 				assert.Len(GinkgoT(), measurements, 2)
 				assert.Equal(GinkgoT(), status, measurements[0])
 				assert.Equal(GinkgoT(), status, measurements[1])
@@ -46,7 +46,7 @@ var _ = Describe("The mixmining db", func() {
 			It("should return an empty slice", func() {
 				db := NewDb()
 				db.orm.Exec("DELETE FROM persisted_mix_statuses")
-				assert.Len(GinkgoT(), db.List("foo"), 0)
+				assert.Len(GinkgoT(), db.List("foo", 5), 0)
 			})
 		})
 	})
