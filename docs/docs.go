@@ -187,7 +187,7 @@ var doc = `{
                 }
             }
         },
-        "/api/mixmining/:pubkey": {
+        "/api/mixmining/{pubkey}": {
             "get": {
                 "description": "Lists all mixnode statuses for a given node pubkey",
                 "consumes": [

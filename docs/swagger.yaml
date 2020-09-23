@@ -310,7 +310,7 @@ paths:
       summary: Lets the network monitor create a new uptime status for a mix
       tags:
       - mixmining
-  /api/mixmining/:pubkey:
+  /api/mixmining/{pubkey}:
     get:
       consumes:
       - application/json
