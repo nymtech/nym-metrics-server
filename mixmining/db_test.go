@@ -11,6 +11,7 @@ var _ = Describe("The mixmining db", func() {
 		Context("a new db", func() {
 			It("should have no mixmining", func() {
 				db := NewDb()
+				db.orm.Exec("DELETE FROM persisted_mix_statuses")
 				assert.Len(GinkgoT(), db.List("foo"), 0)
 			})
 		})
@@ -20,6 +21,7 @@ var _ = Describe("The mixmining db", func() {
 		Context("a new db", func() {
 			It("should add measurements to the db, with a timestamp, and be able to retrieve them afterwards", func() {
 				db := NewDb()
+				db.orm.Exec("DELETE FROM persisted_mix_statuses")
 				status := fixtures.GoodPersistedMixStatus()
 
 				// add one
@@ -43,6 +45,7 @@ var _ = Describe("The mixmining db", func() {
 		Context("for an empty db", func() {
 			It("should return an empty slice", func() {
 				db := NewDb()
+				db.orm.Exec("DELETE FROM persisted_mix_statuses")
 				assert.Len(GinkgoT(), db.List("foo"), 0)
 			})
 		})

@@ -1,6 +1,14 @@
 package mixmining
 
-import "github.com/nymtech/nym-directory/models"
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/nymtech/nym-directory/models"
+
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+)
+
+// DB is the Gorm orm for mixmining
+var DB *gorm.DB
 
 // IDb holds status information
 type IDb interface {
@@ -10,27 +18,34 @@ type IDb interface {
 
 // Db is a hashtable that holds mixnode uptime mixmining
 type Db struct {
-	mixStatuses map[string][]models.PersistedMixStatus
+	orm *gorm.DB
 }
 
 // NewDb constructor
 func NewDb() *Db {
+	database, err := gorm.Open("sqlite3", "nym-mixmining.db")
+
+	if err != nil {
+		panic("Failed to connect to orm!")
+	}
+
+	database.AutoMigrate(&models.PersistedMixStatus{})
 	d := Db{
-		mixStatuses: make(map[string][]models.PersistedMixStatus),
+		database,
 	}
 	return &d
 }
 
-// List returns all models.PersistedMixStatus in the database
+// List returns all models.PersistedMixStatus in the orm
 func (db *Db) List(pubkey string) []models.PersistedMixStatus {
-	if val, ok := db.mixStatuses[pubkey]; ok {
-		return val
+	var statuses []models.PersistedMixStatus
+	if err := db.orm.Where("pub_key = ?", pubkey).Find(&statuses).Error; err != nil {
+		return make([]models.PersistedMixStatus, 0)
 	}
-	return make([]models.PersistedMixStatus, 0)
+	return statuses
 }
 
 // Add saves a PersistedMixStatus
 func (db *Db) Add(status models.PersistedMixStatus) {
-	list := db.mixStatuses[status.PubKey]
-	db.mixStatuses[status.PubKey] = append(list, status)
+	db.orm.Create(status)
 }

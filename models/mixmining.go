@@ -1,8 +1,12 @@
 package models
 
+import (
+	_ "github.com/jinzhu/gorm"
+)
+
 // MixStatus indicates whether a given node is up or down, as reported by a Nym monitor node.
 type MixStatus struct {
-	PubKey    string `json:"pubKey" binding:"required"`
+	PubKey    string `json:"pubKey" binding:"required" gorm:"index"`
 	IPVersion string `json:"ipVersion" binding:"required"`
 	Up        *bool  `json:"up" binding:"required"`
 }

@@ -23,7 +23,7 @@ func NewService(db IDb) *Service {
 	}
 }
 
-// CreateMixStatus adds a new PersistedMixStatus in the database.
+// CreateMixStatus adds a new PersistedMixStatus in the orm.
 func (service *Service) CreateMixStatus(status models.MixStatus) {
 	persist := models.PersistedMixStatus{
 		MixStatus: status,
@@ -33,7 +33,7 @@ func (service *Service) CreateMixStatus(status models.MixStatus) {
 
 }
 
-// List lists all mix metrics in the database
+// List lists all mix metrics in the orm
 func (service *Service) List(pubkey string) []models.PersistedMixStatus {
 	return service.db.List(pubkey)
 }
