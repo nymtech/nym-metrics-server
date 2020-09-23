@@ -27,6 +27,7 @@ func (s sanitizer) Sanitize(input models.MixStatus) models.MixStatus {
 	sanitized := newMeasurement()
 
 	sanitized.PubKey = s.policy.Sanitize(input.PubKey)
+	sanitized.IPVersion = s.policy.Sanitize(input.IPVersion)
 	sanitized.Up = input.Up
 	return sanitized
 }
@@ -35,7 +36,7 @@ func newMeasurement() models.MixStatus {
 	upTrue := true
 	return models.MixStatus{
 		PubKey:    "",
-		IPVersion: "0",
+		IPVersion: "",
 		Up:        &upTrue,
 	}
 }
