@@ -2,3 +2,5 @@
 /scripts/deploy.sh
 /main
 /nym-directory
+/mixmining/nym-mixmining.db
+/nym-mixmining.db
