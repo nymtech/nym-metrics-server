@@ -122,6 +122,108 @@
                 }
             }
         },
+        "/api/mixmining": {
+            "post": {
+                "description": "Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "mixmining"
+                ],
+                "summary": "Lets the network monitor create a new uptime status for a mix",
+                "operationId": "addMixStatus",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MixStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mixmining/{pubkey}": {
+            "get": {
+                "description": "Lists all mixnode statuses for a given node pubkey",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "mixmining"
+                ],
+                "summary": "Lists mixnode activity",
+                "operationId": "listMixStatuses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mixnode Pubkey",
+                        "name": "pubkey",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MixStatus"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/presence/allow": {
             "post": {
                 "description": "Sometimes when a node isn't working we need to temporarily remove it. This allows us to re-enable it once it's working again.",
@@ -686,6 +788,25 @@
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "models.MixStatus": {
+            "type": "object",
+            "required": [
+                "ipVersion",
+                "pubKey",
+                "up"
+            ],
+            "properties": {
+                "ipVersion": {
+                    "type": "string"
+                },
+                "pubKey": {
+                    "type": "string"
+                },
+                "up": {
+                    "type": "boolean"
                 }
             }
         },

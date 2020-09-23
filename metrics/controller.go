@@ -25,7 +25,7 @@ type Controller interface {
 	RegisterRoutes(router *gin.Engine)
 }
 
-// New returns a new metrics.Controller
+// New returns a new metrics.Controller...
 func New(cfg Config) Controller {
 	return &controller{cfg.Service, cfg.Sanitizer}
 }

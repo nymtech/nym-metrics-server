@@ -162,6 +162,19 @@ definitions:
     - pubKey
     - version
     type: object
+  models.MixStatus:
+    properties:
+      ipVersion:
+        type: string
+      pubKey:
+        type: string
+      up:
+        type: boolean
+    required:
+    - ipVersion
+    - pubKey
+    - up
+    type: object
   models.Topology:
     properties:
       cocoNodes:
@@ -183,9 +196,7 @@ definitions:
     type: object
 info:
   contact: {}
-  description: This is a temporarily centralized directory/PKI/metrics API to allow
-    us to get the other Nym node types running. Its functionality will eventually
-    be folded into other parts of Nym.
+  description: This is a temporarily centralized directory/PKI/metrics API to allow us to get the other Nym node types running. Its functionality will eventually be folded into other parts of Nym.
   license:
     name: Apache 2.0
     url: https://github.com/nymtech/nym-directory/license
@@ -197,8 +208,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Returns a 200 if the directory server is available. Good route
-        to use for automated monitoring.
+      description: Returns a 200 if the directory server is available. Good route to use for automated monitoring.
       operationId: healthCheck
       produces:
       - application/json
@@ -211,8 +221,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: For demo and debug purposes it gives us the ability to generate
-        useful visualisations of network traffic.
+      description: For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
       operationId: listMixMetrics
       produces:
       - application/json
@@ -241,8 +250,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: For demo and debug purposes it gives us the ability to generate
-        useful visualisations of network traffic.
+      description: For demo and debug purposes it gives us the ability to generate useful visualisations of network traffic.
       operationId: createMixMetric
       parameters:
       - description: object
@@ -267,16 +275,82 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Error'
-      summary: Create a metric detailing how many messages a given mixnode sent and
-        received
+      summary: Create a metric detailing how many messages a given mixnode sent and received
       tags:
       - metrics
+  /api/mixmining:
+    post:
+      consumes:
+      - application/json
+      description: Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether the node was up at a given time.
+      operationId: addMixStatus
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.MixStatus'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lets the network monitor create a new uptime status for a mix
+      tags:
+      - mixmining
+  /api/mixmining/{pubkey}:
+    get:
+      consumes:
+      - application/json
+      description: Lists all mixnode statuses for a given node pubkey
+      operationId: listMixStatuses
+      parameters:
+      - description: Mixnode Pubkey
+        in: path
+        name: pubkey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixStatus'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lists mixnode activity
+      tags:
+      - mixmining
   /api/presence/allow:
     post:
       consumes:
       - application/json
-      description: Sometimes when a node isn't working we need to temporarily remove
-        it. This allows us to re-enable it once it's working again.
+      description: Sometimes when a node isn't working we need to temporarily remove it. This allows us to re-enable it once it's working again.
       operationId: allow
       parameters:
       - description: object
@@ -308,9 +382,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Nym Coconut nodes can ping this method to let the directory server
-        know they're up. We can then use this info to create topologies of the overall
-        Nym network.
+      description: Nym Coconut nodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
       operationId: addCocoNode
       parameters:
       - description: object
@@ -342,8 +414,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Sometimes when a node isn't working we need to temporarily remove
-        it from use so that it doesn't mess up QoS for the whole network.
+      description: Sometimes when a node isn't working we need to temporarily remove it from use so that it doesn't mess up QoS for the whole network.
       operationId: disallow
       parameters:
       - description: object
@@ -368,16 +439,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.Error'
-      summary: Takes a node out of the regular topology and puts it in the disallowed
-        nodes list
+      summary: Takes a node out of the regular topology and puts it in the disallowed nodes list
       tags:
       - presence
   /api/presence/disallowed:
     get:
       consumes:
       - application/json
-      description: Sometimes we need to take mixnodes out of the network for repair.
-        This shows which ones are currently disallowed.
+      description: Sometimes we need to take mixnodes out of the network for repair. This shows which ones are currently disallowed.
       operationId: disallowed
       produces:
       - application/json
@@ -407,9 +476,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Nym mix gateways can ping this method to let the directory server
-        know they're up. We can then use this info to create topologies of the overall
-        Nym network.
+      description: Nym mix gateways can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
       operationId: addGateway
       parameters:
       - description: object
@@ -441,9 +508,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Nym mixnodes can ping this method to let the directory server know
-        they're up. We can then use this info to create topologies of the overall
-        Nym network.
+      description: Nym mixnodes can ping this method to let the directory server know they're up. We can then use this info to create topologies of the overall Nym network.
       operationId: addMixNode
       parameters:
       - description: object
@@ -475,9 +540,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Nym nodes periodically ping the directory server to register that
-        they're alive. This method provides a list of nodes which have been most recently
-        seen.
+      description: Nym nodes periodically ping the directory server to register that they're alive. This method provides a list of nodes which have been most recently seen.
       operationId: topology
       produces:
       - application/json
