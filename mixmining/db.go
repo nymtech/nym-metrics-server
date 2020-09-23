@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/nymtech/nym-directory/models"
 
+	// needed for Gorm to get its sqlite dialect
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
