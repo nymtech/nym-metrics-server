@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/healthcheck"
-	"github.com/nymtech/nym-directory/mixmining"
 	"github.com/nymtech/nym-directory/metrics"
+	"github.com/nymtech/nym-directory/mixmining"
 	"github.com/nymtech/nym-directory/presence"
 	"github.com/nymtech/nym-directory/server/html"
 	"github.com/nymtech/nym-directory/server/websocket"
@@ -49,7 +49,7 @@ func New() *gin.Engine {
 	policy := bluemonday.UGCPolicy()
 
 	// Measurements: wire up dependency injection
-	measurementsCfg := mixmining.Config{}
+	measurementsCfg := injectMeasurements(policy)
 
 	// Metrics: wire up dependency injection
 	metricsCfg := injectMetrics(hub, policy)
