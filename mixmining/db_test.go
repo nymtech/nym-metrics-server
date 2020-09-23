@@ -1,8 +1,6 @@
 package mixmining
 
 import (
-	"fmt"
-
 	"github.com/nymtech/nym-directory/mixmining/fixtures"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
@@ -18,15 +16,25 @@ var _ = Describe("The mixmining db", func() {
 		})
 	})
 
-	Describe("adding and retrieving one measurement", func() {
+	Describe("adding and retrieving measurements", func() {
 		Context("a new db", func() {
-			It("should add one measurement to the db, with a timestamp", func() {
+			It("should add measurements to the db, with a timestamp, and be able to retrieve them afterwards", func() {
 				db := NewDb()
 				status := fixtures.GoodPersistedMixStatus()
+
+				// add one
 				db.Add(status)
 				measurements := db.List(status.PubKey)
-				fmt.Printf("mixmining: %+v", measurements)
 				assert.Len(GinkgoT(), measurements, 1)
+				assert.Equal(GinkgoT(), status, measurements[0])
+
+				// add another
+				db.Add(status)
+				measurements = db.List(status.PubKey)
+				assert.Len(GinkgoT(), measurements, 2)
+				assert.Equal(GinkgoT(), status, measurements[0])
+				assert.Equal(GinkgoT(), status, measurements[1])
+
 			})
 		})
 	})
