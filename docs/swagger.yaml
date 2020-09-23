@@ -279,35 +279,6 @@ paths:
       tags:
       - metrics
   /api/mixmining:
-    get:
-      consumes:
-      - application/json
-      description: Lists all mixnode statuses for a given node pubkey
-      operationId: listMixStatuses
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.MixMetric'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-      summary: Lists mixnode activity
-      tags:
-      - mixmining
     post:
       consumes:
       - application/json
@@ -337,6 +308,42 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: Lets the network monitor create a new uptime status for a mix
+      tags:
+      - mixmining
+  /api/mixmining/:pubkey:
+    get:
+      consumes:
+      - application/json
+      description: Lists all mixnode statuses for a given node pubkey
+      operationId: listMixStatuses
+      parameters:
+      - description: Mixnode Pubkey
+        in: path
+        name: pubkey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MixStatus'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lists mixnode activity
       tags:
       - mixmining
   /api/presence/allow:

@@ -42,12 +42,12 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Accept  json
 // @Produce  json
 // @Tags mixmining
-// Param   object      body   models.ObjectRequest     true  "object"
-// @Success 200 {array} models.MixMetric
+// @Param pubkey path string true "Mixnode Pubkey"
+// @Success 200 {array} models.MixStatus
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/mixmining [get]
+// @Router /api/mixmining/:pubkey [get]
 func (controller *controller) ListMeasurements(c *gin.Context) {
 	pubkey := c.Param("pubkey")
 	measurements := controller.service.List(pubkey)
