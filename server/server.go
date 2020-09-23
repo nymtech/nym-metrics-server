@@ -7,6 +7,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/healthcheck"
 	"github.com/nymtech/nym-directory/metrics"
+	"github.com/nymtech/nym-directory/mixmining"
 	"github.com/nymtech/nym-directory/presence"
 	"github.com/nymtech/nym-directory/server/html"
 	"github.com/nymtech/nym-directory/server/websocket"
@@ -47,6 +48,9 @@ func New() *gin.Engine {
 	// Sanitize controller input against XSS attacks using bluemonday.Policy
 	policy := bluemonday.UGCPolicy()
 
+	// Measurements: wire up dependency injection
+	measurementsCfg := injectMeasurements(policy)
+
 	// Metrics: wire up dependency injection
 	metricsCfg := injectMetrics(hub, policy)
 
@@ -55,10 +59,22 @@ func New() *gin.Engine {
 
 	// Register all HTTP controller routes
 	healthcheck.New().RegisterRoutes(router)
+	mixmining.New(measurementsCfg).RegisterRoutes(router)
 	metrics.New(metricsCfg).RegisterRoutes(router)
 	presence.New(presenceCfg).RegisterRoutes(router)
 
 	return router
+}
+
+func injectMeasurements(policy *bluemonday.Policy) mixmining.Config {
+	sanitizer := mixmining.NewSanitizer(policy)
+	db := mixmining.NewDb()
+	measurementsService := *mixmining.NewService(db)
+
+	return mixmining.Config{
+		Service:   &measurementsService,
+		Sanitizer: sanitizer,
+	}
 }
 
 func injectMetrics(hub *websocket.Hub, policy *bluemonday.Policy) metrics.Config {
