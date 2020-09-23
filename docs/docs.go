@@ -141,7 +141,7 @@ var doc = `{
         },
         "/api/mixmining": {
             "get": {
-                "description": "Lists all mixnode statuses",
+                "description": "Lists all mixnode statuses for a given node pubkey",
                 "consumes": [
                     "application/json"
                 ],
@@ -149,10 +149,10 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "metrics"
+                    "mixmining"
                 ],
                 "summary": "Lists mixnode activity",
-                "operationId": "listMixMeasurements",
+                "operationId": "listMixStatuses",
                 "responses": {
                     "200": {
                         "description": "OK",

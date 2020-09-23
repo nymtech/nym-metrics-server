@@ -37,11 +37,11 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 
 // ListMeasurements lists mixnode statuses
 // @Summary Lists mixnode activity
-// @Description Lists all mixnode statuses
-// @ID listMixMeasurements
+// @Description Lists all mixnode statuses for a given node pubkey
+// @ID listMixStatuses
 // @Accept  json
 // @Produce  json
-// @Tags metrics
+// @Tags mixmining
 // Param   object      body   models.ObjectRequest     true  "object"
 // @Success 200 {array} models.MixMetric
 // @Failure 400 {object} models.Error

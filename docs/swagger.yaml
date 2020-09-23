@@ -282,8 +282,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Lists all mixnode statuses
-      operationId: listMixMeasurements
+      description: Lists all mixnode statuses for a given node pubkey
+      operationId: listMixStatuses
       produces:
       - application/json
       responses:
@@ -307,7 +307,7 @@ paths:
             $ref: '#/definitions/models.Error'
       summary: Lists mixnode activity
       tags:
-      - metrics
+      - mixmining
     post:
       consumes:
       - application/json
