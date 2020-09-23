@@ -30,7 +30,7 @@ func (db *Db) List(pubkey string) []models.PersistedMixStatus {
 }
 
 // Add saves a PersistedMixStatus
-func (db *Db) Add(metric models.PersistedMixStatus) {
-	list := db.mixStatuses[metric.PubKey]
-	db.mixStatuses[metric.PubKey] = append(list, metric)
+func (db *Db) Add(status models.PersistedMixStatus) {
+	list := db.mixStatuses[status.PubKey]
+	db.mixStatuses[status.PubKey] = append(list, status)
 }
