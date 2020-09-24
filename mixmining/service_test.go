@@ -101,11 +101,12 @@ var _ = Describe("mixmining.Service", func() {
 									mockDb = *new(mocks.IDb)
 									now := time.Now()
 									list := bigDbState()
-									mockDb.On("ListDateRange", now, thirtyDaysAgo()).Return(list)
+									mockDb.On("ListDateRange", now, daysAgo(30)).Return(list)
 									serv = *NewService(&mockDb)
 
-									uptime := serv.CalculateUptime(persisted1.PubKey, persisted1.IPVersion, thirtyDaysAgo())
-									assert.Equal(GinkgoT(), 0, uptime)
+									uptime := serv.CalculateUptime("key1", "4", daysAgo(1))
+									expected := 2 / 3
+									assert.Equal(GinkgoT(), expected, uptime)
 								})
 							})
 						})
@@ -121,23 +122,55 @@ func bigDbState() []models.PersistedMixStatus {
 	var db []models.PersistedMixStatus
 	var status = newPersistedStatus()
 
-	// IPv4 2 ups and 1 down in last day
+	// IPv4
+	// 2 ups and 1 down in last day
 	status.IPVersion = "4"
-	// status.Up = true
+	status.Up = true
+	status.Timestamp = minutesAgo(5)
+	db = append(db, status)
 
+	status.Timestamp = minutesAgo(10)
+	db = append(db, status)
+
+	status.Timestamp = minutesAgo(15)
+	status.Up = false
+	db = append(db, status)
+
+	// and 3 addition ups and 1 down exist in the past month
+	status.Up = true
+	status.Timestamp = daysAgo(5)
+	db = append(db, status)
+
+	status.Timestamp = daysAgo(10)
+	db = append(db, status)
+
+	status.Timestamp = daysAgo(15)
+	db = append(db, status)
+
+	status.Up = false
+	status.Timestamp = daysAgo(20)
+	db = append(db, status)
+
+	// with 1 IPv6 in the past day and an additional IPv6 in the past month
+	status.IPVersion = "6"
+	status.Timestamp = minutesAgo(10)
+	status.Up = true
+	db = append(db, status)
+
+	status.IPVersion = "6"
+	status.Timestamp = daysAgo(15)
+	status.Up = true
 	db = append(db, status)
 
 	return db
 }
 
 func newPersistedStatus() models.PersistedMixStatus {
-	var now = time.Now()
-	timemock.Freeze(now)
-	var frozenNow = timemock.Now().UnixNano()
+
 	mixStatus := newStatus()
 	persisted := models.PersistedMixStatus{
 		MixStatus: mixStatus,
-		Timestamp: frozenNow,
+		Timestamp: frozenNow(),
 	}
 	return persisted
 }
@@ -148,4 +181,10 @@ func newStatus() models.MixStatus {
 		IPVersion: "4",
 		Up:        false,
 	}
+}
+
+func frozenNow() int64 {
+	now := timemock.Now()
+	timemock.Freeze(now) //time is frozen
+	return now.UnixNano()
 }
