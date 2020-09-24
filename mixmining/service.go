@@ -56,13 +56,23 @@ func (service *Service) buildMixStatusReport(status models.PersistedMixStatus) m
 	return report
 }
 
-// CalculateUptime calculates percentage uptime for a given node, protocol during a specific time period
-func (service *Service) CalculateUptime(pubkey string, ipVersion string, timePeriod int64) int {
+// CalculateUptime calculates percentage uptime for a given node, protocol since a specific time
+func (service *Service) CalculateUptime(pubkey string, ipVersion string, since int64) int {
 
 	return 0
 }
 
-func thirtyDaysAgo() int64 {
+func daysAgo(days int) int64 {
 	now := timemock.Now()
-	return now.Add(time.Duration(-30) * time.Hour * 24).UnixNano()
+	return now.Add(time.Duration(-days) * time.Hour * 24).UnixNano()
+}
+
+func minutesAgo(minutes int) int64 {
+	now := timemock.Now()
+	return now.Add(time.Duration(-minutes) * time.Minute).UnixNano()
+}
+
+func secondsAgo(seconds int) int64 {
+	now := timemock.Now()
+	return now.Add(time.Duration(-seconds) * time.Second).UnixNano()
 }
