@@ -29,11 +29,11 @@ type HostInfo struct {
 
 // MixProviderHostInfo comes from a node telling us it's alive
 type MixProviderHostInfo struct {
-	ClientListener    string             `json:"clientListener"`
-	MixnetListener    string             `json:"mixnetListener"`
-	PubKey            string             `json:"pubKey" binding:"required"`
-	Version           string             `json:"version" binding:"required"`
-	Location          string             `json:"location"`
+	ClientListener string `json:"clientListener"`
+	MixnetListener string `json:"mixnetListener"`
+	PubKey         string `json:"pubKey" binding:"required"`
+	Version        string `json:"version" binding:"required"`
+	Location       string `json:"location"`
 }
 
 // MixProviderPresence holds presence info for a mix provider node
@@ -45,7 +45,18 @@ type MixProviderPresence struct {
 // MixNodePresence holds presence info for a mixnode
 type MixNodePresence struct {
 	MixHostInfo
+	MixStatusReport
 	LastSeen int64 `json:"lastSeen" binding:"required"`
+}
+
+// MixStatusReport gives a quick view of mixnode uptime performance
+type MixStatusReport struct {
+	LastIpv4 PersistedMixStatus
+	LastIpv6 PersistedMixStatus
+	// Last5Ipv4   []PersistedMixStatus
+	// Last5Ipv6   []PersistedMixStatus
+	// Last100Ipv4 []PersistedMixStatus
+	// Last100Ipv6 []PersistedMixStatus
 }
 
 // MixHostInfo comes from a node telling us it's alive
@@ -62,12 +73,12 @@ type Presence struct {
 
 // GatewayHostInfo comes from a node telling us it's alive
 type GatewayHostInfo struct {
-	ClientListener    string             `json:"clientListener" binding:"required"`
-	MixnetListener    string             `json:"mixnetListener" binding:"required"`
-	IdentityKey       string             `json:"identityKey" binding:"required"`
-	SphinxKey         string             `json:"sphinxKey" binding:"required"`
-	Version           string             `json:"version" binding:"required"`
-	Location          string             `json:"location"`
+	ClientListener string `json:"clientListener" binding:"required"`
+	MixnetListener string `json:"mixnetListener" binding:"required"`
+	IdentityKey    string `json:"identityKey" binding:"required"`
+	SphinxKey      string `json:"sphinxKey" binding:"required"`
+	Version        string `json:"version" binding:"required"`
+	Location       string `json:"location"`
 }
 
 // GatewayPresence holds presence info for a gateway node

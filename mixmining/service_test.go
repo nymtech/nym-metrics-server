@@ -64,11 +64,11 @@ var _ = Describe("mixmining.Service", func() {
 				list := []models.PersistedMixStatus{p1, p2}
 
 				serv = *NewService(&mockDb)
-				mockDb.On("List", p1.PubKey).Return(list)
+				mockDb.On("List", p1.PubKey, 1000).Return(list)
 
 				result := serv.List(p1.PubKey)
 
-				mockDb.AssertCalled(GinkgoT(), "List", p1.PubKey)
+				mockDb.AssertCalled(GinkgoT(), "List", p1.PubKey, 1000)
 				assert.Equal(GinkgoT(), list[0].MixStatus.PubKey, result[0].MixStatus.PubKey)
 				assert.Equal(GinkgoT(), list[1].MixStatus.PubKey, result[1].MixStatus.PubKey)
 			})

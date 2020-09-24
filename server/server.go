@@ -94,8 +94,8 @@ func injectPresence(policy *bluemonday.Policy) presence.Config {
 	mixnodeIDSan := presence.NewMixnodeIDSanitizer(policy)
 	providerSan := presence.NewMixproviderSanitizer(policy)
 	gatewaySan := presence.NewGatewaySanitizer(policy)
-	db := presence.NewDb()
-	service := presence.NewService(db)
+	presenceDb := presence.NewDb()
+	service := presence.NewService(presenceDb)
 
 	return presence.Config{
 		CocoHostSanitizer:        &cocoSan,

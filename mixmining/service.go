@@ -33,7 +33,7 @@ func (service *Service) CreateMixStatus(status models.MixStatus) {
 
 }
 
-// List lists all mix metrics in the orm
+// List lists the given number mix metrics
 func (service *Service) List(pubkey string) []models.PersistedMixStatus {
-	return service.db.List(pubkey)
+	return service.db.List(pubkey, 1000)
 }
