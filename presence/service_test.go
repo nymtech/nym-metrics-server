@@ -1,8 +1,6 @@
 package presence
 
 import (
-	"time"
-
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/nym-directory/models"
 	"github.com/nymtech/nym-directory/presence/mocks"
@@ -30,7 +28,7 @@ var _ = Describe("presence.Service", func() {
 	BeforeEach(func() {
 		mockDb = *new(mocks.IDb)
 		serv = *NewService(&mockDb)
-		var now = time.Now()
+		var now = timemock.Now()
 		timemock.Freeze(now)
 
 		// Set up fixtures
@@ -90,10 +88,10 @@ var _ = Describe("presence.Service", func() {
 		}
 
 		provider1 = models.MixProviderHostInfo{
-			MixnetListener:    "foo.com:8000",
-			ClientListener:    "foo.com:8001",
-			Location:          defaultLocation,
-			PubKey:            "pubkey2",
+			MixnetListener: "foo.com:8000",
+			ClientListener: "foo.com:8001",
+			Location:       defaultLocation,
+			PubKey:         "pubkey2",
 		}
 
 		providerpresence3 = models.MixProviderPresence{

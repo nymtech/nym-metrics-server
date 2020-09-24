@@ -2,7 +2,6 @@ package metrics
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/nym-directory/metrics/mocks"
@@ -22,7 +21,7 @@ var _ = Describe("metrics.Service", func() {
 
 	var serv Service
 	var received uint = 99
-	var now = time.Now()
+	var now = timemock.Now()
 	timemock.Freeze(now)
 	var frozenNow = timemock.Now().UnixNano()
 

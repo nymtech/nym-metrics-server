@@ -1,8 +1,7 @@
 package metrics
 
 import (
-	"time"
-
+	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
@@ -16,7 +15,7 @@ var _ = Describe("Metrics Db", func() {
 	var p2 models.PersistedMixMetric
 
 	var received uint = 99
-	var now = time.Now().UnixNano()
+	var now = timemock.Now().UnixNano()
 
 	// set up fixtures
 	metric1 = models.MixMetric{

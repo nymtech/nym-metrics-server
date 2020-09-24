@@ -10,7 +10,7 @@ import (
 var _ = Describe("The mixmining db", func() {
 	Describe("Constructing a NewDb", func() {
 		Context("a new db", func() {
-			It("should have no mixmining", func() {
+			It("should have no mixmining statuses", func() {
 				db := NewDb()
 				db.orm.Exec("DELETE FROM persisted_mix_statuses")
 				assert.Len(GinkgoT(), db.List("foo", 5), 0)
