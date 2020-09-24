@@ -15,6 +15,8 @@ var DB *gorm.DB
 type IDb interface {
 	Add(models.PersistedMixStatus)
 	List(pubkey string, limit int) []models.PersistedMixStatus
+	SaveMixStatusReport(models.MixStatusReport)
+	ListDateRange(pubkey string, start int, end int) []models.PersistedMixStatus
 }
 
 // Db is a hashtable that holds mixnode uptime mixmining
@@ -37,6 +39,11 @@ func NewDb() *Db {
 	return &d
 }
 
+// Add saves a PersistedMixStatus
+func (db *Db) Add(status models.PersistedMixStatus) {
+	db.orm.Create(status)
+}
+
 // List returns all models.PersistedMixStatus in the orm
 func (db *Db) List(pubkey string, limit int) []models.PersistedMixStatus {
 	var statuses []models.PersistedMixStatus
@@ -46,7 +53,16 @@ func (db *Db) List(pubkey string, limit int) []models.PersistedMixStatus {
 	return statuses
 }
 
-// Add saves a PersistedMixStatus
-func (db *Db) Add(status models.PersistedMixStatus) {
-	db.orm.Create(status)
+// ListDateRange lists all persisted mix statuses for a node within the specified date range
+func (db *Db) ListDateRange(pubkey string, start int, end int) []models.PersistedMixStatus {
+	var statuses []models.PersistedMixStatus
+	if err := db.orm.Order("timestamp desc").Where("pub_key = ?", pubkey).Where("timestamp >= ?", start).Where("timestamp <= ?", end).Find(&statuses).Error; err != nil {
+		return make([]models.PersistedMixStatus, 0)
+	}
+	return statuses
+}
+
+// SaveMixStatusReport creates or updates a status summary report for a given mixnode in the database
+func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
+
 }
