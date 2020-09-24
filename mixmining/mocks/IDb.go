@@ -33,13 +33,13 @@ func (_m *IDb) List(pubkey string, limit int) []models.PersistedMixStatus {
 	return r0
 }
 
-// ListDateRange provides a mock function with given fields: pubkey, start, end
-func (_m *IDb) ListDateRange(pubkey string, start int, end int) []models.PersistedMixStatus {
-	ret := _m.Called(pubkey, start, end)
+// ListDateRange provides a mock function with given fields: pubkey, ipVersion, start, end
+func (_m *IDb) ListDateRange(pubkey string, ipVersion string, start int, end int) []models.PersistedMixStatus {
+	ret := _m.Called(pubkey, ipVersion, start, end)
 
 	var r0 []models.PersistedMixStatus
-	if rf, ok := ret.Get(0).(func(string, int, int) []models.PersistedMixStatus); ok {
-		r0 = rf(pubkey, start, end)
+	if rf, ok := ret.Get(0).(func(string, string, int, int) []models.PersistedMixStatus); ok {
+		r0 = rf(pubkey, ipVersion, start, end)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]models.PersistedMixStatus)

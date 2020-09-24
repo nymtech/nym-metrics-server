@@ -16,7 +16,7 @@ type IDb interface {
 	Add(models.PersistedMixStatus)
 	List(pubkey string, limit int) []models.PersistedMixStatus
 	SaveMixStatusReport(models.MixStatusReport)
-	ListDateRange(pubkey string, start int, end int) []models.PersistedMixStatus
+	ListDateRange(pubkey string, ipVersion string, start int, end int) []models.PersistedMixStatus
 }
 
 // Db is a hashtable that holds mixnode uptime mixmining
@@ -53,10 +53,10 @@ func (db *Db) List(pubkey string, limit int) []models.PersistedMixStatus {
 	return statuses
 }
 
-// ListDateRange lists all persisted mix statuses for a node within the specified date range
-func (db *Db) ListDateRange(pubkey string, start int, end int) []models.PersistedMixStatus {
+// ListDateRange lists all persisted mix statuses for a node for either IPv4 or IPv6 within the specified date range
+func (db *Db) ListDateRange(pubkey string, ipVersion string, start int, end int) []models.PersistedMixStatus {
 	var statuses []models.PersistedMixStatus
-	if err := db.orm.Order("timestamp desc").Where("pub_key = ?", pubkey).Where("timestamp >= ?", start).Where("timestamp <= ?", end).Find(&statuses).Error; err != nil {
+	if err := db.orm.Order("timestamp desc").Where("pub_key = ?", pubkey).Where("ip_version = ?", ipVersion).Where("timestamp >= ?", start).Where("timestamp <= ?", end).Find(&statuses).Error; err != nil {
 		return make([]models.PersistedMixStatus, 0)
 	}
 	return statuses

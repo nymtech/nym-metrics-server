@@ -47,7 +47,7 @@ var _ = Describe("The mixmining db", func() {
 			It("should return an empty slice", func() {
 				db := NewDb()
 				db.orm.Exec("DELETE FROM persisted_mix_statuses")
-				assert.Len(GinkgoT(), db.ListDateRange("foo", 1, 1), 0)
+				assert.Len(GinkgoT(), db.ListDateRange("foo", "6", 1, 1), 0)
 			})
 		})
 		Context("when one status exists in the range and one outside", func() {
@@ -66,9 +66,39 @@ var _ = Describe("The mixmining db", func() {
 				db.Add(statusInRange)
 				db.Add(statusOutOfRange)
 
-				result := db.ListDateRange(data.PubKey, 0, 500)
+				result := db.ListDateRange(data.PubKey, "6", 0, 500)
 				assert.Len(GinkgoT(), result, 1)
 				assert.Equal(GinkgoT(), statusInRange, result[0])
+			})
+		})
+		Context("when one Ipv4 status exists in the range and one outside, with an IPv6 status also in range, when searching for IPv4", func() {
+			It("should return only the status within the range", func() {
+				db := NewDb()
+				db.orm.Exec("DELETE FROM persisted_mix_statuses")
+				ip4data := fixtures.GoodMixStatus()
+				ip4data.IPVersion = "4"
+
+				ip6data := fixtures.GoodMixStatus()
+				ip6data.IPVersion = "6"
+				ip4statusInRange := models.PersistedMixStatus{
+					MixStatus: ip4data,
+					Timestamp: 500,
+				}
+				ip6statusInRange := models.PersistedMixStatus{
+					MixStatus: ip6data,
+					Timestamp: 500,
+				}
+				ip4statusOutOfRange := models.PersistedMixStatus{
+					MixStatus: ip4data,
+					Timestamp: 1000,
+				}
+				db.Add(ip4statusInRange)
+				db.Add(ip6statusInRange)
+				db.Add(ip4statusOutOfRange)
+
+				result := db.ListDateRange(ip4statusInRange.PubKey, "4", 0, 500)
+				assert.Len(GinkgoT(), result, 1)
+				assert.Equal(GinkgoT(), ip4statusInRange, result[0])
 			})
 		})
 	})
