@@ -29,21 +29,18 @@ var _ = Describe("Sanitizer", func() {
 })
 
 func xssStatus() models.MixStatus {
-	upFalse := false
-
 	m := models.MixStatus{
 		PubKey:    "bar<script>alert('gotcha')</script>",
-		Up:        &upFalse,
+		Up:        false,
 		IPVersion: "0<script>alert('gotcha')</script>",
 	}
 	return m
 }
 
 func goodMetric() models.MixStatus {
-	upFalse := false
 	m := models.MixStatus{
 		PubKey:    "bar",
-		Up:        &upFalse,
+		Up:        false,
 		IPVersion: "0",
 	}
 	return m

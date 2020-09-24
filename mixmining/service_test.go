@@ -21,12 +21,11 @@ var _ = Describe("mixmining.Service", func() {
 	var now = time.Now()
 	timemock.Freeze(now)
 	var frozenNow = timemock.Now().UnixNano()
-	upTrue := true
 	// set up fixtures
 	status1 = models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
-		Up:        &upTrue,
+		Up:        true,
 	}
 
 	persisted1 = models.PersistedMixStatus{
@@ -37,7 +36,7 @@ var _ = Describe("mixmining.Service", func() {
 	status2 = models.MixStatus{
 		PubKey:    "key2",
 		IPVersion: "6",
-		Up:        &upTrue,
+		Up:        true,
 	}
 
 	persisted2 = models.PersistedMixStatus{
@@ -58,7 +57,7 @@ var _ = Describe("mixmining.Service", func() {
 				}
 				mockDb.On("SaveMixStatusReport", expectedStatusReport)
 
-				serv.CreateMixStatus(newStatus())
+				serv.CreateMixStatus(status1)
 				mockDb.AssertCalled(GinkgoT(), "Add", persisted1)
 				mockDb.AssertCalled(GinkgoT(), "SaveMixStatusReport", expectedStatusReport)
 			})
@@ -144,11 +143,9 @@ func newPersistedStatus() models.PersistedMixStatus {
 }
 
 func newStatus() models.MixStatus {
-	upTrue := true
-
 	return models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
-		Up:        &upTrue,
+		Up:        false,
 	}
 }

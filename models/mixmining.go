@@ -8,7 +8,7 @@ import (
 type MixStatus struct {
 	PubKey    string `json:"pubKey" binding:"required" gorm:"index"`
 	IPVersion string `json:"ipVersion" binding:"required"`
-	Up        *bool  `json:"up" binding:"required"`
+	Up        bool   `json:"up" binding:"required"`
 }
 
 // PersistedMixStatus is a saved MixStatus with a timestamp recording when it
