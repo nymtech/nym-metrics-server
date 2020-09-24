@@ -45,18 +45,8 @@ type MixProviderPresence struct {
 // MixNodePresence holds presence info for a mixnode
 type MixNodePresence struct {
 	MixHostInfo
-	MixStatusReport
+	// MixStatusReport
 	LastSeen int64 `json:"lastSeen" binding:"required"`
-}
-
-// MixStatusReport gives a quick view of mixnode uptime performance
-type MixStatusReport struct {
-	LastIpv4 PersistedMixStatus
-	LastIpv6 PersistedMixStatus
-	// Last5Ipv4   []PersistedMixStatus
-	// Last5Ipv6   []PersistedMixStatus
-	// Last100Ipv4 []PersistedMixStatus
-	// Last100Ipv6 []PersistedMixStatus
 }
 
 // MixHostInfo comes from a node telling us it's alive
