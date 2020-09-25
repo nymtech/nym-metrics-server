@@ -39,7 +39,10 @@ func (service *Service) List(pubkey string) []models.PersistedMixStatus {
 	return service.db.List(pubkey, 1000)
 }
 
-func (service *Service) buildMixStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
+// SaveStatusReport builds and saves a status report for a mixnode. The report can be updated once
+// whenever we receive a new status, and the saved result can then be queried. This keeps us from
+// having to build the report dynamically on every request at runtime.
+func (service *Service) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
 	// get all previous statuses from the database
 	// init report struct
 

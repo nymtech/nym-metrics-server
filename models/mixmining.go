@@ -21,11 +21,18 @@ type PersistedMixStatus struct {
 
 // MixStatusReport gives a quick view of mixnode uptime performance
 type MixStatusReport struct {
-	PubKey   string
-	LastIpv4 PersistedMixStatus
-	LastIpv6 PersistedMixStatus
-	// Last5Ipv4   []PersistedMixStatus
-	// Last5Ipv6   []PersistedMixStatus
-	// Last100Ipv4 []PersistedMixStatus
-	// Last100Ipv6 []PersistedMixStatus
+	PubKey     string
+	IPV4Status UptimeReport
+	IPV6Status UptimeReport
+}
+
+// UptimeReport models an uptime report for IPV4 or IPV6 protocol
+type UptimeReport struct {
+	IPVersion    string
+	MostRecent   bool
+	Last5Minutes int
+	LastHour     int
+	LastDay      int
+	LastWeek     int
+	LastMonth    int
 }

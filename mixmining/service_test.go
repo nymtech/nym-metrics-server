@@ -83,6 +83,9 @@ var _ = Describe("mixmining.Service", func() {
 		Timestamp: Now(),
 	}
 
+	downer := persisted1
+	downer.MixStatus.Up = false
+
 	persistedList := []models.PersistedMixStatus{persisted1, persisted2}
 	emptyList := []models.PersistedMixStatus{}
 
@@ -133,16 +136,51 @@ var _ = Describe("mixmining.Service", func() {
 	})
 
 	Describe("Saving a mix status report", func() {
+		BeforeEach(func() {
+			// last5minutes := persistedList
+			// lastHour := append(last5minutes, persistedList...)
+			// lastDay := append(lastHour, persistedList...)
+			// lastWeek := append(lastDay, persistedList...)
+			// lastMonth := append(lastWeek, persistedList...)
+			// so in the last month we have 10 persisted statuses, all up
+		})
 		Context("when no statuses exist yet", func() {
-
+			// initialState := models.MixStatusReport{
+			// 	PubKey: persisted1.PubKey,
+			// 	IPV4Status: models.UptimeReport{
+			// 		IPVersion: persisted1.IPVersion,
+			// 	},
+			// }
+			// expectedSave := models.MixStatusReport{
+			// 	PubKey: downer.PubKey,
+			// }
+			// mockDb.On("SaveMixStatusReport", expectedSave)
+			// mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(emptyList)
+			// mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(emptyList)
+			// mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(emptyList)
+			// mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(emptyList)
+			// result := serv.SaveStatusReport(downer)
+			// assert.Equal(GinkgoT(), 0, result.IPV4Status.Last5Minutes)
 		})
 
-		Context("when some statuses exist", func() {
+		Context("when some statuses exist already", func() {
 			It("should save the report, leaving some fields blank", func() {
-				expectedStatusReport := models.MixStatusReport{
-					PubKey: persisted1.PubKey,
-				}
-				mockDb.On("SaveMixStatusReport", expectedStatusReport)
+				// initialState := models.MixStatusReport{
+				// 	PubKey: persisted1.PubKey,
+				// 	IPV4Status: models.UptimeReport{
+				// 		IPVersion:    "4",
+				// 		Last5Minutes: 10,
+				// 	},
+				// }
+
+				// afterUpdate := models.MixStatusReport {
+				// 	PubKey: persisted1.PubKey,
+				// 	IPV4Status: ,
+				// }
+				// mockDb.On("GetStatusReport", persisted1.PubKey).Return(initialState)
+				// mockDb.On("SaveMixStatusReport", expectedState)
+				// result := serv.SaveStatusReport(persisted1)
+				// assert.Equal(GinkgoT(), expectedState, result)
 			})
 		})
 
