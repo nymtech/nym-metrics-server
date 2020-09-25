@@ -10,12 +10,11 @@ import (
 
 // Some fixtures data to dry up tests a bit
 
+// A slice of IPv4 mix statuses with 2 ups and 1 down during the past day
 func twoUpOneDown() []models.PersistedMixStatus {
 	db := []models.PersistedMixStatus{}
-	var status = newPersistedStatus()
+	var status = persistedStatus()
 
-	// IPv4
-	// 2 ups and 1 down in last day
 	status.PubKey = "key1"
 	status.IPVersion = "4"
 	status.Up = true
@@ -33,16 +32,16 @@ func twoUpOneDown() []models.PersistedMixStatus {
 	return db
 }
 
-func newPersistedStatus() models.PersistedMixStatus {
-	mixStatus := newStatus()
+func persistedStatus() models.PersistedMixStatus {
+	mixStatus := status()
 	persisted := models.PersistedMixStatus{
 		MixStatus: mixStatus,
-		Timestamp: frozenNow(),
+		Timestamp: Now(),
 	}
 	return persisted
 }
 
-func newStatus() models.MixStatus {
+func status() models.MixStatus {
 	return models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
@@ -50,7 +49,8 @@ func newStatus() models.MixStatus {
 	}
 }
 
-func frozenNow() int64 {
+// A version of now with a frozen shared clock so we can have determinate time-based tests
+func Now() int64 {
 	now := timemock.Now()
 	timemock.Freeze(now) //time is frozen
 	nanos := now.UnixNano()
@@ -58,37 +58,29 @@ func frozenNow() int64 {
 }
 
 var _ = Describe("mixmining.Service", func() {
-	var mockDb mocks.IDb
-	var status1 models.MixStatus
-	var status2 models.MixStatus
-	var persisted1 models.PersistedMixStatus
-	var persisted2 models.PersistedMixStatus
+	mockDb := *new(mocks.IDb)
+	serv := *NewService(&mockDb)
 
-	var serv Service
-	var now = timemock.Now()
-	timemock.Freeze(now)
-	var frozen = timemock.Now().UnixNano()
-
-	status1 = models.MixStatus{
+	status1 := models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
 		Up:        true,
 	}
 
-	persisted1 = models.PersistedMixStatus{
+	persisted1 := models.PersistedMixStatus{
 		MixStatus: status1,
-		Timestamp: frozen,
+		Timestamp: Now(),
 	}
 
-	status2 = models.MixStatus{
+	status2 := models.MixStatus{
 		PubKey:    "key2",
 		IPVersion: "6",
 		Up:        true,
 	}
 
-	persisted2 = models.PersistedMixStatus{
+	persisted2 := models.PersistedMixStatus{
 		MixStatus: status2,
-		Timestamp: frozen,
+		Timestamp: Now(),
 	}
 
 	persistedList := []models.PersistedMixStatus{persisted1, persisted2}
@@ -97,8 +89,7 @@ var _ = Describe("mixmining.Service", func() {
 	Describe("Adding a mix status and creating a new summary report for a node", func() {
 		Context("when no statuses have yet been saved", func() {
 			It("should add a PersistedMixStatus to the db and save the new report", func() {
-				mockDb = *new(mocks.IDb)
-				serv = *NewService(&mockDb)
+
 				mockDb.On("Add", persisted1)
 
 				serv.CreateMixStatus(status1)
@@ -109,8 +100,6 @@ var _ = Describe("mixmining.Service", func() {
 	Describe("Listing mix statuses", func() {
 		Context("when receiving a list request", func() {
 			It("should call to the Db", func() {
-				mockDb = *new(mocks.IDb)
-				serv = *NewService(&mockDb)
 				mockDb.On("List", persisted1.PubKey, 1000).Return(persistedList)
 
 				result := serv.List(persisted1.PubKey)
@@ -125,10 +114,7 @@ var _ = Describe("mixmining.Service", func() {
 	Describe("Calculating uptime", func() {
 		Context("when no statuses exist yet", func() {
 			It("should return 0", func() {
-				mockDb = *new(mocks.IDb)
-				serv = *NewService(&mockDb)
-
-				mockDb.On("ListDateRange", "key1", "4", frozenNow(), daysAgo(30)).Return(emptyList)
+				mockDb.On("ListDateRange", "key1", "4", Now(), daysAgo(30)).Return(emptyList)
 
 				uptime := serv.CalculateUptime(persisted1.PubKey, persisted1.IPVersion, daysAgo(30))
 				assert.Equal(GinkgoT(), 0, uptime)
@@ -137,9 +123,7 @@ var _ = Describe("mixmining.Service", func() {
 		})
 		Context("when 2 ups and 1 down exist in the given time period", func() {
 			It("should return 66", func() {
-				mockDb = *new(mocks.IDb)
-				serv = *NewService(&mockDb)
-				mockDb.On("ListDateRange", "key1", "4", frozenNow(), daysAgo(1)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", "key1", "4", Now(), daysAgo(1)).Return(twoUpOneDown())
 
 				uptime := serv.CalculateUptime("key1", "4", daysAgo(1))
 				expected := 66 // percent
@@ -149,10 +133,6 @@ var _ = Describe("mixmining.Service", func() {
 	})
 
 	Describe("Saving a mix status report", func() {
-		BeforeEach(func() {
-			mockDb = *new(mocks.IDb)
-
-		})
 		Context("when no statuses exist yet", func() {
 
 		})
