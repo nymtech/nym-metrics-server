@@ -1,7 +1,6 @@
 package mixmining
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
@@ -60,16 +59,17 @@ func (service *Service) buildMixStatusReport(status models.PersistedMixStatus) m
 // CalculateUptime calculates percentage uptime for a given node, protocol since a specific time
 func (service *Service) CalculateUptime(pubkey string, ipVersion string, since int64) int {
 	statuses := service.db.ListDateRange(pubkey, ipVersion, now(), since)
-	// get a count, subtract the downs, and calculate a percentage
 	numStatuses := len(statuses)
+	if numStatuses == 0 {
+		return 0
+	}
 	up := 0
 	for _, status := range statuses {
 		if status.Up {
 			up = up + 1
 		}
 	}
-	fmt.Printf("up: %v out of %v\r\n", up, numStatuses)
-	return 0
+	return int(float32(up) / float32(numStatuses) * 100)
 }
 
 func now() int64 {

@@ -92,14 +92,14 @@ var _ = Describe("mixmining.Service", func() {
 			})
 
 		})
-		Context("when 2 ups and 1 down exist in the past day", func() {
-			It("should return 67", func() {
+		Context("when 2 ups and 1 down exist in the given time period", func() {
+			It("should return 66", func() {
 				mockDb = *new(mocks.IDb)
 				mockDb.On("ListDateRange", "key1", "4", frozenNow(), daysAgo(1)).Return(twoUpOneDown())
 				serv = *NewService(&mockDb)
 
 				uptime := serv.CalculateUptime("key1", "4", daysAgo(1))
-				expected := 67 // percent
+				expected := 66 // percent
 				assert.Equal(GinkgoT(), expected, uptime)
 			})
 		})
