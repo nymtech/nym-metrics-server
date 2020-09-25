@@ -32,8 +32,6 @@ func (service *Service) CreateMixStatus(mixStatus models.MixStatus) {
 		Timestamp: timemock.Now().UnixNano(),
 	}
 	service.db.Add(persistedMixStatus)
-	report := service.buildMixStatusReport(persistedMixStatus)
-	service.db.SaveMixStatusReport(report)
 }
 
 // List lists the given number mix metrics
@@ -44,6 +42,7 @@ func (service *Service) List(pubkey string) []models.PersistedMixStatus {
 func (service *Service) buildMixStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
 	// get all previous statuses from the database
 	// init report struct
+
 	report := models.MixStatusReport{
 		PubKey: status.PubKey,
 	}
@@ -53,6 +52,7 @@ func (service *Service) buildMixStatusReport(status models.PersistedMixStatus) m
 	// calculate last day uptime
 	// calculate last month uptime
 	// return report
+	service.db.SaveMixStatusReport(report)
 	return report
 }
 
