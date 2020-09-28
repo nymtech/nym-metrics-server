@@ -15,8 +15,9 @@ var DB *gorm.DB
 type IDb interface {
 	Add(models.PersistedMixStatus)
 	List(pubkey string, limit int) []models.PersistedMixStatus
-	SaveMixStatusReport(models.MixStatusReport)
 	ListDateRange(pubkey string, ipVersion string, start int64, end int64) []models.PersistedMixStatus
+	LoadReport(pubkey string) (models.MixStatusReport, error)
+	SaveMixStatusReport(models.MixStatusReport)
 }
 
 // Db is a hashtable that holds mixnode uptime mixmining
@@ -65,4 +66,9 @@ func (db *Db) ListDateRange(pubkey string, ipVersion string, start int64, end in
 // SaveMixStatusReport creates or updates a status summary report for a given mixnode in the database
 func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
 
+}
+
+// LoadReport retrieves a models.MixStatusReport
+func (db *Db) LoadReport(pubkey string) (models.MixStatusReport, error) {
+	return models.MixStatusReport{}, nil
 }

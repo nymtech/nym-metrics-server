@@ -43,18 +43,26 @@ func (service *Service) List(pubkey string) []models.PersistedMixStatus {
 // whenever we receive a new status, and the saved result can then be queried. This keeps us from
 // having to build the report dynamically on every request at runtime.
 func (service *Service) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
-	// get all previous statuses from the database
-	// init report struct
-
-	report := models.MixStatusReport{
-		PubKey: status.PubKey,
+	uptimeReport := models.UptimeReport{
+		IPVersion:    status.IPVersion,
+		MostRecent:   status.Up,
+		Last5Minutes: service.CalculateUptime(status.PubKey, status.IPVersion, minutesAgo(5)),
+		LastHour:     service.CalculateUptime(status.PubKey, status.IPVersion, minutesAgo(60)),
+		LastDay:      service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(1)),
+		LastWeek:     service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(30)),
+		LastMonth:    0,
 	}
-	// check whether this one is IPv4 or IPv6
-	// calculate 1 most recent
-	// calculate last hour uptime
-	// calculate last day uptime
-	// calculate last month uptime
-	// return report
+	var report models.MixStatusReport
+	report, err := service.db.LoadReport(status.PubKey)
+	if err != nil {
+		report = models.MixStatusReport{}
+	}
+
+	if status.IPVersion == "4" {
+		report.IPV4Status = uptimeReport
+	} else if status.IPVersion == "6" {
+		report.IPV6Status = uptimeReport
+	}
 	service.db.SaveMixStatusReport(report)
 	return report
 }
@@ -72,7 +80,11 @@ func (service *Service) CalculateUptime(pubkey string, ipVersion string, since i
 			up = up + 1
 		}
 	}
-	return int(float32(up) / float32(numStatuses) * 100)
+	return service.calculatePercent(up, numStatuses)
+}
+
+func (service *Service) calculatePercent(num int, outOf int) int {
+	return int(float32(num) / float32(outOf) * 100)
 }
 
 func now() int64 {
