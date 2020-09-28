@@ -160,8 +160,8 @@ func (db *db) killOldsters() {
 // timeWindow defines staleness
 // TODO: kill magic number by pulling this out into a config
 func timeWindow() int64 {
-	d := time.Duration(-10)
-	return timemock.Now().Add(time.Duration(d * time.Second)).UnixNano()
+	d := time.Duration(-20 * time.Second)
+	return timemock.Now().Add(d).UnixNano()
 }
 
 func remove(list []string, item string) []string {
