@@ -37,7 +37,6 @@ var _ = Describe("The mixmining db", func() {
 				assert.Len(GinkgoT(), measurements, 2)
 				assert.Equal(GinkgoT(), status, measurements[0])
 				assert.Equal(GinkgoT(), status, measurements[1])
-
 			})
 		})
 	})
@@ -107,7 +106,7 @@ var _ = Describe("The mixmining db", func() {
 		Context("for an empty db", func() {
 			It("should return an empty slice", func() {
 				db := NewDb()
-				db.orm.Exec("DELETE FROM persisted_mix_statuses")
+				defer db.orm.Exec("DELETE FROM persisted_mix_statuses")
 				assert.Len(GinkgoT(), db.List("foo", 5), 0)
 			})
 		})
@@ -115,29 +114,27 @@ var _ = Describe("The mixmining db", func() {
 
 	Describe("saving a mix status report", func() {
 		Context("for an empty db", func() {
-			It("should save the report", func() {
+			It("should save and reload the report", func() {
 				db := NewDb()
 				db.orm.Exec("DELETE FROM mix_status_reports")
-
-				report := models.MixStatusReport{
+				newReport := models.MixStatusReport{
 					PubKey:           "key",
-					MostRecentIPV4:   false,
+					MostRecentIPV4:   true,
 					Last5MinutesIPV4: 5,
 					LastHourIPV4:     10,
 					LastDayIPV4:      15,
 					LastWeekIPV4:     20,
 					LastMonthIPV4:    25,
 					MostRecentIPV6:   false,
-					Last5MinutesIPV6: 5,
-					LastHourIPV6:     10,
-					LastDayIPV6:      15,
-					LastWeekIPV6:     20,
-					LastMonthIPV6:    25,
+					Last5MinutesIPV6: 30,
+					LastHourIPV6:     40,
+					LastDayIPV6:      50,
+					LastWeekIPV6:     60,
+					LastMonthIPV6:    70,
 				}
-				db.SaveMixStatusReport(report)
-				// saved, _ := db.LoadReport(report.PubKey)
-				// println("OK loaded: %+v", saved)
-				// assert.Equal(GinkgoT(), report, *saved)
+				db.SaveMixStatusReport(newReport)
+				saved := db.LoadReport(newReport.PubKey)
+				assert.Equal(GinkgoT(), newReport, saved)
 			})
 		})
 	})
