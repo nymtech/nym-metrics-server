@@ -14,7 +14,7 @@ type Service struct {
 
 // IService defines the REST service interface for metrics.
 type IService interface {
-	CreateMixStatus(metric models.MixStatus)
+	CreateMixStatus(metric models.MixStatus) models.PersistedMixStatus
 	List(pubkey string) []models.PersistedMixStatus
 	SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport
 }
@@ -27,12 +27,13 @@ func NewService(db IDb) *Service {
 }
 
 // CreateMixStatus adds a new PersistedMixStatus in the orm.
-func (service *Service) CreateMixStatus(mixStatus models.MixStatus) {
+func (service *Service) CreateMixStatus(mixStatus models.MixStatus) models.PersistedMixStatus {
 	persistedMixStatus := models.PersistedMixStatus{
 		MixStatus: mixStatus,
 		Timestamp: timemock.Now().UnixNano(),
 	}
 	service.db.Add(persistedMixStatus)
+	return persistedMixStatus
 }
 
 // List lists the given number mix metrics

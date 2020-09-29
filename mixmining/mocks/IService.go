@@ -13,8 +13,17 @@ type IService struct {
 }
 
 // CreateMixStatus provides a mock function with given fields: metric
-func (_m *IService) CreateMixStatus(metric models.MixStatus) {
-	_m.Called(metric)
+func (_m *IService) CreateMixStatus(metric models.MixStatus) models.PersistedMixStatus {
+	ret := _m.Called(metric)
+
+	var r0 models.PersistedMixStatus
+	if rf, ok := ret.Get(0).(func(models.MixStatus) models.PersistedMixStatus); ok {
+		r0 = rf(metric)
+	} else {
+		r0 = ret.Get(0).(models.PersistedMixStatus)
+	}
+
+	return r0
 }
 
 // List provides a mock function with given fields: pubkey

@@ -18,14 +18,15 @@ import (
 var _ = Describe("Controller", func() {
 	Describe("creating a mix status", func() {
 		Context("containing xss", func() {
-			It("should strip the xss attack and proceed normally", func() {
+			It("should strip the xss attack, save the individual mix status, and update the status report for the given node", func() {
 				router, mockService, mockSanitizer := SetupRouter()
 
 				mockSanitizer.On("Sanitize", fixtures.XSSMixStatus()).Return(fixtures.GoodMixStatus())
-				mockService.On("CreateMixStatus", fixtures.GoodMixStatus())
-				j, _ := json.Marshal(fixtures.XSSMixStatus())
+				mockService.On("CreateMixStatus", fixtures.GoodMixStatus()).Return(fixtures.GoodPersistedMixStatus())
+				mockService.On("SaveStatusReport", fixtures.GoodPersistedMixStatus()).Return(models.MixStatusReport{})
+				badJSON, _ := json.Marshal(fixtures.XSSMixStatus())
 
-				resp := performRequest(router, "POST", "/api/mixmining", j)
+				resp := performRequest(router, "POST", "/api/mixmining", badJSON)
 				var response map[string]string
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 

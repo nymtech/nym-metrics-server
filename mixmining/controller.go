@@ -74,6 +74,7 @@ func (controller *controller) CreateMixStatus(c *gin.Context) {
 		return
 	}
 	sanitized := controller.sanitizer.Sanitize(status)
-	controller.service.CreateMixStatus(sanitized)
+	persisted := controller.service.CreateMixStatus(sanitized)
+	controller.service.SaveStatusReport(persisted)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
 }
