@@ -32,3 +32,17 @@ func (_m *IService) List(pubkey string) []models.PersistedMixStatus {
 
 	return r0
 }
+
+// SaveStatusReport provides a mock function with given fields: status
+func (_m *IService) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
+	ret := _m.Called(status)
+
+	var r0 models.MixStatusReport
+	if rf, ok := ret.Get(0).(func(models.PersistedMixStatus) models.MixStatusReport); ok {
+		r0 = rf(status)
+	} else {
+		r0 = ret.Get(0).(models.MixStatusReport)
+	}
+
+	return r0
+}

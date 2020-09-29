@@ -16,6 +16,7 @@ type Service struct {
 type IService interface {
 	CreateMixStatus(metric models.MixStatus)
 	List(pubkey string) []models.PersistedMixStatus
+	SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport
 }
 
 // NewService constructor

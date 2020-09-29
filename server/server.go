@@ -69,10 +69,10 @@ func New() *gin.Engine {
 func injectMeasurements(policy *bluemonday.Policy) mixmining.Config {
 	sanitizer := mixmining.NewSanitizer(policy)
 	db := mixmining.NewDb()
-	measurementsService := *mixmining.NewService(db)
+	mixminingService := *mixmining.NewService(db)
 
 	return mixmining.Config{
-		Service:   &measurementsService,
+		Service:   &mixminingService,
 		Sanitizer: sanitizer,
 	}
 }
