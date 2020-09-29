@@ -43,29 +43,23 @@ func (service *Service) List(pubkey string) []models.PersistedMixStatus {
 // whenever we receive a new status, and the saved result can then be queried. This keeps us from
 // having to build the report dynamically on every request at runtime.
 func (service *Service) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
-	uptimeReport := models.UptimeReport{
-		IPVersion:    status.IPVersion,
-		MostRecent:   status.Up,
-		Last5Minutes: service.CalculateUptime(status.PubKey, status.IPVersion, minutesAgo(5)),
-		LastHour:     service.CalculateUptime(status.PubKey, status.IPVersion, minutesAgo(60)),
-		LastDay:      service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(1)),
-		LastWeek:     service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(7)),
-		LastMonth:    service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(30)),
-	}
-	var report models.MixStatusReport
-	report, err := service.db.LoadReport(status.PubKey)
-	if err != nil {
-		report = models.MixStatusReport{
-			PubKey:     status.PubKey,
-			IPV4Status: models.UptimeReport{},
-			IPV6Status: models.UptimeReport{},
-		}
-	}
+	report := service.db.LoadReport(status.PubKey)
+	report.PubKey = status.PubKey // crude, we do this in case it's a fresh struct returned from the db
 
 	if status.IPVersion == "4" {
-		report.IPV4Status = uptimeReport
+		report.MostRecentIPV4 = status.Up
+		report.Last5MinutesIPV4 = service.CalculateUptime(status.PubKey, "4", minutesAgo(5))
+		report.LastHourIPV4 = service.CalculateUptime(status.PubKey, "4", minutesAgo(60))
+		report.LastDayIPV4 = service.CalculateUptime(status.PubKey, "4", daysAgo(1))
+		report.LastWeekIPV4 = service.CalculateUptime(status.PubKey, "4", daysAgo(7))
+		report.LastMonthIPV4 = service.CalculateUptime(status.PubKey, "4", daysAgo(30))
 	} else if status.IPVersion == "6" {
-		report.IPV6Status = uptimeReport
+		report.MostRecentIPV6 = status.Up
+		report.Last5MinutesIPV6 = service.CalculateUptime(status.PubKey, "6", minutesAgo(5))
+		report.LastHourIPV6 = service.CalculateUptime(status.PubKey, "6", minutesAgo(60))
+		report.LastDayIPV6 = service.CalculateUptime(status.PubKey, "6", daysAgo(1))
+		report.LastWeekIPV6 = service.CalculateUptime(status.PubKey, "6", daysAgo(7))
+		report.LastMonthIPV6 = service.CalculateUptime(status.PubKey, "6", daysAgo(30))
 	}
 	service.db.SaveMixStatusReport(report)
 	return report

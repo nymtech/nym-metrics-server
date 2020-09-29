@@ -16,7 +16,7 @@ type IDb interface {
 	Add(models.PersistedMixStatus)
 	List(pubkey string, limit int) []models.PersistedMixStatus
 	ListDateRange(pubkey string, ipVersion string, start int64, end int64) []models.PersistedMixStatus
-	LoadReport(pubkey string) (models.MixStatusReport, error)
+	LoadReport(pubkey string) models.MixStatusReport
 	SaveMixStatusReport(models.MixStatusReport)
 }
 
@@ -34,6 +34,8 @@ func NewDb() *Db {
 	}
 
 	database.AutoMigrate(&models.PersistedMixStatus{})
+	database.AutoMigrate(&models.MixStatusReport{})
+
 	d := Db{
 		database,
 	}
@@ -65,10 +67,16 @@ func (db *Db) ListDateRange(pubkey string, ipVersion string, start int64, end in
 
 // SaveMixStatusReport creates or updates a status summary report for a given mixnode in the database
 func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
-
+	db.orm.Create(report)
 }
 
-// LoadReport retrieves a models.MixStatusReport
-func (db *Db) LoadReport(pubkey string) (models.MixStatusReport, error) {
-	return models.MixStatusReport{}, nil
+// LoadReport retrieves a models.MixStatusReport.
+// If a report ins't found, it crudely generates a new instance and returns that instead.
+func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
+	var report models.MixStatusReport
+
+	if retrieve := db.orm.Where("pubkey  = ?").First(&report); retrieve.Error != nil {
+		return models.MixStatusReport{}
+	}
+	return report
 }

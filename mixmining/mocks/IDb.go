@@ -50,7 +50,7 @@ func (_m *IDb) ListDateRange(pubkey string, ipVersion string, start int64, end i
 }
 
 // LoadReport provides a mock function with given fields: pubkey
-func (_m *IDb) LoadReport(pubkey string) (models.MixStatusReport, error) {
+func (_m *IDb) LoadReport(pubkey string) models.MixStatusReport {
 	ret := _m.Called(pubkey)
 
 	var r0 models.MixStatusReport
@@ -60,14 +60,7 @@ func (_m *IDb) LoadReport(pubkey string) (models.MixStatusReport, error) {
 		r0 = ret.Get(0).(models.MixStatusReport)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(pubkey)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // SaveMixStatusReport provides a mock function with given fields: _a0

@@ -1,8 +1,6 @@
 package mixmining
 
 import (
-	"errors"
-
 	"github.com/BorisBorshevsky/timemock"
 	"github.com/nymtech/nym-directory/mixmining/mocks"
 	"github.com/nymtech/nym-directory/models"
@@ -93,6 +91,9 @@ var _ = Describe("mixmining.Service", func() {
 	downer := persisted1
 	downer.MixStatus.Up = false
 
+	upper := persisted1
+	upper.MixStatus.Up = true
+
 	persistedList := []models.PersistedMixStatus{persisted1, persisted2}
 	emptyList := []models.PersistedMixStatus{}
 
@@ -152,39 +153,92 @@ var _ = Describe("mixmining.Service", func() {
 			mockDb = *new(mocks.IDb)
 			serv = *NewService(&mockDb)
 		})
-		Context("when no statuses exist yet", func() {
+		Context("when 1 down status exists", func() {
 			BeforeEach(func() {
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(emptyList)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(emptyList)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(emptyList)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(emptyList)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(emptyList)
-				mockDb.On("LoadReport", downer.PubKey).Return(models.MixStatusReport{}, errors.New("Report does not exist")) // TODO: Mockery isn't happy returning an untyped nil, so I've had to sub in a blank `models.MixStatusReport{}`. It will actually return a nil.
-				expectedReport := models.MixStatusReport{
-					PubKey: downer.PubKey,
-					IPV4Status: models.UptimeReport{
-						IPVersion:    "4",
-						MostRecent:   false,
-						Last5Minutes: 0,
-						LastHour:     0,
-						LastDay:      0,
-						LastWeek:     0,
-						LastMonth:    0,
-					},
-					IPV6Status: models.UptimeReport{},
-				}
-				mockDb.On("SaveMixStatusReport", expectedReport)
+				oneDown := []models.PersistedMixStatus{downer}
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(oneDown)
 			})
-			It("should save the initial report, all statuses will be set to down", func() {
+			Context("this one *must be* a downer, so calculate using it", func() {
+				BeforeEach(func() {
+					mockDb.On("LoadReport", downer.PubKey).Return(models.MixStatusReport{}) // TODO: Mockery isn't happy returning an untyped nil, so I've had to sub in a blank `models.MixStatusReport{}`. It will actually return a nil.
+					expectedSave := models.MixStatusReport{
+						PubKey:           downer.PubKey,
+						MostRecentIPV4:   false,
+						Last5MinutesIPV4: 0,
+						LastHourIPV4:     0,
+						LastDayIPV4:      0,
+						LastWeekIPV4:     0,
+						LastMonthIPV4:    0,
+						MostRecentIPV6:   false,
+						Last5MinutesIPV6: 0,
+						LastHourIPV6:     0,
+						LastDayIPV6:      0,
+						LastWeekIPV6:     0,
+						LastMonthIPV6:    0,
+					}
+					mockDb.On("SaveMixStatusReport", expectedSave)
+				})
+				It("should save the initial report, all statuses will be set to down", func() {
+					result := serv.SaveStatusReport(downer)
+					assert.Equal(GinkgoT(), 0, result.Last5MinutesIPV4)
+					assert.Equal(GinkgoT(), 0, result.LastHourIPV4)
+					assert.Equal(GinkgoT(), 0, result.LastDayIPV4)
+					assert.Equal(GinkgoT(), 0, result.LastWeekIPV4)
+					assert.Equal(GinkgoT(), 0, result.LastMonthIPV4)
+					mockDb.AssertExpectations(GinkgoT())
+				})
+			})
 
-				result := serv.SaveStatusReport(downer)
-
-				assert.Equal(GinkgoT(), 0, result.IPV4Status.Last5Minutes)
-				assert.Equal(GinkgoT(), 0, result.IPV4Status.LastHour)
-				assert.Equal(GinkgoT(), 0, result.IPV4Status.LastDay)
-				assert.Equal(GinkgoT(), 0, result.IPV4Status.LastWeek)
-				assert.Equal(GinkgoT(), 0, result.IPV4Status.LastMonth)
-				mockDb.AssertExpectations(GinkgoT())
+		})
+		Context("when 1 up status exists", func() {
+			BeforeEach(func() {
+				oneUp := []models.PersistedMixStatus{upper}
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(oneUp)
+			})
+			Context("this one *must be* an upper, so calculate using it", func() {
+				BeforeEach(func() {
+					oneDown := []models.PersistedMixStatus{downer}
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), minutesAgo(5)).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), minutesAgo(60)).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), daysAgo(1)).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), daysAgo(7)).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), daysAgo(30)).Return(oneDown)
+					mockDb.On("LoadReport", upper.PubKey).Return(models.MixStatusReport{}) // TODO: Mockery isn't happy returning an untyped nil, so I've had to sub in a blank `models.MixStatusReport{}`. It will actually return a nil.
+					expectedSave := models.MixStatusReport{
+						PubKey:           upper.PubKey,
+						MostRecentIPV4:   true,
+						Last5MinutesIPV4: 100,
+						LastHourIPV4:     100,
+						LastDayIPV4:      100,
+						LastWeekIPV4:     100,
+						LastMonthIPV4:    100,
+						MostRecentIPV6:   false,
+						Last5MinutesIPV6: 0,
+						LastHourIPV6:     0,
+						LastDayIPV6:      0,
+						LastWeekIPV6:     0,
+						LastMonthIPV6:    0,
+					}
+					mockDb.On("SaveMixStatusReport", expectedSave)
+				})
+				It("should save the initial report, all statuses will be set to up", func() {
+					result := serv.SaveStatusReport(upper)
+					assert.Equal(GinkgoT(), true, result.MostRecentIPV4)
+					assert.Equal(GinkgoT(), 100, result.Last5MinutesIPV4)
+					assert.Equal(GinkgoT(), 100, result.LastHourIPV4)
+					assert.Equal(GinkgoT(), 100, result.LastDayIPV4)
+					assert.Equal(GinkgoT(), 100, result.LastWeekIPV4)
+					assert.Equal(GinkgoT(), 100, result.LastMonthIPV4)
+					mockDb.AssertExpectations(GinkgoT())
+				})
 			})
 		})
 
@@ -198,29 +252,37 @@ var _ = Describe("mixmining.Service", func() {
 			})
 			It("should save the report", func() {
 				initialState := models.MixStatusReport{
-					PubKey: downer.PubKey,
-					IPV4Status: models.UptimeReport{
-						IPVersion:    "4",
-						MostRecent:   true,
-						Last5Minutes: 100,
-					},
-					IPV6Status: models.UptimeReport{},
+					PubKey:           downer.PubKey,
+					MostRecentIPV4:   true,
+					Last5MinutesIPV4: 100,
+					LastHourIPV4:     100,
+					LastDayIPV4:      100,
+					LastWeekIPV4:     100,
+					LastMonthIPV4:    100,
+					MostRecentIPV6:   false,
+					Last5MinutesIPV6: 0,
+					LastHourIPV6:     0,
+					LastDayIPV6:      0,
+					LastWeekIPV6:     0,
+					LastMonthIPV6:    0,
 				}
 
 				expectedAfterUpdate := models.MixStatusReport{
-					PubKey: downer.PubKey,
-					IPV4Status: models.UptimeReport{
-						IPVersion:    "4",
-						MostRecent:   downer.Up,
-						Last5Minutes: 66,
-						LastHour:     66,
-						LastDay:      66,
-						LastWeek:     66,
-						LastMonth:    66,
-					},
-					IPV6Status: models.UptimeReport{},
+					PubKey:           downer.PubKey,
+					MostRecentIPV4:   false,
+					Last5MinutesIPV4: 66,
+					LastHourIPV4:     66,
+					LastDayIPV4:      66,
+					LastWeekIPV4:     66,
+					LastMonthIPV4:    66,
+					MostRecentIPV6:   false,
+					Last5MinutesIPV6: 0,
+					LastHourIPV6:     0,
+					LastDayIPV6:      0,
+					LastWeekIPV6:     0,
+					LastMonthIPV6:    0,
 				}
-				mockDb.On("LoadReport", downer.PubKey).Return(initialState, nil)
+				mockDb.On("LoadReport", downer.PubKey).Return(initialState)
 				mockDb.On("SaveMixStatusReport", expectedAfterUpdate)
 				updatedStatus := serv.SaveStatusReport(downer)
 				assert.Equal(GinkgoT(), expectedAfterUpdate, updatedStatus)
