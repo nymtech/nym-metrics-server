@@ -170,7 +170,7 @@
                 }
             }
         },
-        "/api/mixmining/{pubkey}": {
+        "/api/mixmining/{pubkey}/history": {
             "get": {
                 "description": "Lists all mixnode statuses for a given node pubkey",
                 "consumes": [
@@ -747,6 +747,7 @@
                     "type": "string"
                 },
                 "lastSeen": {
+                    "description": "MixStatusReport",
                     "type": "integer"
                 },
                 "layer": {

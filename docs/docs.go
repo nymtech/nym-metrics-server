@@ -187,7 +187,7 @@ var doc = `{
                 }
             }
         },
-        "/api/mixmining/{pubkey}": {
+        "/api/mixmining/{pubkey}/history": {
             "get": {
                 "description": "Lists all mixnode statuses for a given node pubkey",
                 "consumes": [
@@ -764,6 +764,7 @@ var doc = `{
                     "type": "string"
                 },
                 "lastSeen": {
+                    "description": "MixStatusReport",
                     "type": "integer"
                 },
                 "layer": {

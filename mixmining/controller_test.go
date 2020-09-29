@@ -50,7 +50,7 @@ var _ = Describe("Controller", func() {
 			It("returns an empty list", func() {
 				router, mockService, _ := SetupRouter()
 				mockService.On("List", "foo").Return([]models.PersistedMixStatus{})
-				resp := performLocalHostRequest(router, "GET", "/api/mixmining/foo", nil)
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/foo/history", nil)
 
 				assert.Equal(GinkgoT(), 200, resp.Code)
 			})
@@ -60,7 +60,7 @@ var _ = Describe("Controller", func() {
 			It("should return the list of statuses as json", func() {
 				router, mockService, _ := SetupRouter()
 				mockService.On("List", "pubkey1").Return(fixtures.MixStatusesList())
-				url := "/api/mixmining/pubkey1"
+				url := "/api/mixmining/pubkey1/history"
 				resp := performLocalHostRequest(router, "GET", url, nil)
 				var response []models.PersistedMixStatus
 				json.Unmarshal([]byte(resp.Body.String()), &response)

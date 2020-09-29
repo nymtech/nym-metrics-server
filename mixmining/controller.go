@@ -33,7 +33,7 @@ func New(cfg Config) Controller {
 
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/mixmining", controller.CreateMixStatus)
-	router.GET("/api/mixmining/:pubkey", controller.ListMeasurements)
+	router.GET("/api/mixmining/:pubkey/history", controller.ListMeasurements)
 }
 
 // ListMeasurements lists mixnode statuses
@@ -48,7 +48,7 @@ func (controller *controller) RegisterRoutes(router *gin.Engine) {
 // @Failure 400 {object} models.Error
 // @Failure 404 {object} models.Error
 // @Failure 500 {object} models.Error
-// @Router /api/mixmining/{pubkey} [get]
+// @Router /api/mixmining/{pubkey}/history [get]
 func (controller *controller) ListMeasurements(c *gin.Context) {
 	pubkey := c.Param("pubkey")
 	measurements := controller.service.List(pubkey)

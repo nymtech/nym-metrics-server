@@ -128,6 +128,7 @@ definitions:
       host:
         type: string
       lastSeen:
+        description: MixStatusReport
         type: integer
       layer:
         type: integer
@@ -310,7 +311,7 @@ paths:
       summary: Lets the network monitor create a new uptime status for a mix
       tags:
       - mixmining
-  /api/mixmining/{pubkey}:
+  /api/mixmining/{pubkey}/history:
     get:
       consumes:
       - application/json
