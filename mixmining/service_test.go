@@ -65,7 +65,6 @@ var _ = Describe("mixmining.Service", func() {
 	var status2 models.MixStatus
 	var persisted1 models.PersistedMixStatus
 	var persisted2 models.PersistedMixStatus
-	var last5minutes []models.PersistedMixStatus
 
 	var serv Service
 
@@ -152,28 +151,32 @@ var _ = Describe("mixmining.Service", func() {
 		BeforeEach(func() {
 			mockDb = *new(mocks.IDb)
 			serv = *NewService(&mockDb)
-
-			last5minutes = persistedList
-			// lastHour := append(last5minutes, persistedList...)
-			// lastDay := append(lastHour, persistedList...)
-			// lastWeek := append(lastDay, persistedList...)
-			// lastMonth := append(lastWeek, persistedList...)
-			// so in the last month we have 10 persisted statuses, all up
 		})
 		Context("when no statuses exist yet", func() {
 			BeforeEach(func() {
-				expectedSave := models.MixStatusReport{
-					PubKey: downer.PubKey,
-				}
-				mockDb.On("SaveMixStatusReport", expectedSave)
 				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(emptyList)
 				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(emptyList)
 				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(emptyList)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(emptyList)
 				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(emptyList)
-				mockDb.On("LoadReport", downer.PubKey).Return(errors.New("Report does not exist"))
-
+				mockDb.On("LoadReport", downer.PubKey).Return(models.MixStatusReport{}, errors.New("Report does not exist")) // TODO: Mockery isn't happy returning an untyped nil, so I've had to sub in a blank `models.MixStatusReport{}`. It will actually return a nil.
+				expectedReport := models.MixStatusReport{
+					PubKey: downer.PubKey,
+					IPV4Status: models.UptimeReport{
+						IPVersion:    "4",
+						MostRecent:   false,
+						Last5Minutes: 0,
+						LastHour:     0,
+						LastDay:      0,
+						LastWeek:     0,
+						LastMonth:    0,
+					},
+					IPV6Status: models.UptimeReport{},
+				}
+				mockDb.On("SaveMixStatusReport", expectedReport)
 			})
-			It("should save the initial report, all statuses will be up (or down)", func() {
+			It("should save the initial report, all statuses will be set to down", func() {
+
 				result := serv.SaveStatusReport(downer)
 
 				assert.Equal(GinkgoT(), 0, result.IPV4Status.Last5Minutes)
@@ -185,17 +188,13 @@ var _ = Describe("mixmining.Service", func() {
 			})
 		})
 
-		Context("when 2 up statuses exist for the last 5 minutes already", func() {
+		Context("when 2 up statuses exist for the last 5 minutes already and we just added a down", func() {
 			BeforeEach(func() {
-				expectedSave := models.MixStatusReport{
-					PubKey: downer.PubKey,
-				}
-
-				mockDb.On("SaveMixStatusReport", expectedSave)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(last5minutes)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(emptyList)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(emptyList)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(emptyList)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(twoUpOneDown())
 			})
 			It("should save the report", func() {
 				initialState := models.MixStatusReport{
@@ -214,19 +213,19 @@ var _ = Describe("mixmining.Service", func() {
 						IPVersion:    "4",
 						MostRecent:   downer.Up,
 						Last5Minutes: 66,
+						LastHour:     66,
+						LastDay:      66,
+						LastWeek:     66,
+						LastMonth:    66,
 					},
 					IPV6Status: models.UptimeReport{},
 				}
-				mockDb.On("LoadReport", downer.PubKey).Return(initialState)
-				mockDb.On("GetStatusReport", persisted1.PubKey).Return(initialState)
+				mockDb.On("LoadReport", downer.PubKey).Return(initialState, nil)
 				mockDb.On("SaveMixStatusReport", expectedAfterUpdate)
-				result := serv.SaveStatusReport(downer)
-				assert.Equal(GinkgoT(), expectedAfterUpdate, result)
+				updatedStatus := serv.SaveStatusReport(downer)
+				assert.Equal(GinkgoT(), expectedAfterUpdate, updatedStatus)
+				mockDb.AssertExpectations(GinkgoT())
 			})
-		})
-
-		Context("when all time periods exist", func() {
-
 		})
 	})
 })

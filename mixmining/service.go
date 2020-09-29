@@ -49,13 +49,17 @@ func (service *Service) SaveStatusReport(status models.PersistedMixStatus) model
 		Last5Minutes: service.CalculateUptime(status.PubKey, status.IPVersion, minutesAgo(5)),
 		LastHour:     service.CalculateUptime(status.PubKey, status.IPVersion, minutesAgo(60)),
 		LastDay:      service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(1)),
-		LastWeek:     service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(30)),
-		LastMonth:    0,
+		LastWeek:     service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(7)),
+		LastMonth:    service.CalculateUptime(status.PubKey, status.IPVersion, daysAgo(30)),
 	}
 	var report models.MixStatusReport
 	report, err := service.db.LoadReport(status.PubKey)
 	if err != nil {
-		report = models.MixStatusReport{}
+		report = models.MixStatusReport{
+			PubKey:     status.PubKey,
+			IPV4Status: models.UptimeReport{},
+			IPV6Status: models.UptimeReport{},
+		}
 	}
 
 	if status.IPVersion == "4" {
