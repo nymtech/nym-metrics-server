@@ -2,6 +2,7 @@ package mixmining
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/nym-directory/models"
@@ -68,6 +69,11 @@ func (controller *controller) ListMeasurements(c *gin.Context) {
 // @Failure 500 {object} models.Error
 // @Router /api/mixmining [post]
 func (controller *controller) CreateMixStatus(c *gin.Context) {
+	remoteIP := strings.Split((c.Request.RemoteAddr), ":")[0]
+	if remoteIP != "127.0.0.1" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "forbidden"})
+		return
+	}
 	var status models.MixStatus
 	if err := c.ShouldBindJSON(&status); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
