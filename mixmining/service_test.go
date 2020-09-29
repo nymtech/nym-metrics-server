@@ -290,4 +290,45 @@ var _ = Describe("mixmining.Service", func() {
 			})
 		})
 	})
+
+	Describe("Getting a mix status report", func() {
+		Context("When no saved report exists for a pubkey", func() {
+			It("should return an empty report", func() {
+				mockDb = *new(mocks.IDb)
+				serv = *NewService(&mockDb)
+
+				blank := models.MixStatusReport{}
+				mockDb.On("LoadReport", "superkey").Return(blank)
+
+				report := serv.GetStatusReport("superkey")
+				assert.Equal(GinkgoT(), blank, report)
+			})
+		})
+		Context("When a saved report exists for a pubkey", func() {
+			It("should return the report", func() {
+				mockDb = *new(mocks.IDb)
+				serv = *NewService(&mockDb)
+
+				perfect := models.MixStatusReport{
+					PubKey:           "superkey",
+					MostRecentIPV4:   true,
+					Last5MinutesIPV4: 100,
+					LastHourIPV4:     100,
+					LastDayIPV4:      100,
+					LastWeekIPV4:     100,
+					LastMonthIPV4:    100,
+					MostRecentIPV6:   true,
+					Last5MinutesIPV6: 100,
+					LastHourIPV6:     100,
+					LastDayIPV6:      100,
+					LastWeekIPV6:     100,
+					LastMonthIPV6:    100,
+				}
+				mockDb.On("LoadReport", "superkey").Return(perfect)
+
+				report := serv.GetStatusReport("superkey")
+				assert.Equal(GinkgoT(), perfect, report)
+			})
+		})
+	})
 })

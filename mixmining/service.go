@@ -17,6 +17,7 @@ type IService interface {
 	CreateMixStatus(metric models.MixStatus) models.PersistedMixStatus
 	List(pubkey string) []models.PersistedMixStatus
 	SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport
+	GetStatusReport(pubkey string) models.MixStatusReport
 }
 
 // NewService constructor
@@ -39,6 +40,11 @@ func (service *Service) CreateMixStatus(mixStatus models.MixStatus) models.Persi
 // List lists the given number mix metrics
 func (service *Service) List(pubkey string) []models.PersistedMixStatus {
 	return service.db.List(pubkey, 1000)
+}
+
+// GetStatusReport gets a single MixStatusReport by node public key
+func (service *Service) GetStatusReport(pubkey string) models.MixStatusReport {
+	return service.db.LoadReport(pubkey)
 }
 
 // SaveStatusReport builds and saves a status report for a mixnode. The report can be updated once

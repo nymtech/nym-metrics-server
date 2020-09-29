@@ -26,6 +26,20 @@ func (_m *IService) CreateMixStatus(metric models.MixStatus) models.PersistedMix
 	return r0
 }
 
+// GetStatusReport provides a mock function with given fields: pubkey
+func (_m *IService) GetStatusReport(pubkey string) models.MixStatusReport {
+	ret := _m.Called(pubkey)
+
+	var r0 models.MixStatusReport
+	if rf, ok := ret.Get(0).(func(string) models.MixStatusReport); ok {
+		r0 = rf(pubkey)
+	} else {
+		r0 = ret.Get(0).(models.MixStatusReport)
+	}
+
+	return r0
+}
+
 // List provides a mock function with given fields: pubkey
 func (_m *IService) List(pubkey string) []models.PersistedMixStatus {
 	ret := _m.Called(pubkey)
