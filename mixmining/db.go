@@ -30,17 +30,7 @@ type Db struct {
 
 // NewDb constructor
 func NewDb() *Db {
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	dbPath := usr.HomeDir + "/.nym/"
-	os.MkdirAll(dbPath, os.ModePerm)
-	db := dbPath + "mixmining.db"
-	fmt.Printf("db is: %s", db)
-	database, err := gorm.Open(sqlite.Open(db), &gorm.Config{})
-
+	database, err := gorm.Open(sqlite.Open(dbPath()), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to orm!")
 	}
@@ -52,6 +42,18 @@ func NewDb() *Db {
 		database,
 	}
 	return &d
+}
+
+func dbPath() string {
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+	dbPath := usr.HomeDir + "/.nym/"
+	os.MkdirAll(dbPath, os.ModePerm)
+	db := dbPath + "mixmining.db"
+	fmt.Printf("db is: %s", db)
+	return db
 }
 
 // Add saves a PersistedMixStatus
