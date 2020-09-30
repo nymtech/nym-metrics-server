@@ -6,7 +6,7 @@ import (
 )
 
 // @title Nym Directory API
-// @version 0.0.4
+// @version 0.9.0-dev
 // @description This is a temporarily centralized directory/PKI/metrics API to allow us to get the other Nym node types running. Its functionality will eventually be folded into other parts of Nym.
 // @termsOfService http://swagger.io/terms/
 
