@@ -2,6 +2,9 @@ package mixmining
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/user"
 
 	"github.com/nymtech/nym-directory/models"
 	"gorm.io/driver/sqlite"
@@ -27,7 +30,16 @@ type Db struct {
 
 // NewDb constructor
 func NewDb() *Db {
-	database, err := gorm.Open(sqlite.Open("nym-mixmining.db"), &gorm.Config{})
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dbPath := usr.HomeDir + "/.nym/"
+	os.MkdirAll(dbPath, os.ModePerm)
+	db := dbPath + "mixmining.db"
+	fmt.Printf("db is: %s", db)
+	database, err := gorm.Open(sqlite.Open(db), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to orm!")
