@@ -69,7 +69,7 @@ func (db *Db) ListDateRange(pubkey string, ipVersion string, start int64, end in
 func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
 	fmt.Printf("\r\nAbout to save report\r\n: %+v", report)
 
-	create := db.orm.Debug().Save(report)
+	create := db.orm.Save(report)
 	if create.Error != nil {
 		fmt.Printf("Mix status report creation error: %+v", create.Error)
 	}
@@ -80,7 +80,7 @@ func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
 func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	var report models.MixStatusReport
 
-	if retrieve := db.orm.Debug().First(&report, "pub_key  = ?", pubkey); retrieve.Error != nil {
+	if retrieve := db.orm.First(&report, "pub_key  = ?", pubkey); retrieve.Error != nil {
 		fmt.Printf("ERROR while retrieving mix status report %+v", retrieve.Error)
 		return models.MixStatusReport{}
 	}
