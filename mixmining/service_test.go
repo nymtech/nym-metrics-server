@@ -130,7 +130,7 @@ var _ = Describe("mixmining.Service", func() {
 	Describe("Calculating uptime", func() {
 		Context("when no statuses exist yet", func() {
 			It("should return 0", func() {
-				mockDb.On("ListDateRange", "key1", "4", Now(), daysAgo(30)).Return(emptyList)
+				mockDb.On("ListDateRange", "key1", "4", daysAgo(30), now()).Return(emptyList)
 
 				uptime := serv.CalculateUptime(persisted1.PubKey, persisted1.IPVersion, daysAgo(30))
 				assert.Equal(GinkgoT(), 0, uptime)
@@ -139,7 +139,7 @@ var _ = Describe("mixmining.Service", func() {
 		})
 		Context("when 2 ups and 1 down exist in the given time period", func() {
 			It("should return 66", func() {
-				mockDb.On("ListDateRange", "key1", "4", Now(), daysAgo(1)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", "key1", "4", daysAgo(1), now()).Return(twoUpOneDown())
 
 				uptime := serv.CalculateUptime("key1", "4", daysAgo(1))
 				expected := 66 // percent
@@ -156,11 +156,11 @@ var _ = Describe("mixmining.Service", func() {
 		Context("when 1 down status exists", func() {
 			BeforeEach(func() {
 				oneDown := []models.PersistedMixStatus{downer}
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(oneDown)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(oneDown)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(oneDown)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(oneDown)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, minutesAgo(5), now()).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, minutesAgo(60), now()).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(1), now()).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(7), now()).Return(oneDown)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(30), now()).Return(oneDown)
 			})
 			Context("this one *must be* a downer, so calculate using it", func() {
 				BeforeEach(func() {
@@ -197,20 +197,20 @@ var _ = Describe("mixmining.Service", func() {
 		Context("when 1 up status exists", func() {
 			BeforeEach(func() {
 				oneUp := []models.PersistedMixStatus{upper}
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(oneUp)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(oneUp)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(oneUp)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(oneUp)
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, minutesAgo(5), now()).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, minutesAgo(60), now()).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(1), now()).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(7), now()).Return(oneUp)
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(30), now()).Return(oneUp)
 			})
 			Context("this one *must be* an upper, so calculate using it", func() {
 				BeforeEach(func() {
 					oneDown := []models.PersistedMixStatus{downer}
-					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), minutesAgo(5)).Return(oneDown)
-					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), minutesAgo(60)).Return(oneDown)
-					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), daysAgo(1)).Return(oneDown)
-					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), daysAgo(7)).Return(oneDown)
-					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, now(), daysAgo(30)).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, minutesAgo(5), now()).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, minutesAgo(60), now()).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, daysAgo(1), now()).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, daysAgo(7), now()).Return(oneDown)
+					mockDb.On("ListDateRange", upper.PubKey, upper.IPVersion, daysAgo(30), now()).Return(oneDown)
 					mockDb.On("LoadReport", upper.PubKey).Return(models.MixStatusReport{}) // TODO: Mockery isn't happy returning an untyped nil, so I've had to sub in a blank `models.MixStatusReport{}`. It will actually return a nil.
 					expectedSave := models.MixStatusReport{
 						PubKey:           upper.PubKey,
@@ -244,11 +244,11 @@ var _ = Describe("mixmining.Service", func() {
 
 		Context("when 2 up statuses exist for the last 5 minutes already and we just added a down", func() {
 			BeforeEach(func() {
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(5)).Return(twoUpOneDown())
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), minutesAgo(60)).Return(twoUpOneDown())
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(1)).Return(twoUpOneDown())
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(7)).Return(twoUpOneDown())
-				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, now(), daysAgo(30)).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, minutesAgo(5), now()).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, minutesAgo(60), now()).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(1), now()).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(7), now()).Return(twoUpOneDown())
+				mockDb.On("ListDateRange", downer.PubKey, downer.IPVersion, daysAgo(30), now()).Return(twoUpOneDown())
 			})
 			It("should save the report", func() {
 				initialState := models.MixStatusReport{
