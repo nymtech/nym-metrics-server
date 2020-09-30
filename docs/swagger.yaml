@@ -347,6 +347,37 @@ paths:
       summary: Lists mixnode activity
       tags:
       - mixmining
+  /api/mixmining/{pubkey}/report:
+    get:
+      consumes:
+      - application/json
+      description: Provides summary uptime statistics for last 5 minutes, day, week, and month
+      operationId: getMixStatusReport
+      parameters:
+      - description: Mixnode Pubkey
+        in: path
+        name: pubkey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Retrieves a summary report of historical mix status
+      tags:
+      - mixmining
   /api/presence/allow:
     post:
       consumes:

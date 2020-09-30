@@ -21,7 +21,7 @@ type PersistedMixStatus struct {
 
 // MixStatusReport gives a quick view of mixnode uptime performance
 type MixStatusReport struct {
-	PubKey           string `json:"pubKey" binding:"required" gorm:"index"`
+	PubKey           string `json:"pubKey" binding:"required" gorm:"primaryKey;index"`
 	MostRecentIPV4   bool   `json:"mostRecentIPV4" binding:"required"`
 	Last5MinutesIPV4 int    `json:"last5MinutesIPV4" binding:"required"`
 	LastHourIPV4     int    `json:"lastHourIPV4" binding:"required"`

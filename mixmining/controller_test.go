@@ -45,6 +45,29 @@ var _ = Describe("Controller", func() {
 		})
 	})
 
+	Describe("retrieving a mix status report (overview)", func() {
+		Context("when a report does not yet exist", func() {
+			It("should 404", func() {
+				router, mockService, _ := SetupRouter()
+				mockService.On("GetStatusReport", fixtures.MixStatusReport().PubKey).Return(models.MixStatusReport{})
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/key1/report", nil)
+				assert.Equal(GinkgoT(), 404, resp.Result().StatusCode)
+			})
+		})
+
+		Context("when a report exists", func() {
+			It("should return the report", func() {
+				router, mockService, _ := SetupRouter()
+				mockService.On("GetStatusReport", fixtures.MixStatusReport().PubKey).Return(fixtures.MixStatusReport())
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/key1/report", nil)
+				var response models.MixStatusReport
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+				assert.Equal(GinkgoT(), 200, resp.Result().StatusCode)
+				assert.Equal(GinkgoT(), fixtures.MixStatusReport(), response)
+			})
+		})
+	})
+
 	Describe("listing statuses for a node", func() {
 		Context("when no statuses have yet been saved", func() {
 			It("returns an empty list", func() {
@@ -54,7 +77,6 @@ var _ = Describe("Controller", func() {
 
 				assert.Equal(GinkgoT(), 200, resp.Code)
 			})
-
 		})
 		Context("when some statuses exist", func() {
 			It("should return the list of statuses as json", func() {

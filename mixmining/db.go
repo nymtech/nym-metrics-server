@@ -69,7 +69,7 @@ func (db *Db) ListDateRange(pubkey string, ipVersion string, start int64, end in
 
 // SaveMixStatusReport creates or updates a status summary report for a given mixnode in the database
 func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
-	create := db.orm.Create(report)
+	create := db.orm.Save(&report)
 	if create.Error != nil {
 		fmt.Printf("Mix status report creation error: %+v", create.Error)
 	}

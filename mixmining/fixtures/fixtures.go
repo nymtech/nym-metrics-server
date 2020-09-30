@@ -52,3 +52,22 @@ func GoodPersistedMixStatus() models.PersistedMixStatus {
 		Timestamp: 1234,
 	}
 }
+
+// MixStatusReport ...
+func MixStatusReport() models.MixStatusReport {
+	return models.MixStatusReport{
+		PubKey:           "key1",
+		MostRecentIPV4:   true,
+		Last5MinutesIPV4: 100,
+		LastHourIPV4:     100,
+		LastDayIPV4:      100,
+		LastWeekIPV4:     100,
+		LastMonthIPV4:    100,
+		MostRecentIPV6:   true,
+		Last5MinutesIPV6: 100,
+		LastHourIPV6:     100,
+		LastDayIPV6:      100,
+		LastWeekIPV6:     100,
+		LastMonthIPV6:    100,
+	}
+}

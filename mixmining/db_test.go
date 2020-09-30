@@ -137,5 +137,25 @@ var _ = Describe("The mixmining db", func() {
 				assert.Equal(GinkgoT(), newReport, saved)
 			})
 		})
+		Context("when saving a second time", func() {
+			It("should re-save the original report, and not make a second copy", func() {
+				db := NewDb()
+				report := db.LoadReport("key")
+				report.Last5MinutesIPV4 = 666
+
+				var oldCount int64
+				db.orm.Model(&models.MixStatusReport{}).Where("pub_key = ?", "key").Count(&oldCount)
+				assert.Equal(GinkgoT(), int64(1), oldCount)
+
+				db.SaveMixStatusReport(report)
+
+				var newCount int64
+				db.orm.Model(&models.MixStatusReport{}).Where("pub_key = ?", "key").Count(&newCount)
+				assert.Equal(GinkgoT(), int64(1), newCount)
+
+				reloadedReport := db.LoadReport("key")
+				assert.Equal(GinkgoT(), 666, reloadedReport.Last5MinutesIPV4)
+			})
+		})
 	})
 })

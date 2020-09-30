@@ -34,6 +34,7 @@ func New(cfg Config) Controller {
 func (controller *controller) RegisterRoutes(router *gin.Engine) {
 	router.POST("/api/mixmining", controller.CreateMixStatus)
 	router.GET("/api/mixmining/:pubkey/history", controller.ListMeasurements)
+	router.GET("/api/mixmining/:pubkey/report", controller.GetMixStatusReport)
 }
 
 // ListMeasurements lists mixnode statuses
@@ -83,4 +84,26 @@ func (controller *controller) CreateMixStatus(c *gin.Context) {
 	persisted := controller.service.CreateMixStatus(sanitized)
 	controller.service.SaveStatusReport(persisted)
 	c.JSON(http.StatusCreated, gin.H{"ok": true})
+}
+
+// GetMixStatusReport ...
+// @Summary Retrieves a summary report of historical mix status
+// @Description Provides summary uptime statistics for last 5 minutes, day, week, and month
+// @ID getMixStatusReport
+// @Accept  json
+// @Produce  json
+// @Tags mixmining
+// @Param pubkey path string true "Mixnode Pubkey"
+// @Success 200
+// @Failure 400 {object} models.Error
+// @Failure 404 {object} models.Error
+// @Failure 500 {object} models.Error
+// @Router /api/mixmining/{pubkey}/report [get]
+func (controller *controller) GetMixStatusReport(c *gin.Context) {
+	pubkey := c.Param("pubkey")
+	report := controller.service.GetStatusReport(pubkey)
+	if (report == models.MixStatusReport{}) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
+	}
+	c.JSON(http.StatusOK, report)
 }
