@@ -81,8 +81,7 @@ func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	var report models.MixStatusReport
 
 	if retrieve := db.orm.Debug().First(&report, "pub_key  = ?", pubkey); retrieve.Error != nil {
-		// println()
-		panic("ERROR while retrieving mix status report")
+		fmt.Printf("ERROR while retrieving mix status report %+v", retrieve.Error)
 		return models.MixStatusReport{}
 	}
 	return report
