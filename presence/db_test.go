@@ -28,7 +28,7 @@ var _ = Describe("Presence Db", func() {
 			presence1 models.CocoPresence
 			presence2 models.CocoPresence
 		)
-		var db *db
+		var db *Db
 		BeforeEach(func() {
 			db = NewDb()
 
@@ -78,9 +78,9 @@ var _ = Describe("Presence Db", func() {
 			})
 		})
 		Describe("Presences", func() {
-			Context("more than 10 seconds old", func() {
+			Context("more than 20 seconds old", func() {
 				It("are not returned in the topology", func() {
-					oldtime := timemock.Now().Add(time.Duration(-10 * time.Second)).UnixNano()
+					oldtime := timemock.Now().Add(time.Duration(-20 * time.Second)).UnixNano()
 					presence1.LastSeen = oldtime
 					db.AddCoco(presence1)
 					db.AddCoco(presence2)
@@ -96,7 +96,7 @@ var _ = Describe("Presence Db", func() {
 			presence1 models.MixNodePresence
 			presence2 models.MixNodePresence
 		)
-		var db *db
+		var db *Db
 		BeforeEach(func() {
 			db = NewDb()
 
@@ -150,9 +150,9 @@ var _ = Describe("Presence Db", func() {
 				})
 			})
 			Describe("Presences", func() {
-				Context("more than 10 seconds old", func() {
+				Context("more than 20 seconds old", func() {
 					It("are not returned in the topology", func() {
-						oldtime := timemock.Now().Add(time.Duration(-10 * time.Second)).UnixNano()
+						oldtime := timemock.Now().Add(time.Duration(-20 * time.Second)).UnixNano()
 						presence1.LastSeen = oldtime
 						db.AddMix(presence1)
 						db.AddMix(presence2)
@@ -169,15 +169,15 @@ var _ = Describe("Presence Db", func() {
 			presence1 models.MixProviderPresence
 			presence2 models.MixProviderPresence
 		)
-		var db *db
+		var db *Db
 		BeforeEach(func() {
 			db = NewDb()
 
 			// Set up fixtures
 			var mix1 = models.MixProviderHostInfo{
-				MixnetListener:    "foo.com:8000",
-				ClientListener:    "foo.com:8001",
-				PubKey:            "pubkey1",
+				MixnetListener: "foo.com:8000",
+				ClientListener: "foo.com:8001",
+				PubKey:         "pubkey1",
 			}
 			presence1 = models.MixProviderPresence{
 				MixProviderHostInfo: mix1,
@@ -185,9 +185,9 @@ var _ = Describe("Presence Db", func() {
 			}
 
 			var mix2 = models.MixProviderHostInfo{
-				MixnetListener:    "foo.com:8000",
-				ClientListener:    "foo.com:8001",
-				PubKey:            "pubkey2",
+				MixnetListener: "foo.com:8000",
+				ClientListener: "foo.com:8001",
+				PubKey:         "pubkey2",
 			}
 			presence2 = models.MixProviderPresence{
 				MixProviderHostInfo: mix2,
@@ -219,9 +219,9 @@ var _ = Describe("Presence Db", func() {
 				})
 			})
 			Describe("Presences", func() {
-				Context("more than 10 seconds old", func() {
+				Context("more than 20 seconds old", func() {
 					It("are not returned in the topology", func() {
-						oldtime := timemock.Now().Add(time.Duration(-10 * time.Second)).UnixNano()
+						oldtime := timemock.Now().Add(time.Duration(-20 * time.Second)).UnixNano()
 						presence1.LastSeen = oldtime
 						db.AddMixProvider(presence1)
 						db.AddMixProvider(presence2)

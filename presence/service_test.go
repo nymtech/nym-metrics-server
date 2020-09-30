@@ -25,7 +25,7 @@ var _ = Describe("presence.Service", func() {
 		providerpresence3 models.MixProviderPresence
 		mockDb            mocks.IDb
 
-		serv service
+		serv Service
 	)
 	BeforeEach(func() {
 		mockDb = *new(mocks.IDb)
@@ -90,10 +90,10 @@ var _ = Describe("presence.Service", func() {
 		}
 
 		provider1 = models.MixProviderHostInfo{
-			MixnetListener:    "foo.com:8000",
-			ClientListener:    "foo.com:8001",
-			Location:          defaultLocation,
-			PubKey:            "pubkey2",
+			MixnetListener: "foo.com:8000",
+			ClientListener: "foo.com:8001",
+			Location:       defaultLocation,
+			PubKey:         "pubkey2",
 		}
 
 		providerpresence3 = models.MixProviderPresence{

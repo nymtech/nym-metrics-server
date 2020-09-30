@@ -20,7 +20,8 @@ type IDb interface {
 	Topology() models.Topology
 }
 
-type db struct {
+// Db is a RAM store holding ephemeral presence information
+type Db struct {
 	// TODO: it's slightly inefficient to have a single mutex for all database, because right now
 	// if a mix node was being added, we wouldn't be able to touch cocoNodes
 	sync.Mutex
@@ -32,8 +33,8 @@ type db struct {
 }
 
 // NewDb constructor...
-func NewDb() *db {
-	return &db{
+func NewDb() *Db {
+	return &Db{
 		cocoNodes:        map[string]models.CocoPresence{},
 		disallowed:       []string{},
 		mixNodes:         map[string]models.MixNodePresence{},
@@ -42,41 +43,47 @@ func NewDb() *db {
 	}
 }
 
-func (db *db) AddCoco(presence models.CocoPresence) {
+// AddCoco adds a CocoPresence to the database
+func (db *Db) AddCoco(presence models.CocoPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
 	db.cocoNodes[presence.PubKey] = presence
 }
 
-func (db *db) AddMix(presence models.MixNodePresence) {
+// AddMix adds a MixNodePresence to the database
+func (db *Db) AddMix(presence models.MixNodePresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
 	db.mixNodes[presence.PubKey] = presence
 }
 
-func (db *db) AddMixProvider(presence models.MixProviderPresence) {
+// AddMixProvider adds a MixProviderPresence to the database
+func (db *Db) AddMixProvider(presence models.MixProviderPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
 	db.mixProviderNodes[presence.PubKey] = presence
 }
 
-func (db *db) AddGateway(presence models.GatewayPresence) {
+// AddGateway adds a GatewayPresence to the database
+func (db *Db) AddGateway(presence models.GatewayPresence) {
 	db.Lock()
 	defer db.Unlock()
 	db.killOldsters()
 	db.gateways[presence.IdentityKey] = presence
 }
 
-func (db *db) Allow(pubkey string) {
+// Allow puts a node into the allowed topology
+func (db *Db) Allow(pubkey string) {
 	db.Lock()
 	defer db.Unlock()
 	db.disallowed = remove(db.disallowed, pubkey)
 }
 
-func (db *db) Disallow(pubkey string) {
+// Disallow takes a node out of the active topology
+func (db *Db) Disallow(pubkey string) {
 	db.Lock()
 	defer db.Unlock()
 	for _, disallowedNode := range db.disallowed {
@@ -87,7 +94,8 @@ func (db *db) Disallow(pubkey string) {
 	db.disallowed = append(db.disallowed, pubkey)
 }
 
-func (db *db) ListDisallowed() []string {
+// ListDisallowed returns a list of disallowed nodes
+func (db *Db) ListDisallowed() []string {
 	return db.disallowed
 }
 
@@ -100,7 +108,7 @@ func (db *db) ListDisallowed() []string {
 // host are received within the timeWindow. So we get a nice bag of presences,
 // without duplicates, and don't have to worry much about timing. The tradeoff
 // is some extra code here:
-func (db *db) Topology() models.Topology {
+func (db *Db) Topology() models.Topology {
 	db.killOldsters()
 
 	cocoNodes := []models.CocoPresence{}
@@ -134,7 +142,7 @@ func (db *db) Topology() models.Topology {
 }
 
 // killOldsters kills any stale presence info
-func (db *db) killOldsters() {
+func (db *Db) killOldsters() {
 	for key, presence := range db.mixNodes {
 		if presence.LastSeen <= timeWindow() {
 			delete(db.mixNodes, key)

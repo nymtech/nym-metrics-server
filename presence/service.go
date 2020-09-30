@@ -9,7 +9,8 @@ import (
 
 const defaultLocation = "unknown"
 
-type service struct {
+// Service struct allows access to presence-related info
+type Service struct {
 	db         IDb
 	ipAssigner IPAssigner
 }
@@ -27,15 +28,16 @@ type IService interface {
 }
 
 // NewService constructor
-func NewService(db IDb) *service {
+func NewService(db IDb) *Service {
 	ipa := ipAssigner{}
-	return &service{
+	return &Service{
 		db:         db,
 		ipAssigner: &ipa,
 	}
 }
 
-func (service *service) AddCocoNodePresence(info models.CocoHostInfo, ip string) {
+// AddCocoNodePresence adds a CocoHostInfo to the database
+func (service *Service) AddCocoNodePresence(info models.CocoHostInfo, ip string) {
 	presence := models.CocoPresence{
 		CocoHostInfo: info,
 		LastSeen:     timemock.Now().UnixNano(),
@@ -47,7 +49,8 @@ func (service *service) AddCocoNodePresence(info models.CocoHostInfo, ip string)
 	service.db.AddCoco(presence)
 }
 
-func (service *service) AddMixNodePresence(info models.MixHostInfo) {
+// AddMixNodePresence adds a MixHostInfo to the database
+func (service *Service) AddMixNodePresence(info models.MixHostInfo) {
 	presence := models.MixNodePresence{
 		MixHostInfo: info,
 		LastSeen:    timemock.Now().UnixNano(),
@@ -59,7 +62,8 @@ func (service *service) AddMixNodePresence(info models.MixHostInfo) {
 	service.db.AddMix(presence)
 }
 
-func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) {
+// AddMixProviderPresence adds a MixProviderHostInfo to the database
+func (service *Service) AddMixProviderPresence(info models.MixProviderHostInfo) {
 	presence := models.MixProviderPresence{
 		MixProviderHostInfo: info,
 		LastSeen:            timemock.Now().UnixNano(),
@@ -71,7 +75,8 @@ func (service *service) AddMixProviderPresence(info models.MixProviderHostInfo) 
 	service.db.AddMixProvider(presence)
 }
 
-func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
+// AddGatewayPresence adds a GatewayHostInfo to the database
+func (service *Service) AddGatewayPresence(info models.GatewayHostInfo) {
 	presence := models.GatewayPresence{
 		GatewayHostInfo: info,
 		LastSeen:        timemock.Now().UnixNano(),
@@ -83,15 +88,18 @@ func (service *service) AddGatewayPresence(info models.GatewayHostInfo) {
 	service.db.AddGateway(presence)
 }
 
-func (service *service) Allow(node models.MixNodeID) {
+// Allow puts a mixnode back into the active topology
+func (service *Service) Allow(node models.MixNodeID) {
 	service.db.Allow(node.PubKey)
 }
 
-func (service *service) Disallow(node models.MixNodeID) {
+// Disallow removes a mixnode from the active topology
+func (service *Service) Disallow(node models.MixNodeID) {
 	service.db.Disallow(node.PubKey)
 }
 
-func (service *service) ListDisallowed() []models.MixNodePresence {
+// ListDisallowed returns a list of disallowed mixnodes
+func (service *Service) ListDisallowed() []models.MixNodePresence {
 	topology := service.db.Topology()
 	disallowed := service.db.ListDisallowed()
 	response := []models.MixNodePresence{}
@@ -108,7 +116,7 @@ func (service *service) ListDisallowed() []models.MixNodePresence {
 
 // Topology returns the directory server's current view of the network.
 // If there are any disallowed mixnodes, they'll be removed from the Mixnodes slice
-func (service *service) Topology() models.Topology {
+func (service *Service) Topology() models.Topology {
 	topology := service.db.Topology()
 	disallowed := service.db.ListDisallowed()
 	for _, mixpresence := range topology.MixNodes {
