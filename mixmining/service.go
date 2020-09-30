@@ -75,7 +75,7 @@ func (service *Service) SaveStatusReport(status models.PersistedMixStatus) model
 
 // CalculateUptime calculates percentage uptime for a given node, protocol since a specific time
 func (service *Service) CalculateUptime(pubkey string, ipVersion string, since int64) int {
-	statuses := service.db.ListDateRange(pubkey, ipVersion, now(), since)
+	statuses := service.db.ListDateRange(pubkey, ipVersion, since, now())
 	numStatuses := len(statuses)
 	if numStatuses == 0 {
 		return 0
