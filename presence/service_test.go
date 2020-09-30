@@ -23,7 +23,7 @@ var _ = Describe("presence.Service", func() {
 		providerpresence3 models.MixProviderPresence
 		mockDb            mocks.IDb
 
-		serv service
+		serv Service
 	)
 	BeforeEach(func() {
 		mockDb = *new(mocks.IDb)
