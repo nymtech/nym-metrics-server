@@ -140,18 +140,37 @@ var _ = Describe("The mixmining db", func() {
 		Context("when saving a second time", func() {
 			It("should re-save the original report, and not make a second copy", func() {
 				db := NewDb()
+				db.orm.Exec("DELETE FROM mix_status_reports")
+
+				newReport := models.MixStatusReport{
+					PubKey:           "key",
+					MostRecentIPV4:   true,
+					Last5MinutesIPV4: 5,
+					LastHourIPV4:     10,
+					LastDayIPV4:      15,
+					LastWeekIPV4:     20,
+					LastMonthIPV4:    25,
+					MostRecentIPV6:   false,
+					Last5MinutesIPV6: 30,
+					LastHourIPV6:     40,
+					LastDayIPV6:      50,
+					LastWeekIPV6:     60,
+					LastMonthIPV6:    70,
+				}
+				db.SaveMixStatusReport(newReport)
+
+				var firstCount int64
+				db.orm.Model(&models.MixStatusReport{}).Where("pub_key = ?", "key").Count(&firstCount)
+				assert.Equal(GinkgoT(), int64(1), firstCount)
+
 				report := db.LoadReport("key")
 				report.Last5MinutesIPV4 = 666
 
-				var oldCount int64
-				db.orm.Model(&models.MixStatusReport{}).Where("pub_key = ?", "key").Count(&oldCount)
-				assert.Equal(GinkgoT(), int64(1), oldCount)
-
 				db.SaveMixStatusReport(report)
 
-				var newCount int64
-				db.orm.Model(&models.MixStatusReport{}).Where("pub_key = ?", "key").Count(&newCount)
-				assert.Equal(GinkgoT(), int64(1), newCount)
+				var secondCount int64
+				db.orm.Model(&models.MixStatusReport{}).Where("pub_key = ?", "key").Count(&secondCount)
+				assert.Equal(GinkgoT(), int64(1), secondCount)
 
 				reloadedReport := db.LoadReport("key")
 				assert.Equal(GinkgoT(), 666, reloadedReport.Last5MinutesIPV4)

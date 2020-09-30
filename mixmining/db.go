@@ -3,11 +3,9 @@ package mixmining
 import (
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"github.com/nymtech/nym-directory/models"
-
-	// needed for Gorm to get its sqlite dialect
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 // DB is the Gorm orm for mixmining
@@ -29,7 +27,7 @@ type Db struct {
 
 // NewDb constructor
 func NewDb() *Db {
-	database, err := gorm.Open("sqlite3", "nym-mixmining.db")
+	database, err := gorm.Open(sqlite.Open("nym-mixmining.db"), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to orm!")
@@ -69,7 +67,9 @@ func (db *Db) ListDateRange(pubkey string, ipVersion string, start int64, end in
 
 // SaveMixStatusReport creates or updates a status summary report for a given mixnode in the database
 func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
-	create := db.orm.Save(&report)
+	fmt.Printf("\r\nAbout to save report\r\n: %+v", report)
+
+	create := db.orm.Debug().Save(report)
 	if create.Error != nil {
 		fmt.Printf("Mix status report creation error: %+v", create.Error)
 	}
@@ -80,7 +80,9 @@ func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
 func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	var report models.MixStatusReport
 
-	if retrieve := db.orm.Where("pub_key  = ?", pubkey).First(&report); retrieve.Error != nil {
+	if retrieve := db.orm.Debug().First(&report, "pub_key  = ?", pubkey); retrieve.Error != nil {
+		// println()
+		panic("ERROR while retrieving mix status report")
 		return models.MixStatusReport{}
 	}
 	return report
