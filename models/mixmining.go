@@ -5,6 +5,11 @@ import (
 )
 
 // MixStatus indicates whether a given node is up or down, as reported by a Nym monitor node.
+// The 'Up' field is pretty annoying. Gin and other HTTP routers ignore incoming json "false" values,
+// so making it a pointer works. This necessitates crapification of the Up-related code, as you can't
+// do `*true` or `&true`, you need a variable to point to or dereference. This is why you'll see e.g.
+// things like `booltrue := true`, `&booltrue` in the codebase. Maybe there's a more elegant way to
+// acheive that which a bigger gopher could clean up.
 type MixStatus struct {
 	PubKey    string `json:"pubKey" binding:"required" gorm:"index"`
 	IPVersion string `json:"ipVersion" binding:"required"`
