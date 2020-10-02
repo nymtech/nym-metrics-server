@@ -15,9 +15,10 @@ func twoUpOneDown() []models.PersistedMixStatus {
 	db := []models.PersistedMixStatus{}
 	var status = persistedStatus()
 
+	booltrue := true
 	status.PubKey = "key1"
 	status.IPVersion = "4"
-	status.Up = true
+	status.Up = &booltrue
 
 	status.Timestamp = minutesAgo(5)
 	db = append(db, status)
@@ -25,8 +26,9 @@ func twoUpOneDown() []models.PersistedMixStatus {
 	status.Timestamp = minutesAgo(10)
 	db = append(db, status)
 
+	boolfalse := false
 	status.Timestamp = minutesAgo(15)
-	status.Up = false
+	status.Up = &boolfalse
 	db = append(db, status)
 
 	return db
@@ -42,10 +44,11 @@ func persistedStatus() models.PersistedMixStatus {
 }
 
 func status() models.MixStatus {
+	boolfalse := false
 	return models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
-		Up:        false,
+		Up:        &boolfalse,
 	}
 }
 
@@ -66,10 +69,13 @@ var _ = Describe("mixmining.Service", func() {
 
 	var serv Service
 
+	boolfalse := false
+	booltrue := true
+
 	status1 = models.MixStatus{
 		PubKey:    "key1",
 		IPVersion: "4",
-		Up:        true,
+		Up:        &boolfalse,
 	}
 
 	persisted1 = models.PersistedMixStatus{
@@ -80,7 +86,7 @@ var _ = Describe("mixmining.Service", func() {
 	status2 = models.MixStatus{
 		PubKey:    "key2",
 		IPVersion: "6",
-		Up:        true,
+		Up:        &booltrue,
 	}
 
 	persisted2 = models.PersistedMixStatus{
@@ -89,10 +95,10 @@ var _ = Describe("mixmining.Service", func() {
 	}
 
 	downer := persisted1
-	downer.MixStatus.Up = false
+	downer.MixStatus.Up = &boolfalse
 
 	upper := persisted1
-	upper.MixStatus.Up = true
+	upper.MixStatus.Up = &booltrue
 
 	persistedList := []models.PersistedMixStatus{persisted1, persisted2}
 	emptyList := []models.PersistedMixStatus{}

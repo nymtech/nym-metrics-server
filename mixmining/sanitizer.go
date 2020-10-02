@@ -33,9 +33,10 @@ func (s sanitizer) Sanitize(input models.MixStatus) models.MixStatus {
 }
 
 func newMeasurement() models.MixStatus {
+	booltrue := true
 	return models.MixStatus{
 		PubKey:    "",
 		IPVersion: "",
-		Up:        true,
+		Up:        &booltrue,
 	}
 }

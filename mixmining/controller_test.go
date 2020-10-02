@@ -25,6 +25,28 @@ var _ = Describe("Controller", func() {
 				assert.Equal(GinkgoT(), 403, resp.Result().StatusCode)
 			})
 		})
+
+		Context("that has 'false' set for 'Up'", func() {
+			It("should save the mix status", func() {
+				boolfalse := false
+				router, mockService, mockSanitizer := SetupRouter()
+				status := fixtures.GoodMixStatus()
+				status.Up = &boolfalse
+
+				savedStatus := fixtures.GoodPersistedMixStatus()
+				savedStatus.Up = &boolfalse
+
+				mockSanitizer.On("Sanitize", status).Return(status)
+				mockService.On("CreateMixStatus", status).Return(savedStatus)
+				mockService.On("SaveStatusReport", savedStatus).Return(models.MixStatusReport{})
+
+				falseJSON, _ := json.Marshal(status)
+				resp := performLocalHostRequest(router, "POST", "/api/mixmining", falseJSON)
+				assert.Equal(GinkgoT(), 201, resp.Code)
+
+			})
+		})
+
 		Context("containing xss", func() {
 			It("should strip the xss attack, save the individual mix status, and update the status report for the given node", func() {
 				router, mockService, mockSanitizer := SetupRouter()

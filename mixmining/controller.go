@@ -80,6 +80,7 @@ func (controller *controller) CreateMixStatus(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	println("MADE IT HERE")
 	sanitized := controller.sanitizer.Sanitize(status)
 	persisted := controller.service.CreateMixStatus(sanitized)
 	controller.service.SaveStatusReport(persisted)

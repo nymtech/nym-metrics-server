@@ -55,14 +55,14 @@ func (service *Service) SaveStatusReport(status models.PersistedMixStatus) model
 	report.PubKey = status.PubKey // crude, we do this in case it's a fresh struct returned from the db
 
 	if status.IPVersion == "4" {
-		report.MostRecentIPV4 = status.Up
+		report.MostRecentIPV4 = *status.Up
 		report.Last5MinutesIPV4 = service.CalculateUptime(status.PubKey, "4", minutesAgo(5))
 		report.LastHourIPV4 = service.CalculateUptime(status.PubKey, "4", minutesAgo(60))
 		report.LastDayIPV4 = service.CalculateUptime(status.PubKey, "4", daysAgo(1))
 		report.LastWeekIPV4 = service.CalculateUptime(status.PubKey, "4", daysAgo(7))
 		report.LastMonthIPV4 = service.CalculateUptime(status.PubKey, "4", daysAgo(30))
 	} else if status.IPVersion == "6" {
-		report.MostRecentIPV6 = status.Up
+		report.MostRecentIPV6 = *status.Up
 		report.Last5MinutesIPV6 = service.CalculateUptime(status.PubKey, "6", minutesAgo(5))
 		report.LastHourIPV6 = service.CalculateUptime(status.PubKey, "6", minutesAgo(60))
 		report.LastDayIPV6 = service.CalculateUptime(status.PubKey, "6", daysAgo(1))
@@ -82,7 +82,7 @@ func (service *Service) CalculateUptime(pubkey string, ipVersion string, since i
 	}
 	up := 0
 	for _, status := range statuses {
-		if status.Up {
+		if *status.Up {
 			up = up + 1
 		}
 	}
