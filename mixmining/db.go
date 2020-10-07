@@ -56,7 +56,7 @@ func dbPath() string {
 	dbPath := usr.HomeDir + "/.nym/"
 	os.MkdirAll(dbPath, os.ModePerm)
 	db := dbPath + "mixmining.db"
-	fmt.Printf("db is: %s", db)
+	fmt.Printf("db is: %s\n", db)
 	return db
 }
 
