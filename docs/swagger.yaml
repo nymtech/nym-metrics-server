@@ -328,7 +328,67 @@ paths:
       summary: Lets the network monitor create a new uptime status for a mix
       tags:
       - mixmining
-  /api/mixmining/{pubkey}/history:
+  /api/mixmining/batch:
+    post:
+      consumes:
+      - application/json
+      description: Nym network monitor sends packets through the system and checks
+        if they make it. The network monitor then hits this method to report whether
+        nodes were up at a given time.
+      operationId: batchCreateMixStatus
+      parameters:
+      - description: object
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.BatchMixStatus'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Lets the network monitor create a new uptime status for multiple mixes
+      tags:
+      - mixmining
+  /api/mixmining/fullreport:
+    get:
+      consumes:
+      - application/json
+      description: Provides summary uptime statistics for last 5 minutes, day, week,
+        and month
+      operationId: batchGetMixStatusReport
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Retrieves a summary report of historical mix status
+      tags:
+      - mixmining
+  /api/mixmining/node/{pubkey}/history:
     get:
       consumes:
       - application/json
@@ -364,7 +424,7 @@ paths:
       summary: Lists mixnode activity
       tags:
       - mixmining
-  /api/mixmining/{pubkey}/report:
+  /api/mixmining/node/{pubkey}/report:
     get:
       consumes:
       - application/json
@@ -394,40 +454,6 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: Retrieves a summary report of historical mix status
-      tags:
-      - mixmining
-  /api/mixmining/batch:
-    post:
-      consumes:
-      - application/json
-      description: Nym network monitor sends packets through the system and checks
-        if they make it. The network monitor then hits this method to report whether
-        nodes were up at a given time.
-      operationId: addBatchMixStatus
-      parameters:
-      - description: object
-        in: body
-        name: object
-        required: true
-        schema:
-          $ref: '#/definitions/models.BatchMixStatus'
-      produces:
-      - application/json
-      responses:
-        "201": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Error'
-      summary: Lets the network monitor create a new uptime status for multiple mixes
       tags:
       - mixmining
   /api/presence/allow:

@@ -66,13 +66,12 @@ func (service *Service) BatchCreateMixStatus(batchMixStatus models.BatchMixStatu
 }
 
 func (service *Service) BatchGetMixStatusReport() models.BatchMixStatusReport {
-// TODO
-	return models.BatchMixStatusReport{}
+	return service.db.LoadNonStaleReports()
 }
 
 func (service *Service) SaveBatchStatusReport(status []models.PersistedMixStatus) models.BatchMixStatusReport {
 	// TODO: COMBINE REPORTS IF THEY USE THE SAME KEY (V4 and V6)
-	
+
 	pubkeys := make([]string, len(status))
 	for i := range status {
 		pubkeys[i] = status[i].PubKey

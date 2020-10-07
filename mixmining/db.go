@@ -21,6 +21,7 @@ type IDb interface {
 	List(pubkey string, limit int) []models.PersistedMixStatus
 	ListDateRange(pubkey string, ipVersion string, start int64, end int64) []models.PersistedMixStatus
 	LoadReport(pubkey string) models.MixStatusReport
+	LoadNonStaleReports() models.BatchMixStatusReport
 	BatchLoadReports(pubkeys []string) models.BatchMixStatusReport
 	SaveMixStatusReport(models.MixStatusReport)
 	SaveBatchMixStatusReport(models.BatchMixStatusReport)
@@ -64,7 +65,7 @@ func (db *Db) Add(status models.PersistedMixStatus) {
 	db.orm.Create(status)
 }
 
-func(db *Db) BatchAdd(status []models.PersistedMixStatus) {
+func (db *Db) BatchAdd(status []models.PersistedMixStatus) {
 	db.orm.Create(status)
 }
 
@@ -99,11 +100,10 @@ func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
 func (db *Db) SaveBatchMixStatusReport(report models.BatchMixStatusReport) {
 	fmt.Printf("\r\nAbout to save batch report\r\n: %+v", report)
 
-
 	if result := db.orm.Save(report.Report); result.Error != nil {
 		fmt.Printf("Batch Mix status report save error: %+v", result.Error)
 	}
-	
+
 	fmt.Errorf("DID IT WORK? SAVE BATCH")
 
 }
@@ -120,6 +120,16 @@ func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	return report
 }
 
+func (db *Db) LoadNonStaleReports() models.BatchMixStatusReport {
+	var reports []models.MixStatusReport
+
+	if retrieve := db.orm.Where("last_hour_ip_v4 >= 50").Or("last_hour_ip_v6 >= 50").Find(&reports); retrieve.Error != nil {
+		fmt.Printf("ERROR while retrieving multiple mix status report %+v", retrieve.Error)
+		return models.BatchMixStatusReport{Report: make([]models.MixStatusReport, 0)}
+	}
+	return models.BatchMixStatusReport{Report: reports}
+}
+
 func (db *Db) BatchLoadReports(pubkeys []string) models.BatchMixStatusReport {
 	var reports []models.MixStatusReport
 
@@ -129,4 +139,3 @@ func (db *Db) BatchLoadReports(pubkeys []string) models.BatchMixStatusReport {
 	}
 	return models.BatchMixStatusReport{Report: reports}
 }
-

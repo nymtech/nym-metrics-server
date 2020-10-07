@@ -183,7 +183,7 @@
                     "mixmining"
                 ],
                 "summary": "Lets the network monitor create a new uptime status for multiple mixes",
-                "operationId": "addBatchMixStatus",
+                "operationId": "batchCreateMixStatus",
                 "parameters": [
                     {
                         "description": "object",
@@ -218,7 +218,44 @@
                 }
             }
         },
-        "/api/mixmining/{pubkey}/history": {
+        "/api/mixmining/fullreport": {
+            "get": {
+                "description": "Provides summary uptime statistics for last 5 minutes, day, week, and month",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "mixmining"
+                ],
+                "summary": "Retrieves a summary report of historical mix status",
+                "operationId": "batchGetMixStatusReport",
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mixmining/node/{pubkey}/history": {
             "get": {
                 "description": "Lists all mixnode statuses for a given node pubkey",
                 "consumes": [
@@ -272,7 +309,7 @@
                 }
             }
         },
-        "/api/mixmining/{pubkey}/report": {
+        "/api/mixmining/node/{pubkey}/report": {
             "get": {
                 "description": "Provides summary uptime statistics for last 5 minutes, day, week, and month",
                 "consumes": [
