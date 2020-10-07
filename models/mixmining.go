@@ -40,3 +40,13 @@ type MixStatusReport struct {
 	LastWeekIPV6     int    `json:"lastWeekIPV6" binding:"required"`
 	LastMonthIPV6    int    `json:"lastMonthIPV6" binding:"required"`
 }
+
+// BatchMixStatus allows to indicate whether given set of nodes is up or down, as reported by a Nym monitor node.
+type BatchMixStatus struct {
+	Status []MixStatus `json:"status" binding:"required"`
+}
+
+// BatchMixStatusReport gives a quick view of network uptime performance
+type BatchMixStatusReport struct {
+	Report []MixStatusReport `json:"report" binding:"required"`
+}

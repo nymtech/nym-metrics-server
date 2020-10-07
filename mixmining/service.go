@@ -12,12 +12,16 @@ type Service struct {
 	db IDb
 }
 
-// IService defines the REST service interface for metrics.
+// IService defines the REST service interface for mixmining.
 type IService interface {
-	CreateMixStatus(metric models.MixStatus) models.PersistedMixStatus
+	CreateMixStatus(mixStatus models.MixStatus) models.PersistedMixStatus
 	List(pubkey string) []models.PersistedMixStatus
 	SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport
 	GetStatusReport(pubkey string) models.MixStatusReport
+
+	SaveBatchStatusReport(status []models.PersistedMixStatus) models.BatchMixStatusReport
+	BatchCreateMixStatus(batchMixStatus models.BatchMixStatus) []models.PersistedMixStatus
+	BatchGetMixStatusReport() models.BatchMixStatusReport
 }
 
 // NewService constructor
@@ -47,11 +51,54 @@ func (service *Service) GetStatusReport(pubkey string) models.MixStatusReport {
 	return service.db.LoadReport(pubkey)
 }
 
-// SaveStatusReport builds and saves a status report for a mixnode. The report can be updated once
-// whenever we receive a new status, and the saved result can then be queried. This keeps us from
-// having to build the report dynamically on every request at runtime.
-func (service *Service) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
-	report := service.db.LoadReport(status.PubKey)
+func (service *Service) BatchCreateMixStatus(batchMixStatus models.BatchMixStatus) []models.PersistedMixStatus {
+	statusList := make([]models.PersistedMixStatus, len(batchMixStatus.Status))
+	for i, mixStatus := range batchMixStatus.Status {
+		persistedMixStatus := models.PersistedMixStatus{
+			MixStatus: mixStatus,
+			Timestamp: timemock.Now().UnixNano(),
+		}
+		statusList[i] = persistedMixStatus
+	}
+	service.db.BatchAdd(statusList)
+
+	return statusList
+}
+
+func (service *Service) BatchGetMixStatusReport() models.BatchMixStatusReport {
+
+	return models.BatchMixStatusReport{}
+}
+
+func (service *Service) SaveBatchStatusReport(status []models.PersistedMixStatus) models.BatchMixStatusReport {
+	pubkeys := make([]string, len(status))
+	for i := range status {
+		pubkeys[i] = status[i].PubKey
+	}
+	batchReport := service.db.BatchLoadReports(pubkeys)
+
+	// that's super crude but I don't think db results are guaranteed to come in order, plus some entries might
+	// not exist
+	reportMap := make(map[string]int)
+	for i, report := range batchReport.Report {
+		reportMap[report.PubKey] = i
+	}
+
+	for _, mixStatus := range status {
+		if reportIdx, ok := reportMap[mixStatus.PubKey]; ok {
+			service.DealWithStatusReport(&batchReport.Report[reportIdx], &mixStatus)
+		} else {
+			var freshReport models.MixStatusReport
+			service.DealWithStatusReport(&freshReport, &mixStatus)
+			batchReport.Report = append(batchReport.Report, freshReport)
+		}
+	}
+
+	service.db.SaveBatchMixStatusReport(batchReport)
+	return batchReport
+}
+
+func (service *Service) DealWithStatusReport(report *models.MixStatusReport, status *models.PersistedMixStatus) {
 	report.PubKey = status.PubKey // crude, we do this in case it's a fresh struct returned from the db
 
 	if status.IPVersion == "4" {
@@ -69,6 +116,15 @@ func (service *Service) SaveStatusReport(status models.PersistedMixStatus) model
 		report.LastWeekIPV6 = service.CalculateUptime(status.PubKey, "6", daysAgo(7))
 		report.LastMonthIPV6 = service.CalculateUptime(status.PubKey, "6", daysAgo(30))
 	}
+}
+
+// SaveStatusReport builds and saves a status report for a mixnode. The report can be updated once
+// whenever we receive a new status, and the saved result can then be queried. This keeps us from
+// having to build the report dynamically on every request at runtime.
+func (service *Service) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
+	report := service.db.LoadReport(status.PubKey)
+
+	service.DealWithStatusReport(&report, &status)
 	service.db.SaveMixStatusReport(report)
 	return report
 }

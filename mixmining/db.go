@@ -17,10 +17,13 @@ var DB *gorm.DB
 // IDb holds status information
 type IDb interface {
 	Add(models.PersistedMixStatus)
+	BatchAdd(status []models.PersistedMixStatus)
 	List(pubkey string, limit int) []models.PersistedMixStatus
 	ListDateRange(pubkey string, ipVersion string, start int64, end int64) []models.PersistedMixStatus
 	LoadReport(pubkey string) models.MixStatusReport
+	BatchLoadReports(pubkeys []string) models.BatchMixStatusReport
 	SaveMixStatusReport(models.MixStatusReport)
+	SaveBatchMixStatusReport(models.BatchMixStatusReport)
 }
 
 // Db is a hashtable that holds mixnode uptime mixmining
@@ -61,6 +64,10 @@ func (db *Db) Add(status models.PersistedMixStatus) {
 	db.orm.Create(status)
 }
 
+func(db *Db) BatchAdd(status []models.PersistedMixStatus) {
+	db.orm.Create(status)
+}
+
 // List returns all models.PersistedMixStatus in the orm
 func (db *Db) List(pubkey string, limit int) []models.PersistedMixStatus {
 	var statuses []models.PersistedMixStatus
@@ -89,6 +96,18 @@ func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
 	}
 }
 
+func (db *Db) SaveBatchMixStatusReport(report models.BatchMixStatusReport) {
+	fmt.Printf("\r\nAbout to save batch report\r\n: %+v", report)
+
+
+	if result := db.orm.Save(report.Report); result.Error != nil {
+		fmt.Printf("Batch Mix status report save error: %+v", result.Error)
+	}
+	
+	fmt.Errorf("DID IT WORK? SAVE BATCH")
+
+}
+
 // LoadReport retrieves a models.MixStatusReport.
 // If a report ins't found, it crudely generates a new instance and returns that instead.
 func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
@@ -100,3 +119,14 @@ func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	}
 	return report
 }
+
+func (db *Db) BatchLoadReports(pubkeys []string) models.BatchMixStatusReport {
+	var reports []models.MixStatusReport
+
+	if retrieve := db.orm.Where("pub_key IN ?", pubkeys).Find(&reports); retrieve.Error != nil {
+		fmt.Printf("ERROR while retrieving multiple mix status report %+v", retrieve.Error)
+		return models.BatchMixStatusReport{Report: make([]models.MixStatusReport, 0)}
+	}
+	return models.BatchMixStatusReport{Report: reports}
+}
+
