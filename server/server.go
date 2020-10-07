@@ -68,12 +68,14 @@ func New() *gin.Engine {
 
 func injectMeasurements(policy *bluemonday.Policy) mixmining.Config {
 	sanitizer := mixmining.NewSanitizer(policy)
+	batchSanitizer := mixmining.NewBatchSanitizer(policy)
 	db := mixmining.NewDb()
 	mixminingService := *mixmining.NewService(db)
 
 	return mixmining.Config{
-		Service:   &mixminingService,
-		Sanitizer: sanitizer,
+		Service:        &mixminingService,
+		Sanitizer:      sanitizer,
+		BatchSanitizer: batchSanitizer,
 	}
 }
 

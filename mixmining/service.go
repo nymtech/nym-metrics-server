@@ -66,11 +66,13 @@ func (service *Service) BatchCreateMixStatus(batchMixStatus models.BatchMixStatu
 }
 
 func (service *Service) BatchGetMixStatusReport() models.BatchMixStatusReport {
-
+// TODO
 	return models.BatchMixStatusReport{}
 }
 
 func (service *Service) SaveBatchStatusReport(status []models.PersistedMixStatus) models.BatchMixStatusReport {
+	// TODO: COMBINE REPORTS IF THEY USE THE SAME KEY (V4 and V6)
+	
 	pubkeys := make([]string, len(status))
 	for i := range status {
 		pubkeys[i] = status[i].PubKey
@@ -86,11 +88,12 @@ func (service *Service) SaveBatchStatusReport(status []models.PersistedMixStatus
 
 	for _, mixStatus := range status {
 		if reportIdx, ok := reportMap[mixStatus.PubKey]; ok {
-			service.DealWithStatusReport(&batchReport.Report[reportIdx], &mixStatus)
+			service.dealWithStatusReport(&batchReport.Report[reportIdx], &mixStatus)
 		} else {
 			var freshReport models.MixStatusReport
-			service.DealWithStatusReport(&freshReport, &mixStatus)
+			service.dealWithStatusReport(&freshReport, &mixStatus)
 			batchReport.Report = append(batchReport.Report, freshReport)
+			reportMap[freshReport.PubKey] = len(batchReport.Report) - 1
 		}
 	}
 
@@ -98,7 +101,7 @@ func (service *Service) SaveBatchStatusReport(status []models.PersistedMixStatus
 	return batchReport
 }
 
-func (service *Service) DealWithStatusReport(report *models.MixStatusReport, status *models.PersistedMixStatus) {
+func (service *Service) dealWithStatusReport(report *models.MixStatusReport, status *models.PersistedMixStatus) {
 	report.PubKey = status.PubKey // crude, we do this in case it's a fresh struct returned from the db
 
 	if status.IPVersion == "4" {
@@ -124,7 +127,7 @@ func (service *Service) DealWithStatusReport(report *models.MixStatusReport, sta
 func (service *Service) SaveStatusReport(status models.PersistedMixStatus) models.MixStatusReport {
 	report := service.db.LoadReport(status.PubKey)
 
-	service.DealWithStatusReport(&report, &status)
+	service.dealWithStatusReport(&report, &status)
 	service.db.SaveMixStatusReport(report)
 	return report
 }

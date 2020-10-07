@@ -170,6 +170,54 @@
                 }
             }
         },
+        "/api/mixmining/batch": {
+            "post": {
+                "description": "Nym network monitor sends packets through the system and checks if they make it. The network monitor then hits this method to report whether nodes were up at a given time.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "mixmining"
+                ],
+                "summary": "Lets the network monitor create a new uptime status for multiple mixes",
+                "operationId": "addBatchMixStatus",
+                "parameters": [
+                    {
+                        "description": "object",
+                        "name": "object",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.BatchMixStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mixmining/{pubkey}/history": {
             "get": {
                 "description": "Lists all mixnode statuses for a given node pubkey",
@@ -599,6 +647,20 @@
         }
     },
     "definitions": {
+        "models.BatchMixStatus": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MixStatus"
+                    }
+                }
+            }
+        },
         "models.CocoHostInfo": {
             "type": "object",
             "required": [
