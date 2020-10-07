@@ -103,9 +103,6 @@ func (db *Db) SaveBatchMixStatusReport(report models.BatchMixStatusReport) {
 	if result := db.orm.Save(report.Report); result.Error != nil {
 		fmt.Printf("Batch Mix status report save error: %+v", result.Error)
 	}
-
-	fmt.Errorf("DID IT WORK? SAVE BATCH")
-
 }
 
 // LoadReport retrieves a models.MixStatusReport.

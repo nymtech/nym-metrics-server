@@ -19,7 +19,7 @@ var _ = Describe("Controller", func() {
 	Describe("creating a mix status", func() {
 		Context("from a host other than localhost", func() {
 			It("should fail", func() {
-				router, _, _ := SetupRouter()
+				router, _, _, _ := SetupRouter()
 				badJSON, _ := json.Marshal(fixtures.XSSMixStatus())
 				resp := performNonLocalRequest(router, "POST", "/api/mixmining", badJSON)
 				assert.Equal(GinkgoT(), 403, resp.Result().StatusCode)
@@ -29,7 +29,7 @@ var _ = Describe("Controller", func() {
 		Context("that has 'false' set for 'Up'", func() {
 			It("should save the mix status", func() {
 				boolfalse := false
-				router, mockService, mockSanitizer := SetupRouter()
+				router, mockService, mockSanitizer, _ := SetupRouter()
 				status := fixtures.GoodMixStatus()
 				status.Up = &boolfalse
 
@@ -49,7 +49,7 @@ var _ = Describe("Controller", func() {
 
 		Context("containing xss", func() {
 			It("should strip the xss attack, save the individual mix status, and update the status report for the given node", func() {
-				router, mockService, mockSanitizer := SetupRouter()
+				router, mockService, mockSanitizer, _ := SetupRouter()
 
 				mockSanitizer.On("Sanitize", fixtures.XSSMixStatus()).Return(fixtures.GoodMixStatus())
 				mockService.On("CreateMixStatus", fixtures.GoodMixStatus()).Return(fixtures.GoodPersistedMixStatus())
@@ -70,7 +70,7 @@ var _ = Describe("Controller", func() {
 	Describe("retrieving a mix status report (overview)", func() {
 		Context("when a report does not yet exist", func() {
 			It("should 404", func() {
-				router, mockService, _ := SetupRouter()
+				router, mockService, _, _ := SetupRouter()
 				mockService.On("GetStatusReport", fixtures.MixStatusReport().PubKey).Return(models.MixStatusReport{})
 				resp := performLocalHostRequest(router, "GET", "/api/mixmining/key1/report", nil)
 				assert.Equal(GinkgoT(), 404, resp.Result().StatusCode)
@@ -79,9 +79,9 @@ var _ = Describe("Controller", func() {
 
 		Context("when a report exists", func() {
 			It("should return the report", func() {
-				router, mockService, _ := SetupRouter()
+				router, mockService, _, _ := SetupRouter()
 				mockService.On("GetStatusReport", fixtures.MixStatusReport().PubKey).Return(fixtures.MixStatusReport())
-				resp := performLocalHostRequest(router, "GET", "/api/mixmining/key1/report", nil)
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/node/key1/report", nil)
 				var response models.MixStatusReport
 				json.Unmarshal([]byte(resp.Body.String()), &response)
 				assert.Equal(GinkgoT(), 200, resp.Result().StatusCode)
@@ -93,18 +93,18 @@ var _ = Describe("Controller", func() {
 	Describe("listing statuses for a node", func() {
 		Context("when no statuses have yet been saved", func() {
 			It("returns an empty list", func() {
-				router, mockService, _ := SetupRouter()
+				router, mockService, _, _ := SetupRouter()
 				mockService.On("List", "foo").Return([]models.PersistedMixStatus{})
-				resp := performLocalHostRequest(router, "GET", "/api/mixmining/foo/history", nil)
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/node/foo/history", nil)
 
 				assert.Equal(GinkgoT(), 200, resp.Code)
 			})
 		})
 		Context("when some statuses exist", func() {
 			It("should return the list of statuses as json", func() {
-				router, mockService, _ := SetupRouter()
+				router, mockService, _, _ := SetupRouter()
 				mockService.On("List", "pubkey1").Return(fixtures.MixStatusesList())
-				url := "/api/mixmining/pubkey1/history"
+				url := "/api/mixmining/node/pubkey1/history"
 				resp := performLocalHostRequest(router, "GET", url, nil)
 				var response []models.PersistedMixStatus
 				json.Unmarshal([]byte(resp.Body.String()), &response)
@@ -114,20 +114,104 @@ var _ = Describe("Controller", func() {
 			})
 		})
 	})
+
+	Describe("Creating batch mix status", func() {
+		Context("from a host other than localhost", func() {
+			It("should fail", func() {
+				router, _, _, _ := SetupRouter()
+				goodJSON, _ := json.Marshal(fixtures.GoodBatchMixStatus())
+				resp := performNonLocalRequest(router, "POST", "/api/mixmining/batch", goodJSON)
+				assert.Equal(GinkgoT(), 403, resp.Result().StatusCode)
+			})
+		})
+
+		Context("Containing single status", func() {
+			Context("that has 'false' set for 'Up'", func() {
+				It("should save the mix status", func() {
+					boolfalse := false
+					router, mockService, _, mockBatchSanitizer := SetupRouter()
+					singleStatusBatch := models.BatchMixStatus{Status: []models.MixStatus{fixtures.GoodMixStatus()}}
+					singleStatusBatch.Status[0].Up = &boolfalse
+
+					savedStatus := []models.PersistedMixStatus{{MixStatus: fixtures.GoodMixStatus(), Timestamp: 1234}}
+					savedStatus[0].Up = &boolfalse
+
+					mockBatchSanitizer.On("Sanitize", singleStatusBatch).Return(singleStatusBatch)
+					mockService.On("BatchCreateMixStatus", singleStatusBatch).Return(savedStatus)
+					mockService.On("SaveBatchStatusReport", savedStatus).Return(models.BatchMixStatusReport{Report: []models.MixStatusReport{}})
+
+					falseJSON, _ := json.Marshal(singleStatusBatch)
+					resp := performLocalHostRequest(router, "POST", "/api/mixmining/batch", falseJSON)
+
+					assert.Equal(GinkgoT(), 201, resp.Code)
+				})
+			})
+
+			Context("containing xss", func() {
+				It("should strip the xss attack, save the individual mix status, and update the status report for the given node", func() {
+					router, mockService, _, mockBatchSanitizer := SetupRouter()
+					singleXSSStatusBatch := models.BatchMixStatus{Status: []models.MixStatus{fixtures.XSSMixStatus()}}
+					singleStatusBatch := models.BatchMixStatus{Status: []models.MixStatus{fixtures.GoodMixStatus()}}
+					savedStatus := []models.PersistedMixStatus{{MixStatus: fixtures.GoodMixStatus(), Timestamp: 1234}}
+
+					mockBatchSanitizer.On("Sanitize", singleXSSStatusBatch).Return(singleStatusBatch)
+					mockService.On("BatchCreateMixStatus", singleStatusBatch).Return(savedStatus)
+					mockService.On("SaveBatchStatusReport", savedStatus).Return(models.BatchMixStatusReport{Report: []models.MixStatusReport{}})
+					badJSON, _ := json.Marshal(singleXSSStatusBatch)
+
+					resp := performLocalHostRequest(router, "POST", "/api/mixmining/batch", badJSON)
+					var response map[string]string
+					json.Unmarshal([]byte(resp.Body.String()), &response)
+
+					assert.Equal(GinkgoT(), 201, resp.Code)
+					mockBatchSanitizer.AssertCalled(GinkgoT(), "Sanitize", singleXSSStatusBatch)
+					mockService.AssertCalled(GinkgoT(), "BatchCreateMixStatus", singleStatusBatch)
+				})
+			})
+		})
+
+		Context("Containing multiple status data", func() {
+			Context("containing xss", func() {
+				It("should strip the xss attack, save the individual mix status, and update the status report for the given node", func() {
+					router, mockService, _, mockBatchSanitizer := SetupRouter()
+
+					mockBatchSanitizer.On("Sanitize", fixtures.XSSBatchMixStatus()).Return(fixtures.GoodBatchMixStatus())
+					mockService.On("BatchCreateMixStatus", fixtures.GoodBatchMixStatus()).Return(fixtures.GoodPersistedBatchMixStatus())
+					mockService.On("SaveBatchStatusReport", fixtures.GoodPersistedBatchMixStatus()).Return(models.BatchMixStatusReport{Report: []models.MixStatusReport{}})
+					badJSON, _ := json.Marshal(fixtures.XSSBatchMixStatus())
+
+					resp := performLocalHostRequest(router, "POST", "/api/mixmining/batch", badJSON)
+					var response map[string]string
+					json.Unmarshal([]byte(resp.Body.String()), &response)
+
+					assert.Equal(GinkgoT(), 201, resp.Code)
+					mockBatchSanitizer.AssertCalled(GinkgoT(), "Sanitize", fixtures.XSSBatchMixStatus())
+					mockService.AssertCalled(GinkgoT(), "BatchCreateMixStatus", fixtures.GoodBatchMixStatus())
+				})
+			})
+		})
+
+	})
+
+	Describe("Retrieving full batch mix status report", func() {
+
+	})
 })
 
-func SetupRouter() (*gin.Engine, *mocks.IService, *mocks.Sanitizer) {
+func SetupRouter() (*gin.Engine, *mocks.IService, *mocks.Sanitizer, *mocks.BatchSanitizer) {
 	mockSanitizer := new(mocks.Sanitizer)
+	mockBatchSanitizer := new(mocks.BatchSanitizer)
 	mockService := new(mocks.IService)
 	cfg := Config{
-		Sanitizer: mockSanitizer,
-		Service:   mockService,
+		BatchSanitizer: mockBatchSanitizer,
+		Sanitizer:      mockSanitizer,
+		Service:        mockService,
 	}
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	controller := New(cfg)
 	controller.RegisterRoutes(router)
-	return router, mockService, mockSanitizer
+	return router, mockService, mockSanitizer, mockBatchSanitizer
 }
 func performLocalHostRequest(r http.Handler, method, path string, body []byte) *httptest.ResponseRecorder {
 	buf := bytes.NewBuffer(body)
