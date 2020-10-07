@@ -74,7 +74,7 @@ func (controller *controller) ListMeasurements(c *gin.Context) {
 // @Router /api/mixmining [post]
 func (controller *controller) CreateMixStatus(c *gin.Context) {
 	remoteIP := c.ClientIP()
-	if remoteIP != "127.0.0.1" && remoteIP != "::1" {
+	if !(remoteIP == "127.0.0.1" || remoteIP == "::1" || c.Request.RemoteAddr == "127.0.0.1" || c.Request.RemoteAddr == "::1") {
 		c.JSON(http.StatusForbidden, gin.H{"error": "forbidden"})
 		return
 	}
@@ -127,7 +127,7 @@ func (controller *controller) GetMixStatusReport(c *gin.Context) {
 // @Router /api/mixmining/batch [post]
 func (controller *controller) BatchCreateMixStatus(c *gin.Context) {
 	remoteIP := c.ClientIP()
-	if remoteIP != "127.0.0.1" && remoteIP != "::1" {
+	if !(remoteIP == "127.0.0.1" || remoteIP == "::1" || c.Request.RemoteAddr == "127.0.0.1" || c.Request.RemoteAddr == "::1") {
 		c.JSON(http.StatusForbidden, gin.H{"error": "forbidden"})
 		return
 	}
