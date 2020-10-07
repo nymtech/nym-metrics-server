@@ -26,6 +26,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:           mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -56,6 +57,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:          mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -85,6 +87,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:          mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -117,6 +120,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:              mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -148,6 +152,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:                  mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -174,6 +179,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:                  mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -205,6 +211,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:            mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)
@@ -233,6 +240,7 @@ var _ = Describe("Presence Controller", func() {
 					Service:                  mockService,
 				}
 
+				gin.SetMode(gin.TestMode)
 				router := gin.Default()
 
 				controller := New(cfg)

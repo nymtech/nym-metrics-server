@@ -123,6 +123,7 @@ func SetupRouter() (*gin.Engine, *mocks.IService, *mocks.Sanitizer) {
 		Sanitizer: mockSanitizer,
 		Service:   mockService,
 	}
+	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	controller := New(cfg)
 	controller.RegisterRoutes(router)

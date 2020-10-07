@@ -19,6 +19,8 @@ import (
 
 // New returns a new REST API server
 func New() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
