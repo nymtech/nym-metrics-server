@@ -51,6 +51,7 @@ func (service *Service) GetStatusReport(pubkey string) models.MixStatusReport {
 	return service.db.LoadReport(pubkey)
 }
 
+// BatchCreateMixStatus batch adds new multiple PersistedMixStatus in the orm.
 func (service *Service) BatchCreateMixStatus(batchMixStatus models.BatchMixStatus) []models.PersistedMixStatus {
 	statusList := make([]models.PersistedMixStatus, len(batchMixStatus.Status))
 	for i, mixStatus := range batchMixStatus.Status {
@@ -65,10 +66,15 @@ func (service *Service) BatchCreateMixStatus(batchMixStatus models.BatchMixStatu
 	return statusList
 }
 
+// BatchGetMixStatusReport gets BatchMixStatusReport which contain multiple MixStatusReport.
 func (service *Service) BatchGetMixStatusReport() models.BatchMixStatusReport {
 	return service.db.LoadNonStaleReports()
 }
 
+// SaveBatchStatusReport builds and saves a status report for multiple mixnodes simultaneously. 
+// Those reports can be updated once whenever we receive a new status,
+// and the saved results can then be queried. This keeps us from having to build the report dynamically
+// on every request at runtime.
 func (service *Service) SaveBatchStatusReport(status []models.PersistedMixStatus) models.BatchMixStatusReport {
 	pubkeys := make([]string, len(status))
 	for i := range status {

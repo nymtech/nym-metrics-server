@@ -16,8 +16,8 @@ type batchSanitizer struct {
 	sanitizer sanitizer
 }
 
-// NewSanitizer returns a new input sanitizer for metrics
-func NewBatchSanitizer(policy *bluemonday.Policy) batchSanitizer {
+// NewBatchSanitizer returns a new input sanitizer for metrics
+func NewBatchSanitizer(policy *bluemonday.Policy) BatchSanitizer {
 	return batchSanitizer {
 		sanitizer: sanitizer {
 			policy: policy,

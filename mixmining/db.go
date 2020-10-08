@@ -65,6 +65,7 @@ func (db *Db) Add(status models.PersistedMixStatus) {
 	db.orm.Create(status)
 }
 
+// BatchAdd saves multiple PersistedMixStatus
 func (db *Db) BatchAdd(status []models.PersistedMixStatus) {
 	db.orm.Create(status)
 }
@@ -89,24 +90,21 @@ func (db *Db) ListDateRange(pubkey string, ipVersion string, start int64, end in
 
 // SaveMixStatusReport creates or updates a status summary report for a given mixnode in the database
 func (db *Db) SaveMixStatusReport(report models.MixStatusReport) {
-	fmt.Printf("\r\nAbout to save report\r\n: %+v", report)
-
 	create := db.orm.Save(report)
 	if create.Error != nil {
 		fmt.Printf("Mix status report creation error: %+v", create.Error)
 	}
 }
 
+// SaveBatchMixStatusReport creates or updates a status summary report for multiple mixnodex in the database
 func (db *Db) SaveBatchMixStatusReport(report models.BatchMixStatusReport) {
-	fmt.Printf("\r\nAbout to save batch report\r\n: %+v", report)
-
 	if result := db.orm.Save(report.Report); result.Error != nil {
 		fmt.Printf("Batch Mix status report save error: %+v", result.Error)
 	}
 }
 
 // LoadReport retrieves a models.MixStatusReport.
-// If a report ins't found, it crudely generates a new instance and returns that instead.
+// If a report isn't found, it crudely generates a new instance and returns that instead.
 func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	var report models.MixStatusReport
 
@@ -117,6 +115,9 @@ func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 	return report
 }
 
+// LoadNonStaleReports retrieves a models.BatchMixStatusReport, such that each mixnode
+// in the retrieved report must have been online for over 50% of time in the last hour.
+// If a report isn't found, it crudely generates a new instance and returns that instead.
 func (db *Db) LoadNonStaleReports() models.BatchMixStatusReport {
 	var reports []models.MixStatusReport
 
@@ -127,6 +128,8 @@ func (db *Db) LoadNonStaleReports() models.BatchMixStatusReport {
 	return models.BatchMixStatusReport{Report: reports}
 }
 
+// BatchLoadReports retrieves a models.BatchMixStatusReport based on provided set of public keys.
+// If a report isn't found, it crudely generates a new instance and returns that instead.
 func (db *Db) BatchLoadReports(pubkeys []string) models.BatchMixStatusReport {
 	var reports []models.MixStatusReport
 
