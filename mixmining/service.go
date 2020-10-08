@@ -1,6 +1,7 @@
 package mixmining
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
@@ -71,7 +72,7 @@ func (service *Service) BatchGetMixStatusReport() models.BatchMixStatusReport {
 	return service.db.LoadNonStaleReports()
 }
 
-// SaveBatchStatusReport builds and saves a status report for multiple mixnodes simultaneously. 
+// SaveBatchStatusReport builds and saves a status report for multiple mixnodes simultaneously.
 // Those reports can be updated once whenever we receive a new status,
 // and the saved results can then be queried. This keeps us from having to build the report dynamically
 // on every request at runtime.

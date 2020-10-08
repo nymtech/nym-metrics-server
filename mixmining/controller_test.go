@@ -6,11 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/nymtech/nym-directory/models"
-
 	"github.com/gin-gonic/gin"
 	"github.com/nymtech/nym-directory/mixmining/fixtures"
 	"github.com/nymtech/nym-directory/mixmining/mocks"
+	"github.com/nymtech/nym-directory/models"
 	. "github.com/onsi/ginkgo"
 	"github.com/stretchr/testify/assert"
 )
@@ -72,7 +71,7 @@ var _ = Describe("Controller", func() {
 			It("should 404", func() {
 				router, mockService, _, _ := SetupRouter()
 				mockService.On("GetStatusReport", fixtures.MixStatusReport().PubKey).Return(models.MixStatusReport{})
-				resp := performLocalHostRequest(router, "GET", "/api/mixmining/key1/report", nil)
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/node/key1/report", nil)
 				assert.Equal(GinkgoT(), 404, resp.Result().StatusCode)
 			})
 		})
@@ -194,7 +193,32 @@ var _ = Describe("Controller", func() {
 	})
 
 	Describe("Retrieving full batch mix status report", func() {
+		Context("when no reports exist yet", func() {
+			It("should return empty report", func() {
+				router, mockService, _, _ := SetupRouter()
+				mockService.On("BatchGetMixStatusReport").Return(models.BatchMixStatusReport{Report: []models.MixStatusReport{}})
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/fullreport", nil)
+				assert.Equal(GinkgoT(), 200, resp.Result().StatusCode)
 
+				var response models.BatchMixStatusReport
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+
+				assert.Equal(GinkgoT(), len(response.Report), 0)
+			})
+		})
+
+		Context("when a report exists", func() {
+			It("should return the report", func() {
+				router, mockService, _, _ := SetupRouter()
+				reqReport := models.BatchMixStatusReport{Report: []models.MixStatusReport{fixtures.MixStatusReport()}}
+				mockService.On("BatchGetMixStatusReport").Return(reqReport)
+				resp := performLocalHostRequest(router, "GET", "/api/mixmining/fullreport", nil)
+				var response models.BatchMixStatusReport
+				json.Unmarshal([]byte(resp.Body.String()), &response)
+				assert.Equal(GinkgoT(), 200, resp.Result().StatusCode)
+				assert.Equal(GinkgoT(), reqReport, response)
+			})
+		})
 	})
 })
 
