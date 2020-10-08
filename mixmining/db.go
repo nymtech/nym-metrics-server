@@ -116,12 +116,12 @@ func (db *Db) LoadReport(pubkey string) models.MixStatusReport {
 }
 
 // LoadNonStaleReports retrieves a models.BatchMixStatusReport, such that each mixnode
-// in the retrieved report must have been online for over 50% of time in the last hour.
+// in the retrieved report must have been online for over 50% of time in the last day.
 // If a report isn't found, it crudely generates a new instance and returns that instead.
 func (db *Db) LoadNonStaleReports() models.BatchMixStatusReport {
 	var reports []models.MixStatusReport
 
-	if retrieve := db.orm.Where("last_hour_ip_v4 >= 50").Or("last_hour_ip_v6 >= 50").Find(&reports); retrieve.Error != nil {
+	if retrieve := db.orm.Where("last_day_ip_v4 >= 50").Or("last_day_ip_v6 >= 50").Find(&reports); retrieve.Error != nil {
 		fmt.Printf("ERROR while retrieving multiple mix status report %+v", retrieve.Error)
 		return models.BatchMixStatusReport{Report: make([]models.MixStatusReport, 0)}
 	}
