@@ -1,7 +1,6 @@
 package mixmining
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/BorisBorshevsky/timemock"
