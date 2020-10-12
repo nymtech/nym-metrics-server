@@ -48,12 +48,74 @@ func GoodMixStatus() models.MixStatus {
 	}
 }
 
+// XSSBatchMixStatus ...
+func XSSBatchMixStatus() models.BatchMixStatus {
+	booltrue := true
+	xss := models.BatchMixStatus{
+		Status: []models.MixStatus{
+			{
+				IPVersion: "6",
+				PubKey:    "pubkey2<script>alert('gotcha')</script>",
+				Up:        &booltrue,
+			},
+			{
+				IPVersion: "4",
+				PubKey:    "pubkey2<script>alert('gotcha')</script>",
+				Up:        &booltrue,
+			},
+			{
+				IPVersion: "6",
+				PubKey:    "pubkey3<script>alert('gotcha')</script>",
+				Up:        &booltrue,
+			},
+		},
+	}
+	return xss
+}
+
+// GoodBatchMixStatus ...
+func GoodBatchMixStatus() models.BatchMixStatus {
+	booltrue := true
+	return models.BatchMixStatus{
+		Status: []models.MixStatus{
+			{
+				IPVersion: "6",
+				PubKey:    "pubkey2",
+				Up:        &booltrue,
+			},
+			{
+				IPVersion: "4",
+				PubKey:    "pubkey2",
+				Up:        &booltrue,
+			},
+			{
+				IPVersion: "6",
+				PubKey:    "pubkey3",
+				Up:        &booltrue,
+			},
+		},
+	}
+}
+
 // GoodPersistedMixStatus ...
 func GoodPersistedMixStatus() models.PersistedMixStatus {
 	return models.PersistedMixStatus{
 		MixStatus: GoodMixStatus(),
 		Timestamp: 1234,
 	}
+}
+
+// GoodPersistedBatchMixStatus ...
+func GoodPersistedBatchMixStatus() []models.PersistedMixStatus {
+	mixStatus := GoodBatchMixStatus();
+	persisted := make([]models.PersistedMixStatus, len(mixStatus.Status))
+	for i, status := range mixStatus.Status {
+		persisted[i] = models.PersistedMixStatus{
+			MixStatus: status,
+			Timestamp: 1234,
+		}
+	}
+	return persisted
 }
 
 // MixStatusReport ...

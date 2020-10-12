@@ -19,6 +19,8 @@ import (
 
 // New returns a new REST API server
 func New() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
@@ -68,12 +70,14 @@ func New() *gin.Engine {
 
 func injectMeasurements(policy *bluemonday.Policy) mixmining.Config {
 	sanitizer := mixmining.NewSanitizer(policy)
+	batchSanitizer := mixmining.NewBatchSanitizer(policy)
 	db := mixmining.NewDb()
 	mixminingService := *mixmining.NewService(db)
 
 	return mixmining.Config{
-		Service:   &mixminingService,
-		Sanitizer: sanitizer,
+		Service:        &mixminingService,
+		Sanitizer:      sanitizer,
+		BatchSanitizer: batchSanitizer,
 	}
 }
 

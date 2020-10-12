@@ -52,6 +52,32 @@ func status() models.MixStatus {
 	}
 }
 
+func statusUp(key string, ipversion string) models.MixStatus {
+	booltrue := true
+	return models.MixStatus{
+		PubKey:    key,
+		IPVersion: ipversion,
+		Up:        &booltrue,
+	}
+}
+
+func statusDown(key string, ipversion string) models.MixStatus {
+	boolfalse := false
+	return models.MixStatus{
+		PubKey:    key,
+		IPVersion: ipversion,
+		Up:        &boolfalse,
+	}
+}
+
+func persistedStatusFrom(mixStatus models.MixStatus) models.PersistedMixStatus {
+	persisted := models.PersistedMixStatus{
+		MixStatus: mixStatus,
+		Timestamp: Now(),
+	}
+	return persisted
+}
+
 // A version of now with a frozen shared clock so we can have determinate time-based tests
 func Now() int64 {
 	now := timemock.Now()
@@ -292,6 +318,52 @@ var _ = Describe("mixmining.Service", func() {
 				mockDb.On("SaveMixStatusReport", expectedAfterUpdate)
 				updatedStatus := serv.SaveStatusReport(downer)
 				assert.Equal(GinkgoT(), expectedAfterUpdate, updatedStatus)
+				mockDb.AssertExpectations(GinkgoT())
+			})
+		})
+	})
+
+	Describe("Saving batch status report", func() {
+		Context("if it contains v4 and v6 up status for same node", func() {
+			It("should combine them into single entry", func() {
+				upv4 := persistedStatusFrom(statusDown("key1", "4"))
+				upv6 := persistedStatusFrom(statusDown("key1", "6"))
+				batchReport := []models.PersistedMixStatus{upv4, upv6}
+
+				expected := models.BatchMixStatusReport{
+					Report: []models.MixStatusReport{{
+						PubKey:           "key1",
+						MostRecentIPV4:   false,
+						Last5MinutesIPV4: 0,
+						LastHourIPV4:     0,
+						LastDayIPV4:      0,
+						LastWeekIPV4:     0,
+						LastMonthIPV4:    0,
+						MostRecentIPV6:   false,
+						Last5MinutesIPV6: 0,
+						LastHourIPV6:     0,
+						LastDayIPV6:      0,
+						LastWeekIPV6:     0,
+						LastMonthIPV6:    0,
+					}},
+				}
+
+				mockDb.On("ListDateRange", "key1", "4", minutesAgo(5), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "4", minutesAgo(60), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "4", daysAgo(1), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "4", daysAgo(7), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "4", daysAgo(30), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "6", minutesAgo(5), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "6", minutesAgo(60), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "6", daysAgo(1), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "6", daysAgo(7), now()).Return([]models.PersistedMixStatus{})
+				mockDb.On("ListDateRange", "key1", "6", daysAgo(30), now()).Return([]models.PersistedMixStatus{})
+
+				mockDb.On("BatchLoadReports", []string{"key1", "key1"}).Return(models.BatchMixStatusReport{Report: make([]models.MixStatusReport, 0)})
+				mockDb.On("SaveBatchMixStatusReport", expected)
+
+				updatedStatus := serv.SaveBatchStatusReport(batchReport)
+				assert.Equal(GinkgoT(), 1, len(updatedStatus.Report))
 				mockDb.AssertExpectations(GinkgoT())
 			})
 		})
