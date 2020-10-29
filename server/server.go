@@ -1,14 +1,13 @@
 package server
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nymtech/nym-directory/healthcheck"
 	"github.com/nymtech/nym-directory/metrics"
 	"github.com/nymtech/nym-directory/server/html"
 	"github.com/nymtech/nym-directory/server/websocket"
+	"net/http"
 
 	"github.com/gin-contrib/cors"
 	swaggerFiles "github.com/swaggo/files"
@@ -68,3 +67,4 @@ func injectMetrics(hub *websocket.Hub, policy *bluemonday.Policy) metrics.Config
 		Sanitizer: sanitizer,
 	}
 }
+
