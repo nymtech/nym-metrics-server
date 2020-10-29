@@ -15,3 +15,8 @@ type PersistedMixMetric struct {
 	MixMetric
 	Timestamp int64 `json:"timestamp" binding:"required"`
 }
+
+// MixMetricInterval specifies when given node should submit its next report
+type MixMetricInterval struct {
+	NextReportIn uint64 `json:"nextReportIn"`
+}

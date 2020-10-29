@@ -100,7 +100,12 @@
                     }
                 ],
                 "responses": {
-                    "201": {},
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.MixMetricInterval"
+                        }
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -151,6 +156,14 @@
                     "additionalProperties": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "models.MixMetricInterval": {
+            "type": "object",
+            "properties": {
+                "nextReportIn": {
+                    "type": "integer"
                 }
             }
         }
