@@ -26,28 +26,28 @@ definitions:
     type: object
 info:
   contact: {}
-  description: This is a temporarily centralized directory/PKI/metrics API to allow
-    us to get the other Nym node types running. Its functionality will eventually
-    be folded into other parts of Nym.
+  description: This is a temporarily centralized metrics API to allow us to get the
+    other Nym node types running. Its functionality will eventually be folded into
+    other parts of Nym.
   license:
     name: Apache 2.0
-    url: https://github.com/nymtech/nym-directory/license
+    url: https://github.com/nymtech/nym-metrics-server/
   termsOfService: http://swagger.io/terms/
-  title: Nym Directory API
-  version: 0.9.0-dev
+  title: Nym Metrics API
+  version: 0.9.0
 paths:
   /api/healthcheck:
     get:
       consumes:
       - application/json
-      description: Returns a 200 if the directory server is available. Good route
-        to use for automated monitoring.
+      description: Returns a 200 if the metrics server is available. Good route to
+        use for automated monitoring.
       operationId: healthCheck
       produces:
       - application/json
       responses:
         "200": {}
-      summary: Lets the directory server tell the world it's alive.
+      summary: Lets the metrics server tell the world it's alive.
       tags:
       - healthcheck
   /api/metrics/mixes:
