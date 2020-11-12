@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
