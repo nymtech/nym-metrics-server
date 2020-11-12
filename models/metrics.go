@@ -9,7 +9,7 @@ type MixMetric struct {
 }
 
 // PersistedMixMetric is a saved MixMetric with a timestamp recording when it
-// was seen by the directory server. It can be used to build visualizations of
+// was seen by the metrics server. It can be used to build visualizations of
 // mixnet traffic.
 type PersistedMixMetric struct {
 	MixMetric

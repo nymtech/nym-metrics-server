@@ -1,20 +1,20 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a temporarily centralized directory/PKI/metrics API to allow us to get the other Nym node types running. Its functionality will eventually be folded into other parts of Nym.",
-        "title": "Nym Directory API",
+        "description": "This is a temporarily centralized metrics API to allow us to get the other Nym node types running. Its functionality will eventually be folded into other parts of Nym.",
+        "title": "Nym Metrics API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {},
         "license": {
             "name": "Apache 2.0",
-            "url": "https://github.com/nymtech/nym-directory/license"
+            "url": "https://github.com/nymtech/nym-metrics-server/"
         },
-        "version": "0.9.0-dev"
+        "version": "0.9.0"
     },
     "paths": {
         "/api/healthcheck": {
             "get": {
-                "description": "Returns a 200 if the directory server is available. Good route to use for automated monitoring.",
+                "description": "Returns a 200 if the metrics server is available. Good route to use for automated monitoring.",
                 "consumes": [
                     "application/json"
                 ],
@@ -24,7 +24,7 @@
                 "tags": [
                     "healthcheck"
                 ],
-                "summary": "Lets the directory server tell the world it's alive.",
+                "summary": "Lets the metrics server tell the world it's alive.",
                 "operationId": "healthCheck",
                 "responses": {
                     "200": {}
